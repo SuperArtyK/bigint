@@ -7,6 +7,7 @@
 #include <cstring>
 #include "utils.hpp"
 #include <limits>
+#include <climits>
 
 #define BIGINT_PREALLOC_SIZE 32
 
@@ -19,7 +20,9 @@
 class Bigint{
 
 public:
-//constructors
+/////////////////
+// constructors
+/////////////////
     /// Constructs Bigint with value 0;
 	Bigint();
 	/// Constructs Bigint with value from another Bigint.
@@ -35,7 +38,11 @@ public:
 	/// We need a Number, not a string with char 0.
 	Bigint(const int num);
 	
-	
+
+/////////////////
+// operators
+/////////////////
+
 //assigments
     /// Copies value of the given Bigint to itself.
     Bigint& operator=(const Bigint& bint);
@@ -45,17 +52,97 @@ public:
 	Bigint& operator=(const char* strnum);
 	/// Copies int value to itself.
 	Bigint& operator=(const llint num);
-	
+
 //comparisons
-    /// Checks for equality of both Bigint's.
+//equality
+    /// Checks for equality of both Bigint and Bigint.
     bool operator==(const Bigint& bint) const;
+    /// Checks for equality of Bigint and c-string representation of the number.
+    bool operator==(const char* strnum) const;
+    /// Checks for equality of Bigint and std::string representation of the number.
+    bool operator==(const std::string& strnum) const;
+    /// Checks for equality of Bigint and long long.
+    bool operator==(const llint num) const;
+    /// Checks for equality of Bigint and (standard) int.
+    /// Needed for the same reason as the Bigint(int) overload('ambiguity').
+    inline bool operator==(const int num) const { return this->operator==((llint)num); }
+//inequality
+    /// Checks for inequality of both Bigint and Bigint.
+    inline bool operator!=(const Bigint& bint) const { return !this->operator==(bint); }
+    /// Checks for inequality of Bigint and c-string representation of the number.
+    inline bool operator!=(const char* strnum) const { return !this->operator==(Bigint(strnum)); }
+    /// Checks for inequality of Bigint and std::string representation of the number.
+    inline bool operator!=(const std::string& strnum) const { return !this->operator==(Bigint(strnum)); }
+    /// Checks for inequality of Bigint and long long.
+    inline bool operator!=(const llint num) const { return !this->operator==(Bigint(num)); }
+    /// Checks for inequality of Bigint and (standard) int.
+    /// Needed for the same reason as the Bigint(int) overload('ambiguity').
+    inline bool operator!=(const int num) const { return !this->operator==(Bigint(num)); }
+//less than
+    /// Less-than comparison of Bigint and Bigint
+    bool operator<(const Bigint& bint) const;
+    /// Less-than comparison of Bigint and c-string representation of the number.
+    bool operator<(const char* strnum) const;
+    /// Less-than comparison of Bigint and std::string representation of the number.
+    bool operator<(const std::string& strnum) const;
+    /// Less-than comparison of Bigint and long long
+    bool operator<(const llint num) const;
+    /// Less-than comparison of Bigint and (standard) int
+    /// Needed for the same reason as the Bigint(int) overload('ambiguity').
+    inline bool operator<(const int num) const { return this->operator<((llint)num); }
+//greater-than
+    /// Greater-than comparison of Bigint and Bigint
+    bool operator>(const Bigint& bint) const;
+    /// Greater-than comparison of Bigint and c-string representation of the number.
+    bool operator>(const char* strnum) const;
+    /// Greater-than comparison of Bigint and std::string representation of the number.
+    bool operator>(const std::string& strnum) const;
+    /// Greater-than comparison of Bigint and long long
+    bool operator>(const llint num) const;
+    /// Greater-than comparison of Bigint and (standard) int
+    /// Needed for the same reason as the Bigint(int) overload('ambiguity').
+    inline bool operator>(const int num) const { return this->operator>(Bigint(num)); }
+//less than or equal to
+    /// Less-than-or-equal-to comparison of Bigint and Bigint
+    inline bool operator<=(const Bigint& bint) const { return this->operator<(bint) || this->operator==(bint); }
+    /// Less-than-or-equal-to comparison of Bigint and c-string representation of the number.
+//don't care about the quick checks.
+//they will be done anyway in the called functions
+    inline bool operator<=(const char* strnum) const { return this->operator<=(Bigint(strnum)); }
+    /// Less-than-or-equal-to comparison of Bigint and std::string representation of the number.
+    inline bool operator<=(const std::string& strnum) const { return this->operator<=(Bigint(strnum)); }
+    /// Less-than-or-equal-to comparison of Bigint and long long
+    inline bool operator<=(const llint num) const { return this->operator<=(Bigint(num)); }
+    /// Less-than-or-equal-to comparison of Bigint and (standard) int
+    /// Needed for the same reason as the Bigint(int) overload('ambiguity').
+    inline bool operator<=(const int num) const { return this->operator<=(Bigint(num)); }
+//greater than or equal to
+    /// Greater-than-or-equal-to comparison of Bigint and Bigint
+    inline bool operator>=(const Bigint& bint) const { return this->operator>(bint) || this->operator==(bint); }
+    /// Greater-than-or-equal-to comparison of Bigint and c-string representation of the number.
+//don't care about the quick checks.
+//they will be done anyway in the called functions
+    inline bool operator>=(const char* strnum) const { return this->operator>=(Bigint(strnum)); }
+    /// Greater-than-or-equal-to comparison of Bigint and std::string representation of the number.
+    inline bool operator>=(const std::string& strnum) const { return this->operator>=(Bigint(strnum)); }
+    /// Greater-than-or-equal-to comparison of Bigint and long long
+    inline bool operator>=(const llint num) const { return this->operator>=(Bigint(num)); }
+    /// Greater-than-or-equal-to comparison of Bigint and (standard) int
+    /// Needed for the same reason as the Bigint(int) overload('ambiguity').
+    inline bool operator>=(const int num) const { return this->operator>=(Bigint(num)); }
     
-//conversions
+    
+/////////////////
+// conversions
+/////////////////
+
     /// Converts current bigint number to std::string.
-	std::string toString() const;
+    std::string toString() const;
+    inline operator bool() const { if(this->m_isZero){ return false; } return true; }
+/////////////////
+// get-setters
+/////////////////
 
-
-//quick getters, all inline, in the header
     /// Returns the number length, in digits.
 	inline ullint getNumberLength() const { return this->m_iNumLength; }
 //TODO:Add compression here too
@@ -66,8 +153,6 @@ public:
 	inline int getDigit(const ullint pos) const { return int(this->getDigitChar(pos)); }
 	/// Err, returns bigint's negative status(true if yes, false otherwise).
 	inline bool isNegative() const { return this->m_bNegative; }
-	
-//setters
 	/// Sets digit at position 'pos'(array index style) to value of 'val'.
 	/// @note Unless 'force' is set, value 0 is ignored whenever setting it to digit higher than current m_iNumLength(to avoid stuff like 00123).
 	void setDigit(const ucint val, const ullint pos, const bool force = false);
@@ -77,6 +162,11 @@ public:
     void clear();
 	
 private:
+
+/////////////////
+// misc
+/////////////////
+
     /// Copies value to 'this' from given Bigint.
     void copyFromBigint(const Bigint& bint);
     /// Copies value to 'this' from given std::string.
@@ -86,10 +176,13 @@ private:
     /// Copies value to 'this' from given int(llint).
     void copyFromInt(llint num);
     
-    
-	/// Outputs the bigint to the standard output stream, std::ostream.
+    /// Outputs the bigint to the standard output stream, std::ostream.
     friend std::ostream& operator<<(std::ostream& out, const Bigint& bint);
     
+/////////////////
+// variables
+/////////////////
+
     /// Array of all number digits of the number.
     /// 0th element is digit of ones of the number.
 	std::vector<ucint> m_vNumList;
@@ -97,53 +190,68 @@ private:
 	ullint m_iNumLength;
 	/// Negative status of the variable.
 	bool m_bNegative;
-	
+	/// Returns status: If the number equals to 0
+	/// to get the status faster than comparing number itself. 
+	bool m_isZero;
 };
+
+
 
 /// \brief Struct with constants of max's and min's of the number types(static vars).
 /// (currently featuring: all integral types, up to signed long long)
 struct BigintConstants{
+//type max/min's
+    
     //long long's
-    ///Representation of the long long's max.
-    const inline static Bigint llintmax = (std::numeric_limits<llint>::max());
-    ///Representation of the long long's min.
-	const inline static Bigint llintmin = (std::numeric_limits<llint>::min());
+    /// Representation of the long long's max.
+    const inline static Bigint llintmax = (LLONG_MAX);
+    /// Representation of the long long's min.
+	const inline static Bigint llintmin = (LLONG_MIN);
 	
 	//just int's
-    ///Representation of the int's max.
-	const inline static Bigint intmax = (std::numeric_limits<int>::max());
-    ///Representation of the int's min.
-	const inline static Bigint intmin = (std::numeric_limits<int>::min());
+    /// Representation of the int's max.
+	const inline static Bigint intmax = (INT_MAX);
+    /// Representation of the int's min.
+	const inline static Bigint intmin = (INT_MIN);
 	
 	//u-int's
-    ///Representation of the unsigned int's max.
+    /// Representation of the unsigned int's max.
 	const inline static Bigint uintmax = llint(std::numeric_limits<unsigned int>::max());
-    ///Representation of the unsigned int's min.
+    /// Representation of the unsigned int's min.
 	const inline static Bigint uintmin = llint(std::numeric_limits<unsigned int>::min());
 	
 	//short'ies
-    ///Representation of the short's max.
-	const inline static Bigint shortmax = (std::numeric_limits<short>::max());
-    ///Representation of the short's min.
-	const inline static Bigint shortmin = (std::numeric_limits<short>::min());
+    /// Representation of the short's max.
+	const inline static Bigint shortmax = (SHRT_MAX);
+    /// Representation of the short's min.
+	const inline static Bigint shortmin = (SHRT_MIN);
 	
 	//unsigned short'ies
-    ///Representation of the unsigned short's max
-	const inline static Bigint ushortmax = (std::numeric_limits<unsigned short>::max());
-    ///Representation of the unsigned short's min
-	const inline static Bigint ushortmin = (std::numeric_limits<unsigned short>::min());
+    /// Representation of the unsigned short's max
+	const inline static Bigint ushortmax = (USHRT_MAX);
+    /// Representation of the unsigned short's min
+	const inline static Bigint ushortmin = (0);
 	
 	//char's
-    ///Representation of the char's max.
-	const inline static Bigint charmax = (std::numeric_limits<char>::max());
-    ///Representation of the char's min.
-	const inline static Bigint charmin = (std::numeric_limits<char>::min());
+    /// Representation of the char's max.
+	const inline static Bigint charmax = (SCHAR_MAX);
+    /// Representation of the char's min.
+	const inline static Bigint charmin = (SCHAR_MIN);
 	
 	//u-char's
-    ///Representation of the unsigned char's max.
-	const inline static Bigint ucharmax = (std::numeric_limits<unsigned char>::max());
-    ///Representation of the unsigned char's max.
-	const inline static Bigint ucharmin = (std::numeric_limits<unsigned char>::min());
+    /// Representation of the unsigned char's max.
+	const inline static Bigint ucharmax = (UCHAR_MAX);
+    /// Representation of the unsigned char's max.
+	const inline static Bigint ucharmin = (0);
+	
+//special
+	/// Zero value
+	const inline static Bigint zero = (0);
+	/// Positive 1
+	const inline static Bigint onePos = (1);
+	/// Negative 1
+	const inline static Bigint oneNeg = (-1);
+	
 };
 
 

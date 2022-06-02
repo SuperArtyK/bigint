@@ -3,6 +3,40 @@
 #include "tests.hpp"
 using namespace std;
 
+
+//TODO:Add tests for the comparisons
+
+/*
+    List of things to add:
+            
+        * assigning from:
+            float
+            double
+            long double
+        
+        * constants:
+            double min/max
+            long double min/max
+            float min/max
+            
+        * operator+ for:
+            Bigint
+            int
+            c-string
+            std::string
+            
+        * unary operator++
+        
+        * operator- for:
+            Bigint
+            int
+            c-string
+            std::string
+        
+        * unary operator--
+        
+        
+*/
 int main() {
     dprintf("---------------");
 	dprintf("Entered main...");
@@ -10,7 +44,7 @@ int main() {
 	
 	test();
 	
-	Bigint a(123), b(123);
+	Bigint a(-420), b(420);
 	//cout<<BigintConstants::llintmax<<'\n';
 	//cout<<BigintConstants::llintmin<<'\n';
 	//cout<<BigintConstants::intmax<<'\n';
@@ -26,6 +60,6 @@ int main() {
 	//cout<<BigintConstants::charmin<<'\n';
 	//cout<<BigintConstants::ucharmax<<'\n';
 	//cout<<BigintConstants::ucharmin<<'\n';
-	cout<<(a==b);
+	cout<<(a>420);
 	//dprintf("\n12345");
 }

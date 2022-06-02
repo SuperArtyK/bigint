@@ -1,9 +1,13 @@
+/*
+    file for bigint core stuff 
+    definitions of:
+        * Class Constructors
+        * Class Assignment routines
+        * functions copyFromX, which basically do all the work
+            for constructors and assignment routies.
+*/
+
 #include "bigint.hpp"
-
-//////////////////
-//member functions
-//////////////////
-
 
 //constructors
 
@@ -14,12 +18,12 @@ Bigint::Bigint() {
 	this->clear();
 }
 //constructs Bigint with value from another Bigint
-Bigint::Bigint(const Bigint& bint) : Bigint() {
+Bigint::Bigint(const Bigint& bint) {
 	dprintf("Constructing Bigint with another Bigint");
 	this->copyFromBigint(bint);
 }
 //constructs Bigint with value from std::string
-Bigint::Bigint(const std::string& strnum) : Bigint() {
+Bigint::Bigint(const std::string& strnum) {
 	dprintf("Constructing Bigint with a std::string");
 	this->copyFromString(strnum);
 }
@@ -62,68 +66,8 @@ Bigint& Bigint::operator=(const llint num){
 	return *this;
 }
 
-//comparisons
-bool Bigint::operator==(const Bigint& bint) const {
-    if(this->m_iNumLength != bint.m_iNumLength ||
-        this->m_bNegative != bint.m_bNegative){
-        
-        return false;
-    }
-    
-    for(ullint i = 0; i < this->m_iNumLength; i++){
-        if(this->getDigitChar(i) != bint.getDigitChar(i)){
-            return false;
-        }
-    }
-    
-    return true;
-}
 
-//-----------
-//other stuff
-//-----------
-
-
-//TODO:add the 2x compression method
-void Bigint::setDigit(const ucint val, const ullint pos, const bool force){
-	if(val <= 9){
-		dprintf("Value is acceptable: %d", (int)val);
-		
-		if(pos >= m_iNumLength){
-			if(val == 0 && !force && m_iNumLength > 1){
-				dprintf("Cannot set a new digit to 0, only 1-9");
-				dprintf("Returning...");
-				return;
-			}
-			
-			//implement compression part right here
-			m_vNumList.resize(pos+1);
-			m_iNumLength = pos+1;
-			dprintf("Resized number: length %llu; size of the vector is %llu;", m_iNumLength, (ullint)m_vNumList.size());
-			
-		}
-		//and right here too
-		m_vNumList[pos] = val;
-		//dprintf("%d", (int))
-	}
-	else{
-		dprintf("Value is outside of the dec digit range! Check your code!: %d", (int)val);
-	}
-}
-
-std::string Bigint::toString() const {
-	//dprintf("Size of the number and vector: %llu, %llu", m_iNumLength, (ullint)m_vNumList.size());
-	std::string temp;
-	temp.reserve(this->m_iNumLength);
-	if(this->m_bNegative){
-		temp.push_back('-');
-	}
-	for(ullint i = 0; i < this->m_iNumLength; i++){
-		temp.push_back(INT_TO_CHAR(this->getDigitChar(this->m_iNumLength-i-1)));
-	}
-	return temp;
-}
-
+//copyFrom* are too considered 
 void Bigint::copyFromBigint(const Bigint& bint){
 	this->m_iNumLength = bint.m_iNumLength;
 	this->m_vNumList = bint.m_vNumList;
@@ -189,31 +133,4 @@ void Bigint::copyFromInt(const llint intnum){
 		}
 		while(num != 0);
 	}
-}
-
-
-void Bigint::clear(){
-	this->m_vNumList.clear();
-	this->m_vNumList.reserve(BIGINT_PREALLOC_SIZE);
-	this->m_vNumList.push_back(0);
-	this->m_iNumLength = 1;
-	this->m_bNegative = false;
-}
-
-
-
-
-
-//////////////////
-//friend functions
-//////////////////
-std::ostream& operator<<(std::ostream& out, const Bigint& bint){
-	dprintf("Outputting through ostream");
-	if(bint.isNegative()){
-		out<<'-';
-	}
-	for(ullint i = 0; i < bint.m_iNumLength; i++){
-		out<<INT_TO_CHAR(bint.getDigitChar(bint.m_iNumLength-i-1));
-	}
-	return out;
 }
