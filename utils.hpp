@@ -15,7 +15,7 @@
 #define INT_TO_CHAR(x) (char(x+48))
 
 ///Flag to enable deblog(x) logging. Set to 0 to disable
-#define DEBUG_LOGGING 1
+#define DEBUG_LOGGING 0
 ///Debug printf(), use the same way as you have used printf before.
 ///Prints additional newline with each print
 #define dprintf(...) if(DEBUG_LOGGING){printf("DEBUG::%s()-> ", __FUNCTION__); printf(__VA_ARGS__); printf("\n");}
@@ -42,17 +42,24 @@ typedef char cint;
 template<typename T>
 inline int numlength_i(T num){
 	static_assert(std::is_integral<T>::value, "Cannot use non-integral types in the 'numlength' designed for integral types( numlength_i() ). For float, use numlength_f() instead.");
-    int dig = 1;
-    while(num/=10)
-        dig++;
-    return dig;
+	int dig = 1;
+	while(num/=10)
+		dig++;
+	return dig;
 }
 
 ///Get number length of the floating point types
 template<typename T>
 inline int numlength_f(T num){
 	static_assert(std::is_floating_point<T>::value, "Cannot use non-float types in the 'numlength' designed for float types( numlength_f() ). For integral, use numlength_i() instead.");
-    return ((num == 0)?0:(int)log10(abs(num)))+1;
+	return ((num == 0)?0:(int)log10(abs(num)))+1;
 }
+
+template<typename T, std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
+inline bool fequals(const T fnum1, const T fnum2, const T fEps = std::numeric_limits<T>::epsilon()){
+	return (fnum1 - fnum2) < fEps &&
+			-(fnum1 - fnum2) < fEps;
+}
+
 
 #endif // !UTILS_HPP_INCLUDED

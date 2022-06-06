@@ -9,7 +9,7 @@
 #include "test_core.hpp"
 
 //prototypes
-bool testGreatThan();
+bool testGreaterThan();
 bool testLessThan();
 bool testDigit();
 bool testToString();
@@ -19,25 +19,26 @@ bool testAssignment();
 /// Err, tests whole bunch of stuff.
 /// For individual tests, search for functions named testX().
 void test(){
-    
-    printf("=>  Entered Tests...");
-    
-    bool __failed = !testDigit();
+	
+	printf("=>  Entered Tests...");
+	
+	bool __failed = !testDigit();
 	__failed = __failed || !testToString();
 	__failed = __failed || !testOstream();
 	__failed = __failed || !testAssignment();
 	__failed = __failed || !testLessThan();
-	__failed = __failed || !testGreatThan();
+	__failed = __failed || !testGreaterThan();
+	__failed = __failed || !testEquality();
 	
 	
 	
 	if(__failed){
-	    printf("Tests failed, aborting program...\n");
-	    exit(255);
+		printf("Tests failed, aborting program...\n");
+		exit(255);
 	}
 	
 	
-	printf("\nAll Tests passeed.\n---------------\n\n");
+	printf("\n----------------------\n- All Tests passeed.\n----------------------\n\n");
 }
 
 

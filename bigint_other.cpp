@@ -1,18 +1,16 @@
 #include "bigint.hpp"
 
-//////////////////
-//member functions
-//////////////////
-
-//-----------
-//other stuff
-//-----------
+/*
+	file for other stuff from Bigint that I can't categorise
+	
+	definitions of stuff that are not-inline(eg. too big for
+	the header file)
+*/
 
 //TODO:add the 2x compression method
 void Bigint::setDigit(const ucint val, const ullint pos, const bool force){
 	if(val <= 9){
-		dprintf("Value is acceptable: %d", (int)val);
-		
+		//dprintf("Value is acceptable: %d", (int)val);
 		if(pos >= m_iNumLength){
 			if(val == 0 && !force && m_iNumLength > 1){
 				dprintf("Cannot set a new digit to 0, only 1-9");
@@ -23,7 +21,7 @@ void Bigint::setDigit(const ucint val, const ullint pos, const bool force){
 			//implement compression part right here
 			m_vNumList.resize(pos+1);
 			m_iNumLength = pos+1;
-			dprintf("Resized number: length %llu; size of the vector is %llu;", m_iNumLength, (ullint)m_vNumList.size());
+			//dprintf("Resized number: length %llu; size of the vector is %llu;", m_iNumLength, (ullint)m_vNumList.size());
 			
 		}
 		//and right here too
@@ -54,6 +52,7 @@ void Bigint::clear(){
 	this->m_vNumList.push_back(0);
 	this->m_iNumLength = 1;
 	this->m_bNegative = false;
+	this->m_bIsZero = true;
 }
 
 
@@ -64,7 +63,7 @@ void Bigint::clear(){
 //friend functions
 //////////////////
 std::ostream& operator<<(std::ostream& out, const Bigint& bint){
-	dprintf("Outputting through ostream");
+	//dprintf("Outputting through ostream");
 	if(bint.isNegative()){
 		out<<'-';
 	}
