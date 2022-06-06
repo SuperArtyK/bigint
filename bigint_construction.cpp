@@ -240,3 +240,4 @@ void Bigint::copyFromFloat(const long double num){
 	}
 }
 #endif // !BIGINT_ENABLE_FLOATS
+ 
