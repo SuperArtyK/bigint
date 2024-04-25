@@ -1,3 +1,13 @@
+# BigInt
+
+This is a lightweight and more efficient implementation of BigInt type for and on C++.
+
+It is made with the help of my game engine ACEngine, to not reimplement the tools that it has already.
+
+In future there are plans to merging this project back with the ACEngine to provide arbitrary-width arithmetics in there.
+
+Below is the original docs from the ACEngine at the time of the project creation.
+
 # ACEngine
 
 This is my C++ engine to create games and stuff in console. Rework of my previous [console_engine](https://github.com/SuperArtyK/console_engine_win32 "console_engine") attempt
