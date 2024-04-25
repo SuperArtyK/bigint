@@ -1,0 +1,8 @@
+<map id="AEFrame::isValidFPS" name="AEFrame::isValidFPS">
+<area shape="rect" id="Node000001" title="Returns whether the passed delay as fps is valid." alt="" coords="348,31,497,57"/>
+<area shape="rect" id="Node000002" href="$df/dd7/class_a_e_frame.html#a95580be55882c4baf46fce5dac036cab" title="Sets the delay of the instance as the frames (loop cycles) per second to reach in execution (fps goal..." alt="" coords="176,5,300,32"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="332,34,300,30,301,25,333,29"/>
+<area shape="rect" id="Node000003" href="$da/d62/class_a_e_timer.html#aac80d840ac49ad2b9b6d598856ae0b33" title="Sets the timer&#39;s new delay as ticks&#45;per&#45;second." alt="" coords="5,31,128,57"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="333,47,128,47,128,41,333,41"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="161,33,129,38,128,32,160,27"/>
+</map>

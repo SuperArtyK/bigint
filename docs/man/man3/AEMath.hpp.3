@@ -1,0 +1,225 @@
+.TH "AEMisc/include/AEMath.hpp" 3 "Fri Mar 29 2024 17:41:07" "Version v0.0.8.5a" "ArtyK's Console Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+AEMisc/include/AEMath.hpp \- This file contains the engine's \fBmath and math-related functions\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'AEMathConst\&.hpp'\fP
+.br
+\fR#include 'AETypedefs\&.hpp'\fP
+.br
+\fR#include <limits>\fP
+.br
+\fR#include <cmath>\fP
+.br
+\fR#include <type_traits>\fP
+.br
+
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "namespace \fBace\fP"
+.br
+.RI "This namespace contains \fBeverything that belongs to the engine\fP\&. "
+.ti -1c
+.RI "namespace \fBace::math\fP"
+.br
+.RI "This namespace contains the engine's \fBmath and math-related functions\fP\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "template<typename T > constexpr T \fBace::math::toRad\fP (const T deg) noexcept"
+.br
+.RI "Convert given \fBdegrees to radians\fP "
+.ti -1c
+.RI "template<typename T > constexpr T \fBace::math::toDeg\fP (const T rad) noexcept"
+.br
+.RI "Convert given \fBradians to degrees\fP "
+.ti -1c
+.RI "template<typename T  = long double> constexpr bool \fBace::math::isInf\fP (const T num) noexcept"
+.br
+.RI "Checks \fBif the float is 'infinite'\fP (inf) "
+.ti -1c
+.RI "template<typename T  = long double> constexpr bool \fBace::math::isNan\fP (const T num) noexcept"
+.br
+.RI "Checks \fBif the float is 'NaN'\fP "
+.ti -1c
+.RI "template<typename T  = long double> constexpr bool \fBace::math::isFinite\fP (const T num) noexcept"
+.br
+.RI "Checks \fBif the float is finite\fP (not infinity or NaN) "
+.ti -1c
+.RI "template<typename T  = long double> T \fBace::math::sinDeg\fP (const T degrees) noexcept"
+.br
+.RI "Calculates the \fBsine of degrees\fP "
+.ti -1c
+.RI "template<typename T  = long double> T \fBace::math::cosDeg\fP (const T degrees) noexcept"
+.br
+.RI "Calculates the \fBcosine of degrees\fP "
+.ti -1c
+.RI "template<typename T  = long double> T \fBace::math::tanDeg\fP (const T degrees) noexcept"
+.br
+.RI "Calculates the \fBtangent of degrees\fP "
+.ti -1c
+.RI "template<typename T  = long double> T \fBace::math::cotDeg\fP (const T degrees) noexcept"
+.br
+.RI "Calculates the \fBcotangent of degrees\fP "
+.ti -1c
+.RI "template<typename T  = long double> T \fBace::math::cscDeg\fP (const T degrees) noexcept"
+.br
+.RI "Calculates the \fBcosecant of degrees\fP "
+.ti -1c
+.RI "template<typename T  = long double> T \fBace::math::secDeg\fP (const T degrees) noexcept"
+.br
+.RI "Calculates the \fBsecant of degrees\fP "
+.ti -1c
+.RI "template<typename T > constexpr T \fBace::math::absval\fP (const T num) noexcept"
+.br
+.RI "Calculates the \fBabsolute value\fP of a given number\&. "
+.ti -1c
+.RI "template<typename T  = long double> 
+.br
+requires (std::is_floating_point<T>::value == true)constexpr bool \fBace::math::fequals\fP (const T num, const T num2, const T _epsilon) noexcept"
+.br
+.RI "\fBCompares two floating\fP point values \fBfor equality\fP, within a given epsilon "
+.ti -1c
+.RI "template<typename T  = long double> 
+.br
+requires (std::is_floating_point<T>::value == true)constexpr bool \fBace::math::fequals\fP (const T num, const T num2) noexcept"
+.br
+.RI "\fBCompares two floating\fP point values \fBfor equality\fP, within a default (scaled) epsilon\&. "
+.ti -1c
+.RI "template<typename T , typename Y  = T> constexpr bool \fBace::math::equals\fP (const T &num, const Y &num2) noexcept"
+.br
+.RI "Checks \fBif given 2 numbers are equal\fP, a generic function for all types\&. "
+.ti -1c
+.RI "template<typename T  = long double> constexpr T \fBace::math::intPow\fP (const T num, \fBllint\fP power) noexcept"
+.br
+.RI "Calculate the \fBinteger exponent\fP of a given number\&. "
+.ti -1c
+.RI "template<typename T  = long double> constexpr T \fBace::math::sqrt\fP (const T num) noexcept"
+.br
+.RI "Newton's method \fBsqrt implementation, compatible with constexpr\fP evaluation\&. "
+.ti -1c
+.RI "template<typename T  = long double> constexpr T \fBace::math::cbrt\fP (const T num) noexcept"
+.br
+.RI "Newton's method \fBcbrt implementation, compatible with constexpr\fP evaluation\&. "
+.ti -1c
+.RI "template<typename T  = long double> constexpr T \fBace::math::root\fP (const T num, const \fBuint\fP rtNum) noexcept"
+.br
+.RI "Calculate the \fBn'th root\fP of a number\&. "
+.ti -1c
+.RI "template<typename T > constexpr T \fBace::math::max\fP (const T &a, const T &b) noexcept"
+.br
+.RI "Returns the \fBlargest value\fP between the given two values\&. "
+.ti -1c
+.RI "template<typename T > constexpr T \fBace::math::min\fP (const T &a, const T &b) noexcept"
+.br
+.RI "Gets the \fBsmallest value\fP between given two values\&. "
+.ti -1c
+.RI "template<typename T > 
+.br
+requires (std::is_integral<T>::value == true)constexpr \fBuint\fP \fBace::math::lengthOfInt\fP (T num) noexcept"
+.br
+.RI "Calculate the \fBlength of the given integer\fP number\&. "
+.ti -1c
+.RI "template<typename T > 
+.br
+requires (std::is_floating_point<T>::value == true)constexpr \fBuint\fP \fBace::math::lengthOfFloat\fP (const T num) noexcept"
+.br
+.RI "Calculate the \fBlength of the given float\fP number's non-fractional part\&. "
+.ti -1c
+.RI "template<typename T  = long double> constexpr T \fBace::math::lerp\fP (const T a, const T b, const T c) noexcept"
+.br
+.RI "Computes the \fBlinear inter/extrapolation\fP with the given interval boundaries a and b, and the interval percentage \fBc\fP\&. "
+.ti -1c
+.RI "template<typename T  = long double> constexpr T \fBace::math::hypot\fP (const T a, const T b) noexcept"
+.br
+.RI "Calculates the \fBhypotenuse length\fP from given values a and b\&. "
+.ti -1c
+.RI "template<typename T  = llint, typename Y  = long double> 
+.br
+requires (std::is_arithmetic<Y>::value == true && std::is_integral<T>::value == true)constexpr T \fBace::math::roundToInt\fP (const Y num) noexcept"
+.br
+.RI "\fBRounds the given number\fP of type Y \fBto integer\fP of type T\&. "
+.ti -1c
+.RI "template<typename T  = long double, typename Y  = T> 
+.br
+requires (std::is_arithmetic<Y>::value == true && std::is_arithmetic<T>::value == true)constexpr T \fBace::math::round\fP (const Y num) noexcept"
+.br
+.RI "\fBRounds the passed number\fP of type Y and converts it to the type T\&. "
+.ti -1c
+.RI "template<typename T  = llint, typename Y  = long double> 
+.br
+requires (std::is_arithmetic<Y>::value == true && std::is_integral<T>::value == true)constexpr T \fBace::math::floorToInt\fP (const Y num) noexcept"
+.br
+.RI "
+.br
+ \fBFloor's the given float\fP of type Y and converts \fBto integer\fP of type T\&. "
+.ti -1c
+.RI "template<typename T  = long double, typename Y  = T> 
+.br
+requires (std::is_arithmetic<Y>::value == true && std::is_arithmetic<T>::value == true)constexpr T \fBace::math::floor\fP (const Y num) noexcept"
+.br
+.RI "\fBFloor's the passed number\fP of type Y and converts it to the type T\&. "
+.ti -1c
+.RI "template<typename T  = llint, typename Y  = long double> 
+.br
+requires (std::is_arithmetic<Y>::value == true && std::is_integral<T>::value == true)constexpr T \fBace::math::ceilToInt\fP (const Y num) noexcept"
+.br
+.RI "\fBCeil's the given float\fP of type Y and converts \fBto integer\fP of type T\&. "
+.ti -1c
+.RI "template<typename T  = long double, typename Y  = T> 
+.br
+requires (std::is_arithmetic<Y>::value == true && std::is_arithmetic<T>::value == true)constexpr T \fBace::math::ceil\fP (const Y num) noexcept"
+.br
+.RI "\fBCeil's the passed number\fP of type Y and converts it to the type T\&. "
+.ti -1c
+.RI "template<typename T  = llint, typename Y  = long double> 
+.br
+requires (std::is_arithmetic<Y>::value == true && std::is_integral<T>::value == true)constexpr T \fBace::math::truncToInt\fP (const Y num) noexcept"
+.br
+.RI "\fBTruncates the given float\fP of type Y and converts \fBto integer\fP of type T\&. "
+.ti -1c
+.RI "template<typename T  = long double, typename Y  = T> 
+.br
+requires (std::is_arithmetic<Y>::value == true && std::is_arithmetic<T>::value == true)constexpr T \fBace::math::trunc\fP (const Y num) noexcept"
+.br
+.RI "\fBTruncates the passed number\fP of type Y and converts it to the type T\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This file contains the engine's \fBmath and math-related functions\fP\&. 
+
+These would be quite fast, I tried optimising them for the types that are needed\&.
+.PP
+Especially with the addition of if-consteval in c++23 (and std::is_constant_evaluated() in c++20) :)
+.PP
+Since it would be possible to use the constexpr implementations in compile time, and fast (and proper) runtime versions of them at\&.\&.\&.runtime\&.
+.PP
+\fBDate\fP
+.RS 4
+2023/09/22
+.RE
+.PP
+\fBAuthor\fP
+.RS 4
+Artemii Kozhemiak (SuperArtyK)
+.RE
+.PP
+\fBCopyright\fP
+.RS 4
+MIT License
+.RE
+.PP
+\fIShould not cause everything to break :)\fP 
+.PP
+Definition in file \fBAEMath\&.hpp\fP\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ArtyK's Console Engine from the source code\&.

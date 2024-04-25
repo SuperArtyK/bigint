@@ -1,0 +1,9 @@
+<map id="AETimer::stopThread" name="AETimer::stopThread">
+<area shape="rect" id="Node000001" title="Stops the timer thread and stops tick counting." alt="" coords="191,56,334,83"/>
+<area shape="rect" id="Node000002" href="$da/d62/class_a_e_timer.html#a57e2aab044b69dc3ca834709c46876b1" title="Class destructor" alt="" coords="5,5,143,32"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="195,54,126,35,127,30,196,49"/>
+<area shape="rect" id="Node000003" href="$da/d62/class_a_e_timer.html#a7bdf64ddc743a1223164764b9cb15091" title="Copy assignment operator – copies the data and, if the original timer was started,..." alt="" coords="7,56,141,83"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="175,72,142,72,142,67,175,67"/>
+<area shape="rect" id="Node000004" href="$da/d62/class_a_e_timer.html#aac80d840ac49ad2b9b6d598856ae0b33" title="Sets the timer&#39;s new delay as ticks&#45;per&#45;second." alt="" coords="13,107,135,133"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="196,90,127,109,126,103,195,85"/>
+</map>

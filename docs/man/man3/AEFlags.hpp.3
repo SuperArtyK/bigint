@@ -1,0 +1,499 @@
+.TH "AEMisc/include/AEFlags.hpp" 3 "Fri Mar 29 2024 17:41:06" "Version v0.0.8.5a" "ArtyK's Console Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+AEMisc/include/AEFlags.hpp \- This file contains the \fBflags to manipulate engine's funcitonality\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBENGINE_DEBUG\fP   1"
+.br
+.RI "Macro to enable the \fBdebug-marked features\fP of the engine\&. "
+.ti -1c
+.RI "#define \fBENGINE_FPS\fP   60\&.0"
+.br
+.RI "Macro for the engine's \fBdefault delay\fP in frames/ticks per second (used in \fBAEFrame\fP and \fBAETimer\fP)\&. "
+.ti -1c
+.RI "#define \fBENGINE_ENABLE_GLOBAL_MODULES\fP   1"
+.br
+.RI "Macro to enable the engine's \fBglobal modules\fP (like \fBAETimer\fP, \fBAELogger\fP, etc)\&. "
+.ti -1c
+.RI "#define \fBENGINE_ENABLE_ASSERT\fP   1"
+.br
+.RI "Macro to enable the engine's \fBassert code\fP\&. "
+.ti -1c
+.RI "#define \fBENGINE_ENABLE_MATH_LOOKUP\fP   1"
+.br
+.RI "Macro to enable the engine's \fBtrigonometry lookup tables and code\fP\&. "
+.ti -1c
+.RI "#define \fBAEFW_AUTOFLUSH_ENABLE\fP   1"
+.br
+.RI "Macro to enable the \fBAEFileWriter\fP's \fBauto-flushing mechanism\fP\&. "
+.ti -1c
+.RI "#define \fBAEFW_DEFAULT_AUTOFLUSH\fP   true"
+.br
+.RI "Macro for the \fBAEFileWriter\fP's \fBdefault auto-flushing action\fP (default argument in file-writing functions)\&. "
+.ti -1c
+.RI "#define \fBAEFW_DEFAULT_AUTOFLUSH_INTERVAL\fP   (\fBullint\fP)\-1"
+.br
+.RI "Macro for the \fBAEFileWriter\fP's \fBdefault value to trigger auto-flushing\fP\&. "
+.ti -1c
+.RI "#define \fBAELOG_DEFAULT_QUEUE_SIZE\fP   (\fBullint\fP)2048"
+.br
+.RI "Macro for the \fBAELogger\fP's \fBdefault queue size\fP "
+.ti -1c
+.RI "#define \fBAELOG_DEFAULT_MODULE_NAME\fP   'ACEngine'"
+.br
+.RI "Macro for the \fBAELogger\fP's \fBdefault module/log invoker name\fP "
+.ti -1c
+.RI "#define \fBAELOG_DEFAULT_ALLOC_VECTOR_RESERVE\fP   32"
+.br
+.RI "Macro for the \fBAELogger\fP's \fBdefault reserve amount of the allocation vector\fP (which stores all queue pointers)\&. "
+.ti -1c
+.RI "#define \fBAELOG_DEFAULT_LOG_PATH\fP   '\&./logs/'"
+.br
+.RI "Macro for the \fBAELogger\fP's \fBdefault log file path\fP "
+.ti -1c
+.RI "#define \fBAELE_MESSAGE_SIZE\fP   511"
+.br
+.RI "Macro for the size of the \fBAELogEntry\fP's \fBmessage in characters\fP (excluding null termination) "
+.ti -1c
+.RI "#define \fBAELE_MODULENAME_SIZE\fP   31"
+.br
+.RI "Macro for the size of the \fBAELogEntry\fP's \fBmodule name in characters\fP (excluding null termination) "
+.ti -1c
+.RI "#define \fBAEVEC_WRAP_DIMENSIONS\fP   1"
+.br
+.RI "A macro for the \fBAEVector::operator[]\fP to \fBwrap dimension index around\fP if the index is bigger than the dimension amount\&. "
+.ti -1c
+.RI "#define \fBAEF_RESET_TIME_WHEN_BEHIND_MS\fP   100"
+.br
+.RI "Macro for the \fBAEFrame\fP to \fBreset the timepoint when behind X milliseconds\fP\&. "
+.ti -1c
+.RI "#define \fBAEF_CLOCK\fP   \fBHighResClock\fP"
+.br
+.RI "Macro for the clock for the \fBAEFrame\fP to use for counting internally\&. "
+.ti -1c
+.RI "#define \fBAETM_TICK_ROUNDING_METHOD\fP   1"
+.br
+.RI "Macro for the rounding method for the tick operations in the \fBAETimer\fP\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This file contains the \fBflags to manipulate engine's funcitonality\fP\&. 
+
+This is the only file, where you, the programmer, are welcome to modify stuff to your needs, unless you know your way around the engine and stuff\&.
+.PP
+But if you do, \fByou're welcome to help me in its development too ;)\fP
+.PP
+\fBDate\fP
+.RS 4
+2023/09/21
+.RE
+.PP
+\fBAuthor\fP
+.RS 4
+Artemii Kozhemiak (SuperArtyK)
+.RE
+.PP
+\fBCopyright\fP
+.RS 4
+MIT License
+.RE
+.PP
+\fIShould not cause everything to break :)\fP 
+.PP
+Definition in file \fBAEFlags\&.hpp\fP\&.
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define ENGINE_DEBUG   1"
+
+.PP
+Macro to enable the \fBdebug-marked features\fP of the engine\&. It's an engine thing, \fI\fBseparate\fP\fP from debug/release compiler builds\&. 
+.PP
+\fBNote\fP
+.RS 4
+Set to 1 to enable, and 0 to disable this feature 
+.RE
+.PP
+
+.PP
+Definition at line \fB33\fP of file \fBAEFlags\&.hpp\fP\&.
+.SS "#define ENGINE_FPS   60\&.0"
+
+.PP
+Macro for the engine's \fBdefault delay\fP in frames/ticks per second (used in \fBAEFrame\fP and \fBAETimer\fP)\&. 
+.PP
+\fBNote\fP
+.RS 4
+Set to any positive value to enable, and any negative value or 0 to disable this feature 
+.RE
+.PP
+\fBAttention\fP
+.RS 4
+Disabling this disables the sleep functionality in instances of \fBAEFrame\fP and \fBAETimer\fP that use the default delay\&. 
+.RE
+.PP
+\fBWarning\fP
+.RS 4
+Undefining this macro will produce a compilation error! 
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBAEFrame\fP 
+.PP
+\fBAETimer\fP 
+.RE
+.PP
+
+.PP
+Definition at line \fB41\fP of file \fBAEFlags\&.hpp\fP\&.
+.SS "#define ENGINE_ENABLE_GLOBAL_MODULES   1"
+
+.PP
+Macro to enable the engine's \fBglobal modules\fP (like \fBAETimer\fP, \fBAELogger\fP, etc)\&. 
+.PP
+\fBNote\fP
+.RS 4
+Set to 1 to enable, and 0 to disable this feature 
+.RE
+.PP
+\fBRemarks\fP
+.RS 4
+Disabling this code \fImay\fP break your code (from compiling), as it removes the global module declarations completely 
+.RE
+.PP
+
+.PP
+Definition at line \fB46\fP of file \fBAEFlags\&.hpp\fP\&.
+.SS "#define ENGINE_ENABLE_ASSERT   1"
+
+.PP
+Macro to enable the engine's \fBassert code\fP\&. 
+.PP
+\fBNote\fP
+.RS 4
+This only works if the debug features are enabled (\fBENGINE_DEBUG\fP)\&. 
+.PP
+Set to 1 to enable, and 0 to disable this feature 
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBaceAssert()\fP 
+.RE
+.PP
+
+.PP
+Definition at line \fB52\fP of file \fBAEFlags\&.hpp\fP\&.
+.SS "#define ENGINE_ENABLE_MATH_LOOKUP   1"
+
+.PP
+Macro to enable the engine's \fBtrigonometry lookup tables and code\fP\&. 
+.PP
+\fBNote\fP
+.RS 4
+Set to 1 to enable, and 0 to disable this feature 
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+AETrigLookup\&.hpp 
+.RE
+.PP
+
+.PP
+Definition at line \fB57\fP of file \fBAEFlags\&.hpp\fP\&.
+.SS "#define AEFW_AUTOFLUSH_ENABLE   1"
+
+.PP
+Macro to enable the \fBAEFileWriter\fP's \fBauto-flushing mechanism\fP\&. 
+.PP
+\fBNote\fP
+.RS 4
+Set to 1 to enable, and 0 to disable this feature 
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBAEFileWriter::autoFlush()\fP 
+.RE
+.PP
+
+.PP
+Definition at line \fB64\fP of file \fBAEFlags\&.hpp\fP\&.
+.SS "#define AEFW_DEFAULT_AUTOFLUSH   true"
+
+.PP
+Macro for the \fBAEFileWriter\fP's \fBdefault auto-flushing action\fP (default argument in file-writing functions)\&. 
+.PP
+\fBNote\fP
+.RS 4
+This only works/matters if the auto-flushing feature is enabled (\fBAEFW_AUTOFLUSH_ENABLE\fP) 
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBAEFileWriter::autoFlush()\fP 
+.RE
+.PP
+
+.PP
+Definition at line \fB69\fP of file \fBAEFlags\&.hpp\fP\&.
+.SS "#define AEFW_DEFAULT_AUTOFLUSH_INTERVAL   (\fBullint\fP)\-1"
+
+.PP
+Macro for the \fBAEFileWriter\fP's \fBdefault value to trigger auto-flushing\fP\&. 
+.PP
+\fBRemarks\fP
+.RS 4
+Default value (ullint)-1 means \fBnever\fP\&. Or almost never, once about every 2^64 write operations\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+This only works/matters if the auto-flushing feature is enabled (\fBAEFW_AUTOFLUSH_ENABLE\fP) 
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBAEFileWriter::autoFlush()\fP 
+.RE
+.PP
+
+.PP
+Definition at line \fB75\fP of file \fBAEFlags\&.hpp\fP\&.
+.SS "#define AELOG_DEFAULT_QUEUE_SIZE   (\fBullint\fP)2048"
+
+.PP
+Macro for the \fBAELogger\fP's \fBdefault queue size\fP 
+.PP
+\fBWarning\fP
+.RS 4
+Setting this to a very large or a negative number can crash the engine on \fBAELogger\fP's creation\&. 
+.PP
+All because the queue too is large to be allocated\&. 
+.RE
+.PP
+
+.PP
+Definition at line \fB82\fP of file \fBAEFlags\&.hpp\fP\&.
+.SS "#define AELOG_DEFAULT_MODULE_NAME   'ACEngine'"
+
+.PP
+Macro for the \fBAELogger\fP's \fBdefault module/log invoker name\fP 
+.PP
+\fBWarning\fP
+.RS 4
+This must follow the rules for the module name: Be alphanumeric+underscore and be no more than \fBAELE_MODULENAME_SIZE\fP\&. 
+.PP
+Otherwise any logs invoked with a default module name will fail\&. 
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBAELogger::writeToLog()\fP 
+.PP
+\fBAELogger::writeToLogDebug()\fP 
+.PP
+\fBAELogger::writeToLogDirectly()\fP 
+.RE
+.PP
+
+.PP
+Definition at line \fB90\fP of file \fBAEFlags\&.hpp\fP\&.
+.SS "#define AELOG_DEFAULT_ALLOC_VECTOR_RESERVE   32"
+
+.PP
+Macro for the \fBAELogger\fP's \fBdefault reserve amount of the allocation vector\fP (which stores all queue pointers)\&. 
+.PP
+\fBAttention\fP
+.RS 4
+I personally \fIwouldn't\fP advise to play with it (but you can)\&. 
+.RE
+.PP
+\fBRemarks\fP
+.RS 4
+32 allocations, 1\&.5 queue size factor -- 884 million entries\&. If each node is 568 bytes -- it all will eat up 468 gb of ram\&. 
+.PP
+I think that's enough :) 
+.RE
+.PP
+
+.PP
+Definition at line \fB96\fP of file \fBAEFlags\&.hpp\fP\&.
+.SS "#define AELOG_DEFAULT_LOG_PATH   '\&./logs/'"
+
+.PP
+Macro for the \fBAELogger\fP's \fBdefault log file path\fP 
+.PP
+\fBSee also\fP
+.RS 4
+\fBAELogger::openLog()\fP 
+.RE
+.PP
+
+.PP
+Definition at line \fB100\fP of file \fBAEFlags\&.hpp\fP\&.
+.SS "#define AELE_MESSAGE_SIZE   511"
+
+.PP
+Macro for the size of the \fBAELogEntry\fP's \fBmessage in characters\fP (excluding null termination) 
+.PP
+\fBNote\fP
+.RS 4
+Changing this -- changes the size of the \fBAELogEntry\fP structure 
+.RE
+.PP
+\fBAttention\fP
+.RS 4
+Mind the size here:
+.IP "\(bu" 2
+Too little will make the messages cut off
+.IP "\(bu" 2
+Too large will increase the memory usage by a lot 
+.PP
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBAELogEntry::m_sLogMessage\fP[] 
+.RE
+.PP
+
+.PP
+Definition at line \fB110\fP of file \fBAEFlags\&.hpp\fP\&.
+.SS "#define AELE_MODULENAME_SIZE   31"
+
+.PP
+Macro for the size of the \fBAELogEntry\fP's \fBmodule name in characters\fP (excluding null termination) 
+.PP
+\fBNote\fP
+.RS 4
+Changing this -- changes the size of the \fBAELogEntry\fP structure 
+.RE
+.PP
+\fBAttention\fP
+.RS 4
+Mind the size here:
+.IP "\(bu" 2
+Too little will make the messages cut off
+.IP "\(bu" 2
+Too large will increase the memory usage by a lot 
+.PP
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBAELogEntry::m_sModuleName\fP[] 
+.RE
+.PP
+
+.PP
+Definition at line \fB118\fP of file \fBAEFlags\&.hpp\fP\&.
+.SS "#define AEVEC_WRAP_DIMENSIONS   1"
+
+.PP
+A macro for the \fBAEVector::operator[]\fP to \fBwrap dimension index around\fP if the index is bigger than the dimension amount\&. Example: 2d vector a, possible values to the [] is 0 and 1\&. If you input 2, this will be equivalent of [0]; 3 -> [1], and so on\&.
+.PP
+\fBNote\fP
+.RS 4
+Set to 1 to enable, and 0 to disable this feature 
+.RE
+.PP
+\fBAttention\fP
+.RS 4
+If this is disabled, and you try exceeding the dimension amount -- \fBsigsegv\fP will smack you in the face\&. 
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBAEVector::operator[]()\fP 
+.RE
+.PP
+
+.PP
+Definition at line \fB128\fP of file \fBAEFlags\&.hpp\fP\&.
+.SS "#define AEF_RESET_TIME_WHEN_BEHIND_MS   100"
+
+.PP
+Macro for the \fBAEFrame\fP to \fBreset the timepoint when behind X milliseconds\fP\&. This makes the \fBAEFrame\fP to perform a lateness check when calling the \fBAEFrame::sleep()\fP function\&. 
+.br
+ It checks if the difference between the current time and the timepoint stored in the \fBAEFrame\fP instance is larger than the time in milliseconds indicated by this macro
+.PP
+\fBAttention\fP
+.RS 4
+Setting this to a low value can decrease the program performance as well as the accuracy of the \fBAEFrame\fP 
+.RE
+.PP
+\fBNote\fP
+.RS 4
+Set to positive integer value to enable, and 0 to disable this feature 
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBAEFrame::sleep()\fP 
+.RE
+.PP
+
+.PP
+Definition at line \fB141\fP of file \fBAEFlags\&.hpp\fP\&.
+.SS "#define AEF_CLOCK   \fBHighResClock\fP"
+
+.PP
+Macro for the clock for the \fBAEFrame\fP to use for counting internally\&. 
+.PP
+\fBNote\fP
+.RS 4
+This clock needs to be a chrono-compatible clock 
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBSysClock\fP 
+.PP
+\fBHighResClock\fP 
+.PP
+\fBSteadyClock\fP 
+.RE
+.PP
+
+.PP
+Definition at line \fB148\fP of file \fBAEFlags\&.hpp\fP\&.
+.SS "#define AETM_TICK_ROUNDING_METHOD   1"
+
+.PP
+Macro for the rounding method for the tick operations in the \fBAETimer\fP\&. Since when we work with the tick amount in the \fBAETimer\fP, we may (or will) encounter floating point numbers\&. So we need to find a way to deal with them\&. And that's what this is for -- it defines the rounding method for such cases\&.
+.PP
+List of acceptable values:
+.IP "\(bu" 2
+\fB0\fP -- round down the resulting floating point
+.IP "\(bu" 2
+\fB1\fP -- round the resulting point using standard math: from 0 to 0\&.499\&.\&. round down; from 0\&.5 and up -- round up;
+.IP "\(bu" 2
+\fB2\fP -- round up the resulting floating point
+.PP
+.PP
+\fBNote\fP
+.RS 4
+Adjust for your need 
+.RE
+.PP
+\fBAttention\fP
+.RS 4
+Passing the invalid value will give you a preprocessing-time error 
+.RE
+.PP
+
+.PP
+Definition at line \fB166\fP of file \fBAEFlags\&.hpp\fP\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ArtyK's Console Engine from the source code\&.

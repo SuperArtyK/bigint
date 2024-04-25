@@ -1,0 +1,59 @@
+.TH "ace" 3 "Fri Mar 29 2024 17:41:10" "Version v0.0.8.5a" "ArtyK's Console Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ace \- This namespace contains \fBeverything that belongs to the engine\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "namespace \fBmath\fP"
+.br
+.RI "This namespace contains the engine's \fBmath and math-related functions\fP\&. "
+.ti -1c
+.RI "namespace \fButils\fP"
+.br
+.RI "This namespace contains the engine's \fButility functions and code\fP\&. "
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBAETimer\fP \fBglobalTimer\fP (\fBENGINE_FPS\fP)"
+.br
+.RI "The engine's \fBglobal timer\fP, using the default delay (explicitly)\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This namespace contains \fBeverything that belongs to the engine\fP\&. 
+
+Everything but the typedefs and macros\&. 
+.br
+ That includes modules, custom types (structs), version and current status values, handles to windows, etc\&.
+.PP
+Think of it as ACEngine's version of std namespace 
+.SH "Variable Documentation"
+.PP 
+.SS "\fBAETimer\fP ace::globalTimer(\fBENGINE_FPS\fP) (\fBENGINE_FPS\fP)\fR [inline]\fP"
+
+.PP
+The engine's \fBglobal timer\fP, using the default delay (explicitly)\&. 
+.PP
+\fBNote\fP
+.RS 4
+It starts counting as soon as the program starts\&. 
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBENGINE_FPS\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ArtyK's Console Engine from the source code\&.

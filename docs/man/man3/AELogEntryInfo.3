@@ -1,0 +1,214 @@
+.TH "AELogEntryInfo" 3 "Fri Mar 29 2024 17:41:07" "Version v0.0.8.5a" "ArtyK's Console Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+AELogEntryInfo \- The struct that holds the information about the log entry, used by \fBAELogParser\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <AELogEntryInfo\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "constexpr bool \fBisInvalid\fP () const noexcept"
+.br
+.RI "Checks if the current instance is invalid\&. "
+.ti -1c
+.RI "constexpr bool \fBisBroken\fP () const noexcept"
+.br
+.RI "Checks if the current instance is broken (partially invalid) "
+.ti -1c
+.RI "constexpr bool \fBisInvalidCursor\fP () const noexcept"
+.br
+.RI "Checks if the cursor index of the current instance is invalid\&. "
+.ti -1c
+.RI "constexpr bool \fBisInvalidMName\fP () const noexcept"
+.br
+.RI "Checks if the cursor index of the current instance is invalid\&. "
+.ti -1c
+.RI "constexpr bool \fBisInvalidType\fP () const noexcept"
+.br
+.RI "Checks if the cursor index of the current instance is invalid\&. "
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static constexpr \fBAELogEntryInfo\fP \fBinvalidEntry\fP () noexcept"
+.br
+.RI "Returns the invalid instance of the \fBAELogEntryInfo\fP\&. "
+.in -1c
+.SS "Public Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBllint\fP \fBcursorIndex\fP = 0"
+.br
+.RI "The cursor number of the log entry in the opened log file\&. "
+.ti -1c
+.RI "short \fBmnameIndex\fP = 0"
+.br
+.RI "The index of the module name of the log entry The module names are enumerated when initially parsing the log file\&. "
+.ti -1c
+.RI "\fBcint\fP \fBlogType\fP = 0"
+.br
+.RI "The type of the log entry\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+The struct that holds the information about the log entry, used by \fBAELogParser\fP\&. 
+
+
+.PP
+\fBSee also\fP
+.RS 4
+\fBAELogEntry\fP 
+.RE
+.PP
+
+.PP
+Definition at line \fB28\fP of file \fBAELogEntryInfo\&.hpp\fP\&.
+.SH "Member Function Documentation"
+.PP 
+.SS "static constexpr \fBAELogEntryInfo\fP AELogEntryInfo::invalidEntry ()\fR [inline]\fP, \fR [static]\fP, \fR [constexpr]\fP, \fR [noexcept]\fP"
+
+.PP
+Returns the invalid instance of the \fBAELogEntryInfo\fP\&. 
+.PP
+\fBReturns\fP
+.RS 4
+Invalid instance of the \fBAELogEntryInfo\fP
+.RE
+.PP
+
+.PP
+Definition at line \fB43\fP of file \fBAELogEntryInfo\&.hpp\fP\&.
+.PP
+References \fBAELEI_INVALID_CURSOR\fP, \fBAELEI_INVALID_TYPE\fP, and \fBAELEI_INVLAID_MNAME\fP\&.
+.SS "constexpr bool AELogEntryInfo::isInvalid () const\fR [inline]\fP, \fR [constexpr]\fP, \fR [noexcept]\fP"
+
+.PP
+Checks if the current instance is invalid\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBAELogEntryInfo::isInvalidCursor()\fP 
+.PP
+\fBAELogEntryInfo::isInvalidMName()\fP 
+.PP
+\fBAELogEntryInfo::isInvalidType()\fP
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if the instance is invalid, false otherwise
+.RE
+.PP
+
+.PP
+Definition at line \fB52\fP of file \fBAELogEntryInfo\&.hpp\fP\&.
+.PP
+References \fBisInvalidCursor()\fP, \fBisInvalidMName()\fP, and \fBisInvalidType()\fP\&.
+.SS "constexpr bool AELogEntryInfo::isBroken () const\fR [inline]\fP, \fR [constexpr]\fP, \fR [noexcept]\fP"
+
+.PP
+Checks if the current instance is broken (partially invalid) 
+.PP
+\fBSee also\fP
+.RS 4
+\fBAELogEntryInfo::isInvalidCursor()\fP 
+.PP
+\fBAELogEntryInfo::isInvalidMName()\fP 
+.PP
+\fBAELogEntryInfo::isInvalidType()\fP
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+True if the instance is broken, false otherwise
+.RE
+.PP
+
+.PP
+Definition at line \fB63\fP of file \fBAELogEntryInfo\&.hpp\fP\&.
+.PP
+References \fBisInvalidCursor()\fP, \fBisInvalidMName()\fP, and \fBisInvalidType()\fP\&.
+.SS "constexpr bool AELogEntryInfo::isInvalidCursor () const\fR [inline]\fP, \fR [constexpr]\fP, \fR [noexcept]\fP"
+
+.PP
+Checks if the cursor index of the current instance is invalid\&. 
+.PP
+\fBReturns\fP
+.RS 4
+True if it's invalid, false otherwise
+.RE
+.PP
+
+.PP
+Definition at line \fB71\fP of file \fBAELogEntryInfo\&.hpp\fP\&.
+.PP
+References \fBAELEI_INVALID_CURSOR\fP\&.
+.SS "constexpr bool AELogEntryInfo::isInvalidMName () const\fR [inline]\fP, \fR [constexpr]\fP, \fR [noexcept]\fP"
+
+.PP
+Checks if the cursor index of the current instance is invalid\&. 
+.PP
+\fBReturns\fP
+.RS 4
+True if it's invalid, false otherwise
+.RE
+.PP
+
+.PP
+Definition at line \fB79\fP of file \fBAELogEntryInfo\&.hpp\fP\&.
+.PP
+References \fBAELEI_INVLAID_MNAME\fP\&.
+.SS "constexpr bool AELogEntryInfo::isInvalidType () const\fR [inline]\fP, \fR [constexpr]\fP, \fR [noexcept]\fP"
+
+.PP
+Checks if the cursor index of the current instance is invalid\&. 
+.PP
+\fBReturns\fP
+.RS 4
+True if it's invalid, false otherwise
+.RE
+.PP
+
+.PP
+Definition at line \fB87\fP of file \fBAELogEntryInfo\&.hpp\fP\&.
+.PP
+References \fBAELEI_INVALID_TYPE\fP\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBllint\fP AELogEntryInfo::cursorIndex = 0"
+
+.PP
+The cursor number of the log entry in the opened log file\&. 
+.PP
+Definition at line \fB31\fP of file \fBAELogEntryInfo\&.hpp\fP\&.
+.SS "short AELogEntryInfo::mnameIndex = 0"
+
+.PP
+The index of the module name of the log entry The module names are enumerated when initially parsing the log file\&. 
+.PP
+\fBSee also\fP
+.RS 4
+\fBAELogParser::openLog()\fP 
+.RE
+.PP
+
+.PP
+Definition at line \fB35\fP of file \fBAELogEntryInfo\&.hpp\fP\&.
+.SS "\fBcint\fP AELogEntryInfo::logType = 0"
+
+.PP
+The type of the log entry\&. 
+.PP
+Definition at line \fB37\fP of file \fBAELogEntryInfo\&.hpp\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ArtyK's Console Engine from the source code\&.

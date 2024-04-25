@@ -1,0 +1,20 @@
+<map id="AETimer::setTPS" name="AETimer::setTPS">
+<area shape="rect" id="Node000001" title="Sets the timer&#39;s new delay as ticks&#45;per&#45;second." alt="" coords="5,132,128,159"/>
+<area shape="rect" id="Node000002" href="$da/d62/class_a_e_timer.html#a4bc917c0a7635c0b1744ad31b6cd8cc6" title="Returns the ticks&#45;per&#45;second of the AETimer&#39;s instance (aka AEFrame&#39;s fps goal)." alt="" coords="186,5,309,32"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="77,130,117,87,144,63,174,42,184,36,186,41,177,46,148,67,121,91,81,133"/>
+<area shape="rect" id="Node000004" href="$df/dd7/class_a_e_frame.html#a3a1eb2a539c632822604d6857dbdc0ce" title="Returns whether the instance has a delay or not (invalid fps/delay was set)." alt="" coords="178,56,317,83"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="99,129,198,87,201,92,102,134"/>
+<area shape="rect" id="Node000005" href="$df/dd7/class_a_e_frame.html#aff72c01c3729961620ba9393326f321d" title="Returns whether the passed delay as fps is valid." alt="" coords="367,132,516,159"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="128,143,351,143,351,148,128,148"/>
+<area shape="rect" id="Node000006" href="$da/d62/class_a_e_timer.html#a8ae59d1447bcae7a65ef8099f7e14ac6" title="Sets the timer tick back to 0." alt="" coords="181,208,314,235"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="97,157,177,194,192,200,190,205,175,198,94,162"/>
+<area shape="rect" id="Node000008" href="$df/dd7/class_a_e_frame.html#a95580be55882c4baf46fce5dac036cab" title="Sets the delay of the instance as the frames (loop cycles) per second to reach in execution (fps goal..." alt="" coords="185,157,310,184"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="129,151,170,157,169,162,128,157"/>
+<area shape="rect" id="Node000009" href="$da/d62/class_a_e_timer.html#a29f3aaf12a9832c55dff8875d94c4548" title="Stops the timer thread and stops tick counting." alt="" coords="176,259,319,285"/>
+<area shape="poly" id="edge9_Node000001_Node000009" title=" " alt="" coords="81,157,121,200,148,223,177,244,186,250,184,254,174,249,144,228,117,204,77,161"/>
+<area shape="rect" id="Node000003" href="$df/dd7/class_a_e_frame.html#a73473aaad9b7db977c22216213e4c066" title="Returns the fps goal of the instance." alt="" coords="378,5,506,32"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="309,16,362,16,362,21,309,21"/>
+<area shape="rect" id="Node000007" href="$da/d62/class_a_e_timer.html#af5b764f92d2e3fd7a6c9a1b0f1065964" title="Sets the timer&#39;s new tick value to the passed value." alt="" coords="381,208,502,235"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="314,219,365,219,365,224,314,224"/>
+<area shape="poly" id="edge8_Node000008_Node000005" title=" " alt="" coords="309,160,351,154,352,160,310,165"/>
+</map>

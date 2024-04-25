@@ -1,0 +1,24 @@
+<map id="AELogger::writeToLog" name="AELogger::writeToLog">
+<area shape="rect" id="Node000001" title="Request a log entry to be written to the opened log file, using data from a log entry type." alt="" coords="5,183,154,209"/>
+<area shape="rect" id="Node000002" href="$d8/dfc/class_a_e_logger.html#ac533941173224cb21fe09326726ce754" title="Request a log entry to be written to the opened log file." alt="" coords="202,183,350,209"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="154,193,186,193,186,199,154,199"/>
+<area shape="rect" id="Node000003" href="$d0/d8a/class_____a_e_module_base.html#a625c82f27195de3f9ab5af4fc7437e2f" title="Get the name of the module." alt="" coords="398,5,706,32"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="281,181,297,151,323,113,356,74,397,42,407,36,410,41,399,46,360,78,327,116,302,154,286,184"/>
+<area shape="rect" id="Node000004" href="$de/dde/namespaceace_1_1utils.html#ac3eadc5f289b54059322023f3c5eed96" title="Checks if the passed string is alpha&#45;numeric with underscores (contains only numbers,..." alt="" coords="479,56,626,83"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="287,180,332,136,363,112,397,92,429,81,463,73,464,78,431,86,399,97,366,116,335,140,291,184"/>
+<area shape="rect" id="Node000005" href="$d8/dfc/class_a_e_logger.html#a4d512bf9f4d0a6a1b6a332b9c99e22ac" title="Checks if a log file isn&#39;t open by this logger." alt="" coords="484,107,620,133"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="304,180,347,161,397,143,468,127,469,133,399,148,349,166,306,185"/>
+<area shape="rect" id="Node000008" href="$de/dde/namespaceace_1_1utils.html#a878c53ede8589dbc6a50734c9c4ad4d7" title="Checks if the value is within some range." alt="" coords="483,157,622,184"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="350,187,467,176,467,181,351,192"/>
+<area shape="rect" id="Node000009" href="$da/dea/struct_a_e_log_entry.html#a42447b345f72f22ec655556af2db7c28" title="Allocates the queue of the given size on the heap and returns the pointer to it&#39;s first node." alt="" coords="468,208,637,235"/>
+<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="351,200,452,210,452,215,350,205"/>
+<area shape="rect" id="Node000010" href="$d8/dfc/class_a_e_logger.html#af4bff840ffdcfcb5ecb1251fddbf9690" title="Checks for the given index number and returns the pointer in the queue of log entries." alt="" coords="471,259,633,285"/>
+<area shape="poly" id="edge9_Node000002_Node000010" title=" " alt="" coords="306,207,349,226,399,244,457,257,455,262,397,249,347,231,304,212"/>
+<area shape="rect" id="Node000011" href="$d8/dfc/class_a_e_logger.html#a50dfd96a74d13471faebd4de499db5bf" title="Request a debug log entry to be written to the opened log file." alt="" coords="460,309,645,336"/>
+<area shape="poly" id="edge10_Node000002_Node000011" title=" " alt="" coords="286,208,304,231,330,259,363,285,399,307,445,322,444,327,397,312,360,290,326,262,300,235,282,212"/>
+<area shape="rect" id="Node000006" href="$db/d15/class_a_e_file_writer.html#a0743145db01b527ae9612f359e5c0090" title="Checks if a file isn&#39;t open by this file&#45;writer." alt="" coords="754,107,908,133"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="621,117,739,117,739,123,621,123"/>
+<area shape="rect" id="Node000007" href="$db/d15/class_a_e_file_writer.html#a47e3c08c276394bce7b612331cf4762d" title="Checks if a file is open by this file&#45;writer." alt="" coords="956,107,1100,133"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="908,117,940,117,940,123,908,123"/>
+<area shape="poly" id="edge11_Node000011_Node000002" title=" " alt="" coords="486,311,442,303,397,288,347,257,306,222,310,218,350,252,399,283,443,298,487,306"/>
+</map>

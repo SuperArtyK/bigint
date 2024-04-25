@@ -1,0 +1,110 @@
+.TH "AETimer/include/AETimer.hpp" 3 "Fri Mar 29 2024 17:41:07" "Version v0.0.8.5a" "ArtyK's Console Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+AETimer/include/AETimer.hpp \- This file contains the engine's \fBtick-based timer\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'include/AEFrame\&.hpp'\fP
+.br
+\fR#include 'include/AEMath\&.hpp'\fP
+.br
+\fR#include <atomic>\fP
+.br
+\fR#include <mutex>\fP
+.br
+\fR#include <thread>\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBAETimer\fP"
+.br
+.RI "This module is the engine's \fBtick timer\fP\&. "
+.in -1c
+.SS "Namespaces"
+
+.in +1c
+.ti -1c
+.RI "namespace \fBace\fP"
+.br
+.RI "This namespace contains \fBeverything that belongs to the engine\fP\&. "
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fB_AETM_TICK_ROUND\fP(tick)   \fBace::math::truncToInt\fP<\fBullint\fP>(tick);"
+.br
+.RI "Macro that \fBAETimer\fP uses for the tick rounding functionality\&. "
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBAETimer\fP \fBace::globalTimer\fP (\fBENGINE_FPS\fP)"
+.br
+.RI "The engine's \fBglobal timer\fP, using the default delay (explicitly)\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This file contains the engine's \fBtick-based timer\fP\&. 
+
+This timer operates using \fBAEFrame\fP, and ticks with the delay you can set\&.
+.PP
+It allows to time or predict certain events\&.
+.PP
+Or as a weird alternative to sleep functionality\&.
+.PP
+\fBSee also\fP
+.RS 4
+\fBAETimer::waitForTick()\fP 
+.PP
+\fBAETimer::waitTicks()\fP
+.RE
+.PP
+\fBDate\fP
+.RS 4
+2023/09/24
+.RE
+.PP
+\fBAuthor\fP
+.RS 4
+Artemii Kozhemiak (SuperArtyK)
+.RE
+.PP
+\fBCopyright\fP
+.RS 4
+MIT License
+.RE
+.PP
+\fIShould not cause everything to break :)\fP 
+.PP
+Definition in file \fBAETimer\&.hpp\fP\&.
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define _AETM_TICK_ROUND(tick)   \fBace::math::truncToInt\fP<\fBullint\fP>(tick);"
+
+.PP
+Macro that \fBAETimer\fP uses for the tick rounding functionality\&. 
+.PP
+\fBAttention\fP
+.RS 4
+This is an internal macro intended for internal \fBAETimer\fP's use\&. Isn't recommended to mess around with it 
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fBAETM_TICK_ROUNDING_METHOD\fP 
+.RE
+.PP
+
+.PP
+Definition at line \fB41\fP of file \fBAETimer\&.hpp\fP\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ArtyK's Console Engine from the source code\&.

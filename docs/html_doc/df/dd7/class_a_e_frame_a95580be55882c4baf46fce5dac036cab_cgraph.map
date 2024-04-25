@@ -1,0 +1,5 @@
+<map id="AEFrame::setFps" name="AEFrame::setFps">
+<area shape="rect" id="Node000001" title="Sets the delay of the instance as the frames (loop cycles) per second to reach in execution (fps goal..." alt="" coords="5,5,130,32"/>
+<area shape="rect" id="Node000002" href="$df/dd7/class_a_e_frame.html#aff72c01c3729961620ba9393326f321d" title="Returns whether the passed delay as fps is valid." alt="" coords="178,5,327,32"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="130,16,162,16,162,21,130,21"/>
+</map>

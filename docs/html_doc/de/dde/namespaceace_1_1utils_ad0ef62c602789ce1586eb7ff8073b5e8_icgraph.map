@@ -1,0 +1,7 @@
+<map id="ace::utils::byteToHex" name="ace::utils::byteToHex">
+<area shape="rect" id="Node000001" title="Converts the passed byte value to hex representation, into a passed c&#45;string." alt="" coords="234,31,378,57"/>
+<area shape="rect" id="Node000002" href="$de/dde/namespaceace_1_1utils.html#ac96109860dc959727188621839d9c464" title="Converts the passed byte value to hex representation." alt="" coords="23,5,168,32"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="218,36,168,30,168,25,218,31"/>
+<area shape="rect" id="Node000003" href="$de/dde/namespaceace_1_1utils.html#aab45a33109bb2a1d7037a7f040f3a76f" title="Reads the raw data at a given address and converts the read bytes to hex." alt="" coords="5,56,186,83"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="218,57,186,61,186,56,218,52"/>
+</map>

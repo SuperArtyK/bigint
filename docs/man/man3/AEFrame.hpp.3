@@ -1,0 +1,53 @@
+.TH "AEFrame/include/AEFrame.hpp" 3 "Fri Mar 29 2024 17:41:06" "Version v0.0.8.5a" "ArtyK's Console Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+AEFrame/include/AEFrame.hpp \- This file contains the engine's \fBmodule for frame-precise loop delays\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'include/AEFlags\&.hpp'\fP
+.br
+\fR#include 'include/AEModuleBase\&.hpp'\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBAEFrame\fP"
+.br
+.RI "This module is the engine's \fBprecise frame/loop-cycle limiter\fP\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This file contains the engine's \fBmodule for frame-precise loop delays\fP\&. 
+
+This is usefull when you need to limit the execution of the program in the loop\&.
+.PP
+Limit the loop cycle execution to precisely set amount (let's say 60 times per second), if the contents of the loop are processed faster than you need\&.
+.PP
+Example of usage (and reason for the name): game loop, that you need to limit to some fps\&.
+.PP
+\fBDate\fP
+.RS 4
+2023/09/23
+.RE
+.PP
+\fBAuthor\fP
+.RS 4
+Artemii Kozhemiak (SuperArtyK)
+.RE
+.PP
+\fBCopyright\fP
+.RS 4
+MIT License
+.RE
+.PP
+\fIShould not cause everything to break :)\fP 
+.PP
+Definition in file \fBAEFrame\&.hpp\fP\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ArtyK's Console Engine from the source code\&.

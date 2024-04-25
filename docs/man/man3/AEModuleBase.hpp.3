@@ -1,0 +1,119 @@
+.TH "AEModuleBase/include/AEModuleBase.hpp" 3 "Fri Mar 29 2024 17:41:07" "Version v0.0.8.5a" "ArtyK's Console Engine" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+AEModuleBase/include/AEModuleBase.hpp \- This file contains the engine's \fBbasic module template\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'include/AETypedefs\&.hpp'\fP
+.br
+\fR#include 'include/AEFlags\&.hpp'\fP
+.br
+\fR#include 'include/AEUtilsMacros\&.hpp'\fP
+.br
+\fR#include <atomic>\fP
+.br
+\fR#include <string>\fP
+.br
+\fR#include <string_view>\fP
+.br
+
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fB__AEModuleBase< T >\fP"
+.br
+.RI "This is a \fBbase class for all the modules in the engine\fP; all basic modules inherit from it\&. "
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBREGISTER_MODULE\fP(T)"
+.br
+.RI "A macro to \fBcomplete the module declaration with \fB__AEModuleBase\fP\fP\&. "
+.ti -1c
+.RI "#define \fBENGINE_MODULE_ERR_NOERROR\fP   0"
+.br
+.RI "Macro for the \fBdefault no error flag\fP for all modules\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+This file contains the engine's \fBbasic module template\fP\&. 
+
+All modules in the engine base on this class (or on other module template classes that base on this class)\&.
+.PP
+It gives the default behaviour for the classes, such as allowing for naming the module (giving it a module name) and module amount (counting the alive instances)\&.
+.PP
+Also in the future, I'll add instance names and the instance number\&.
+.PP
+With the latter being the number of the instance (increases with every creation), and the first being the combination of a module name and the instance number\&.
+.PP
+\fBDate\fP
+.RS 4
+2023/09/21
+.RE
+.PP
+\fBAuthor\fP
+.RS 4
+Artemii Kozhemiak (SuperArtyK)
+.RE
+.PP
+\fBCopyright\fP
+.RS 4
+MIT License
+.RE
+.PP
+\fIShould not cause everything to break :)\fP 
+.PP
+Definition in file \fBAEModuleBase\&.hpp\fP\&.
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define REGISTER_MODULE(T)"
+\fBValue:\fP.PP
+.nf
+    public: \\
+    [[nodiscard]] static constexpr std::string_view getModuleName(void) noexcept { \\
+        static_assert(sizeof(STR(T)) <= AELE_MODULENAME_SIZE, "The module name is TOO BIG! (check AELE_MODULENAME_SIZE in AEMisc/include/AEFlags\&.hpp"); \\
+            return #T; \\
+    }
+.fi
+
+.PP
+A macro to \fBcomplete the module declaration with \fB__AEModuleBase\fP\fP\&. Under the hood, it finishes specialising \fB__AEModuleBase::getModuleName()\fP for the inheriting class\&. 
+.PP
+\fBTemplate Parameters\fP
+.RS 4
+\fIT\fP Inheriting module's class name
+.RE
+.PP
+\fBNote\fP
+.RS 4
+Usage: Always put it as the \fBlast\fP entry to the class, before the closing brace **}** 
+.RE
+.PP
+\fBWarning\fP
+.RS 4
+If you won't do it and use the \fB__AEModuleBase<T>::getModuleName()\fP, the project won't compile with the 'unresolved external' error 
+.RE
+.PP
+\fBSee also\fP
+.RS 4
+\fB__AEModuleBase\fP 
+.RE
+.PP
+
+.PP
+Definition at line \fB44\fP of file \fBAEModuleBase\&.hpp\fP\&.
+.SS "#define ENGINE_MODULE_ERR_NOERROR   0"
+
+.PP
+Macro for the \fBdefault no error flag\fP for all modules\&. 
+.PP
+Definition at line \fB60\fP of file \fBAEModuleBase\&.hpp\fP\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for ArtyK's Console Engine from the source code\&.

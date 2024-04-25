@@ -1,0 +1,5 @@
+<map id="AETimer::resetTick" name="AETimer::resetTick">
+<area shape="rect" id="Node000001" title="Sets the timer tick back to 0." alt="" coords="5,5,138,32"/>
+<area shape="rect" id="Node000002" href="$da/d62/class_a_e_timer.html#af5b764f92d2e3fd7a6c9a1b0f1065964" title="Sets the timer&#39;s new tick value to the passed value." alt="" coords="186,5,307,32"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="138,16,170,16,170,21,138,21"/>
+</map>
