@@ -94,6 +94,11 @@ public:
 //////////////////////////////////
 	AEBigint& operator=(const AEBigint& bint);
 
+	AEBigint& operator=(const llint num);
+
+	AEBigint& operator=(const ullint num);
+
+	inline AEBigint& operator=(const int num) { return this->operator=(llint(num)); }
 
 
 
@@ -101,7 +106,7 @@ public:
 // getters
 /////////////////
 	[[nodiscard]] inline bool isZero() const noexcept {
-		return this->m_ullSize == 0;
+		return this->m_ullSize == 1 && this->m_vecSectors[0] == 0;
 	}
 
 	[[nodiscard]] inline ullint getSize() const noexcept {
