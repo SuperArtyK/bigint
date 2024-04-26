@@ -39,6 +39,9 @@
     <ClCompile Include="..\AEFileReader\src\AEFileReader.cpp">
       <Filter>Source Files\src\engine modules</Filter>
     </ClCompile>
+    <ClCompile Include="AEBigint_conversions.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\AEFileWriter\include\AEFileWriter.hpp">
@@ -77,7 +80,7 @@
     <ClInclude Include="..\resources\resource1.h">
       <Filter>Resource Files\Logo resources</Filter>
     </ClInclude>
-    <ClInclude Include="include\AEBigInt.hpp">
+    <ClInclude Include="include\AEBigint.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -11,10 +11,18 @@
  *  Should not cause everything to break :)
  */
 
-#include "AEBigInt.hpp"
+#include "AEBigint.hpp"
 
 
 int main() {
+	
+	AEBigint a = ULLINT_MAX;
+
+	std::cout << a << NLC << a.getSize() << NLC << ace::utils::boolToString(a.isNegative()) << NLC << NLC;
+
+	a= -a;
+
+	std::cout << a << NLC << a.getSize() << NLC << ace::utils::boolToString(a.isNegative()) << NLC << NLC;
 
 
 	for (int i = 0; i < arrsize(powerOf10Table); i++) {
