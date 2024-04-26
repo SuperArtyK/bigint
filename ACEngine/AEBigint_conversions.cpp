@@ -5,6 +5,11 @@
 
 std::string AEBigint::toString() const {
 
+	if (this->isZero()) {
+		return "0"; // a quick shortcut and performance gain :)
+	}
+
+
 	std::string result;
 	result.reserve(this->m_ullSize + (this->m_bNegative) ? 1 : 0);
 
