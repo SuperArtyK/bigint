@@ -39,10 +39,10 @@
     <ClCompile Include="..\AEFileReader\src\AEFileReader.cpp">
       <Filter>Source Files\src\engine modules</Filter>
     </ClCompile>
-    <ClCompile Include="AEBigint_conversions.cpp">
+    <ClCompile Include="AEBigint_construction.cpp">
       <Filter>Source Files\src</Filter>
     </ClCompile>
-    <ClCompile Include="AEBigint_construction.cpp">
+    <ClCompile Include="AEBigint_miscellanea.cpp">
       <Filter>Source Files\src</Filter>
     </ClCompile>
   </ItemGroup>

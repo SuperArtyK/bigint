@@ -15,17 +15,25 @@
 using namespace std;
 
 
+void outputBint(const AEBigint& bint) {
+	cout << "--------------------------------------------" << NLC;
+	cout << "The size of the bigint (digits): " << bint.getSize()<<NLC;
+	cout << "The bigint is negative: " << ace::utils::boolToString(bint.isNegative()) << NLC;
+	cout << "The value of the bigint: " << bint << NLC;
+	cout << "--------------------------------------------" << NLC;
+
+}
+
+
+
 
 
 int main() {
 
-	AEBigint a = ULLINT_MAX;
-
-	std::cout << a << NLC << a.getSize() << NLC << ace::utils::boolToString(a.isNegative()) << NLC << NLC;
-
-	a = -a; 
-
-	std::cout << a << NLC << a.getSize() << NLC << ace::utils::boolToString(a.isNegative()) << NLC << NLC;
+	outputBint(UINT_MAX);
+	outputBint(0);
+	outputBint(LLINT_MIN);
+	outputBint(ULLINT_MAX);
 
 
 	for (int i = 0; i < arrsize(powerOf10Table); i++) {

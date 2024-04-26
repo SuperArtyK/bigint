@@ -72,33 +72,34 @@ public:
 	AEBigint(const AEBigint& bint);
 
 	/// <summary>
-	/// Integer constructor -- constructs and sets the value to the passed ::llint.
+	/// Integer constructor -- constructs and sets the value to the passed  integral number
+	/// @note Exists only to remove the "ambiguous" error. **A very big kludge**.
 	/// </summary>
+	/// <typeparam name="T">The type of integer</typeparam>
 	/// <param name="num">The number to set the value to</param>
-	AEBigint(const llint num);
-	/// <summary>
-	/// Integer constructor -- constructs and sets the value to the passed ::ullint.
-	/// </summary>
-	/// <param name="num">The number to set the value to</param>
-	AEBigint(const ullint num);
-	/// <summary>
-	/// Integer constructor -- constructs and sets the value to the passed ::int.
-	/// @note Exists only to remove the "ambiguous" error for numbers <= #INT_MAX
-	/// </summary>
-	/// <param name="num">The number to set the value to</param>
-	AEBigint(const int num) : AEBigint(llint(num)) {}
+	template<typename T>
+	AEBigint(const T num) requires(std::is_integral<T>::value) {
+		dprintf("Constructing with a integral value");
+		this->copyFromInt<T>(num);
+	}
 
+	~AEBigint() {
+		dprintf("Destroying this bigint");
+	}
 
 //////////////////////////////////
 // assignment operators
 //////////////////////////////////
 	AEBigint& operator=(const AEBigint& bint);
 
-	AEBigint& operator=(const llint num);
+	template<typename T>
+	inline AEBigint& operator=(const T num) requires(std::is_integral<T>::value) {
+		if (!this->isZero() && num != 0) {
+			this->copyFromInt(num);
+		}
 
-	AEBigint& operator=(const ullint num);
-
-	inline AEBigint& operator=(const int num) { return this->operator=(llint(num)); }
+		return *this;
+	}
 
 
 
@@ -121,28 +122,42 @@ public:
 		return !this->m_bNegative;
 	}
 
-/////////////////
-// miscellania
-/////////////////
-	inline AEBigint operator-() const {
+//////////////////////////////////
+// miscellanea
+// AEBigint_miscellanea.cpp
+//////////////////////////////////
+	[[nodiscard]] inline AEBigint operator-() const {
 		AEBigint tmp = *this;
 		tmp.m_bNegative = !tmp.m_bNegative;
 		return tmp;
 	}
 
-	AEBigint& setNegativity(const bool negative) noexcept {
+	inline AEBigint& setNegativity(const bool negative) noexcept {
 		this->m_bNegative = negative;
 		return *this;
 	}
 
-	void clear(const bool setToZero = true); // defined in AEBigint_construction.cpp
+	[[nodiscard]] inline static AEBigint abs(const AEBigint& bint) {
+		if (bint.isNegative()) { 
+			return -bint; 
+		}
+		return bint;
+	}
 
-/////////////////
+	void clear(const bool setToZero = true);
+
+
+//////////////////////////////////
 // conversions
-/////////////////
-	std::string toString() const;
+// AEBigint_miscellanea.cpp
+//////////////////////////////////
+	[[nodiscard]] std::string toString() const;
 
-	friend std::ostream& operator<<(std::ostream& out, const AEBigint& bint);
+	[[nodiscard]] inline operator bool() const noexcept { return !this->isZero(); }
+
+	friend inline std::ostream& operator<<(std::ostream& out, const AEBigint& bint) {
+		return (out << bint.toString());
+	}
 
 
 private:
@@ -151,15 +166,10 @@ private:
 // copying
 // AEBigint_construction.cpp
 //////////////////////////////////
-
-	void copyFromInt(const ullint num);
-
-	void copyFromInt(const llint num);
+	template<typename T>
+	void copyFromInt(const T num) requires(std::is_integral<T>::value); // defined below class
 
 
-	static constexpr std::array<ullint, 2> intToSectors(const ullint num) noexcept {
-		return std::array<ullint, 2>{num % (_AEBI_MAX_SECTOR_STORE_P10), num / _AEBI_MAX_SECTOR_STORE_P10 };
-	}
 
 	/// The vector that contains all the number sectors
 	std::vector<ullint> m_vecSectors;
@@ -170,10 +180,37 @@ private:
 
 };
 
+template<typename T>
+void AEBigint::copyFromInt(const T num) requires(std::is_integral<T>::value) {
+	this->clear(false);
+	this->m_ullSize = ace::math::lengthOfInt<T>(num);
 
+	if constexpr (std::is_signed<T>::value) { // its signed and may be negative
 
+		if (num < 0) {
+			//also its less than allowed sector size, so we can just mash it there
+			this->m_vecSectors.emplace_back(ace::math::absval<llint>(num));
+			this->m_bNegative = true;
+		}
+		else {
+			this->m_vecSectors.emplace_back(num);
+			this->m_bNegative = false;
+		}
+	}
+	else
+	{
+		if (num > _AEBI_MAX_SECTOR_OPERATION_VALUE) {
 
+			this->m_vecSectors.emplace_back(num % _AEBI_MAX_SECTOR_STORE_P10);
+			this->m_vecSectors.emplace_back(num / _AEBI_MAX_SECTOR_STORE_VALUE);
+		}
+		else {
+			this->m_vecSectors.emplace_back(num);
+		}
+		this->m_bNegative = false;
+	}
 
+}
 
 
 #endif // !ENGINE_BIGINT_HPP
