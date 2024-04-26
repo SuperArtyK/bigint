@@ -18,6 +18,8 @@ using namespace std;
 void outputBint(const AEBigint& bint) {
 	cout << "--------------------------------------------" << NLC;
 	cout << "The size of the bigint (digits): " << bint.getSize()<<NLC;
+	cout << "The amount of number sectors: " << bint.getSectorAmount() << NLC;
+	cout << "The memory usage of the bigint (bytes): " << bint.getMemoryUsage() << " (sizeof(AEBigint) = " <<sizeof(AEBigint)<<")" << NLC;
 	cout << "The bigint is negative: " << ace::utils::boolToString(bint.isNegative()) << NLC;
 	cout << "The value of the bigint: " << bint << NLC;
 	cout << "--------------------------------------------" << NLC;

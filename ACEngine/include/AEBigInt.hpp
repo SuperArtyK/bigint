@@ -110,16 +110,24 @@ public:
 		return this->m_ullSize == 1 && this->m_vecSectors[0] == 0;
 	}
 
-	[[nodiscard]] inline ullint getSize() const noexcept {
-		return this->m_ullSize;
-	}
-
 	[[nodiscard]] inline bool isNegative() const noexcept {
 		return this->m_bNegative;
 	}
 
 	[[nodiscard]] inline bool isPositive() const noexcept {
 		return !this->m_bNegative;
+	}
+
+	[[nodiscard]] inline ullint getSize() const noexcept {
+		return this->m_ullSize;
+	}
+
+	[[nodiscard]] inline std::size_t getSectorAmount() const noexcept {
+		return this->m_vecSectors.size();
+	}
+
+	[[nodiscard]] inline std::size_t getMemoryUsage() const noexcept {
+		return sizeof(AEBigint) + this->m_vecSectors.capacity() * sizeof(decltype(this->m_vecSectors)::value_type);
 	}
 
 //////////////////////////////////
