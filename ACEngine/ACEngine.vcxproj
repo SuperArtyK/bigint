@@ -195,6 +195,7 @@
     <ClCompile Include="..\AEFileReader\src\AEFileReader.cpp" />
     <ClCompile Include="..\AEFileWriter\src\AEFileWriter.cpp" />
     <ClCompile Include="..\AELogger\src\AELogger.cpp" />
+    <ClCompile Include="AEBigint_construction.cpp" />
     <ClCompile Include="AEBigint_conversions.cpp" />
     <ClCompile Include="main_ACEngine.cpp" />
   </ItemGroup>

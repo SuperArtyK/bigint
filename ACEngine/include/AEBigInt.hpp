@@ -46,6 +46,8 @@ constexpr ullint powerOf10Table[20] {
 /// It works by using number sectors, instead of strings/characters for singular numbers.
 /// Each number sector is a uint64 that can hold slightly more than int64.
 /// 
+/// Doing it this way, increases the number density (digit amount per byte) greatly.
+/// 
 /// And all of the operations are done on the sectors, which drastically improves performance on normal
 /// operations like addition, but reduces performance on per-digit operations.
 /// </summary>
@@ -56,43 +58,41 @@ public:
 /////////////////
 // constructors
 /////////////////
-	AEBigint() : m_vecSectors(1), m_ullSize(0), m_bNegative(false) {
-		dprintf("Constructing an empty bigint");
-		m_vecSectors.reserve(AEBI_RESERVE_SIZE);
-	}
+	/// <summary>
+	/// Default constructor -- constructs the bigint and sets it to 0.
+	/// @note Sets the sector reserve amount to AEBI_RESERVE_SIZE
+	/// </summary>
+	AEBigint();
 
-	AEBigint(const AEBigint& bint) : m_vecSectors(bint.m_vecSectors), m_ullSize(bint.m_ullSize), m_bNegative(bint.m_bNegative) {
-		dprintf("Constructing AEBigint with another AEBigint");
-		m_vecSectors.reserve(AEBI_RESERVE_SIZE);
-	}
+	/// <summary>
+	/// Copy-constructor -- constructs and copies the data from passed bigint.
+	/// @note Sets the sector reserve amount to AEBI_RESERVE_SIZE
+	/// </summary>
+	/// <param name="bint">The second bigint to construct from</param>
+	AEBigint(const AEBigint& bint);
 
-	template <typename T>
-	AEBigint(const T num) requires(std::is_integral<T>::value) : 
-		m_vecSectors(1), m_ullSize(0), m_bNegative(false) {
-		dprintf("Constructing with an integral type");
-		this->copyFromInt<T>(num);
-
-	}
-
+	/// <summary>
+	/// Integer constructor -- constructs and sets the value to the passed ::llint.
+	/// </summary>
+	/// <param name="num">The number to set the value to</param>
+	AEBigint(const llint num);
+	/// <summary>
+	/// Integer constructor -- constructs and sets the value to the passed ::ullint.
+	/// </summary>
+	/// <param name="num">The number to set the value to</param>
+	AEBigint(const ullint num);
+	/// <summary>
+	/// Integer constructor -- constructs and sets the value to the passed ::int.
+	/// @note Exists only to remove the "ambiguous" error for numbers <= #INT_MAX
+	/// </summary>
+	/// <param name="num">The number to set the value to</param>
+	AEBigint(const int num) : AEBigint(llint(num)) {}
 
 
 //////////////////////////////////
 // assignment operators
 //////////////////////////////////
-	AEBigint& operator=(const AEBigint& bint) {
-		dprintf("Assigning from another Bigint");
-
-		if (this == &bint || (this->m_ullSize == bint.m_ullSize && this->isZero())) {
-			dprintf("Tried self-assigning or assign to 0-bigint while 0 originally");
-			return *this;
-		}
-		
-		this->m_vecSectors = bint.m_vecSectors;
-		this->m_vecSectors.reserve(AEBI_RESERVE_SIZE);
-		this->m_ullSize = bint.m_ullSize;
-		this->m_bNegative = bint.m_bNegative;
-		return *this;
-	}
+	AEBigint& operator=(const AEBigint& bint);
 
 
 
@@ -119,26 +119,38 @@ public:
 /////////////////
 // miscellania
 /////////////////
-
 	inline AEBigint operator-() const {
 		AEBigint tmp = *this;
 		tmp.m_bNegative = !tmp.m_bNegative;
 		return tmp;
 	}
 
+	AEBigint& setNegativity(const bool negative) noexcept {
+		this->m_bNegative = negative;
+		return *this;
+	}
+
+	void clear(const bool setToZero = true); // defined in AEBigint_construction.cpp
+
 /////////////////
 // conversions
 /////////////////
-
 	std::string toString() const;
 
 	friend std::ostream& operator<<(std::ostream& out, const AEBigint& bint);
 
-	template<typename T>
-	void copyFromInt(const T num) noexcept requires(std::is_integral<T>::value);
-
 
 private:
+
+//////////////////////////////////
+// copying
+// AEBigint_construction.cpp
+//////////////////////////////////
+
+	void copyFromInt(const ullint num);
+
+	void copyFromInt(const llint num);
+
 
 	static constexpr std::array<ullint, 2> intToSectors(const ullint num) noexcept {
 		return std::array<ullint, 2>{num % (_AEBI_MAX_SECTOR_STORE_P10), num / _AEBI_MAX_SECTOR_STORE_P10 };
@@ -153,32 +165,6 @@ private:
 
 };
 
-template<typename T>
-void AEBigint::copyFromInt(const T num) noexcept requires(std::is_integral<T>::value) {
-
-	this->m_vecSectors.resize(1);
-	m_vecSectors.reserve(AEBI_RESERVE_SIZE);
-
-	if constexpr (std::is_unsigned<T>::value) {
-		if (num > _AEBI_MAX_SECTOR_OPERATION_VALUE) {
-			this->m_vecSectors[0] = num % _AEBI_MAX_SECTOR_STORE_P10;
-			this->m_vecSectors.emplace_back(num / _AEBI_MAX_SECTOR_STORE_VALUE);
-		}
-		else {
-			this->m_vecSectors[0] = num;
-		}
-	}
-	else {
-		if (num > 0) {
-			this->m_vecSectors[0] = (num);
-		}
-		else {
-			this->m_vecSectors[0] = (ace::math::absval<T>(num));
-			this->m_bNegative = true;
-		}
-	}
-	this->m_ullSize = ace::math::lengthOfInt<T>(num);
-}
 
 
 

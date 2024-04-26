@@ -12,15 +12,18 @@
  */
 
 #include "AEBigint.hpp"
+using namespace std;
+
+
 
 
 int main() {
-	
+
 	AEBigint a = ULLINT_MAX;
 
 	std::cout << a << NLC << a.getSize() << NLC << ace::utils::boolToString(a.isNegative()) << NLC << NLC;
 
-	a= -a;
+	a = -a; 
 
 	std::cout << a << NLC << a.getSize() << NLC << ace::utils::boolToString(a.isNegative()) << NLC << NLC;
 
