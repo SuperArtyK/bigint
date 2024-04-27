@@ -30,15 +30,6 @@
     <ClCompile Include="main_ACEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\AELogger\src\AELogger.cpp">
-      <Filter>Source Files\src\engine modules</Filter>
-    </ClCompile>
-    <ClCompile Include="..\AEFileWriter\src\AEFileWriter.cpp">
-      <Filter>Source Files\src\engine modules</Filter>
-    </ClCompile>
-    <ClCompile Include="..\AEFileReader\src\AEFileReader.cpp">
-      <Filter>Source Files\src\engine modules</Filter>
-    </ClCompile>
     <ClCompile Include="AEBigint_construction.cpp">
       <Filter>Source Files\src</Filter>
     </ClCompile>

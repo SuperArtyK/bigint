@@ -32,15 +32,21 @@ void outputBint(const AEBigint& bint) {
 
 int main() {
 
-	outputBint(UINT_MAX);
+	AEBigint a = UINT_MAX;
+	outputBint(a);
 	outputBint(0);
 	outputBint(LLINT_MIN);
 	outputBint(ULLINT_MAX);
 
-
-	for (int i = 0; i < arrsize(powerOf10Table); i++) {
-		std::cout << powerOf10Table[i] << NLC;
+	
+	
+	for (int i = a.getSize()-1; i >=0; i--) {
+		cout << a.getDigit(i);
 	}
+	cout << NLC << a<<NLC;
+	a.setDigit(256, 9);
+	//cout<<a<<NLC;
+	outputBint(a);
 
 	return 0;
 }

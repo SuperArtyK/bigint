@@ -4,9 +4,9 @@
 #define ENGINE_BIGINT_HPP
 
 #include "include/AEMath.hpp"
-#include "include/AEUtilsMacros.hpp"
-#include "include/AEUtils.hpp"
 #include "include/AETypedefs.hpp"
+#include "include/AEUtils.hpp"
+#include "include/AEUtilsMacros.hpp"
 #include <array>
 
 constexpr ullint powerOf10Table[20] {
@@ -17,16 +17,15 @@ constexpr ullint powerOf10Table[20] {
 };
 
 
-
-
-
-
 /// The largest representable power of 10 per number sector
 #define _AEBI_MAX_SECTOR_STORE_P10 (powerOf10Table[19])
 
 /// The largest representable value per number sector
 /// @note Corresponds to the 10^19 - 1, the largest value of 9999.... that can fit into uint64
 #define _AEBI_MAX_SECTOR_STORE_VALUE (_AEBI_MAX_SECTOR_STORE_P10 - 1)
+
+/// The length in digits of the largest representable value per number sector
+constexpr int _AEBI_MAX_SECTOR_STORE_DIGITS = ace::math::lengthOfInt(_AEBI_MAX_SECTOR_STORE_VALUE);
 
 /// The power of 10 of the largest value per sector to operate on.
 #define _AEBI_MAX_SECTOR_OPERATION_P10 (powerOf10Table[18])
@@ -87,6 +86,7 @@ public:
 		dprintf("Destroying this bigint");
 	}
 
+
 //////////////////////////////////
 // assignment operators
 //////////////////////////////////
@@ -100,7 +100,6 @@ public:
 
 		return *this;
 	}
-
 
 
 /////////////////
@@ -127,8 +126,32 @@ public:
 	}
 
 	[[nodiscard]] inline std::size_t getMemoryUsage() const noexcept {
-		return sizeof(AEBigint) + this->m_vecSectors.capacity() * sizeof(decltype(this->m_vecSectors)::value_type);
+		return sizeof(AEBigint) + this->m_vecSectors.capacity() * sizeof(ullint);
 	}
+
+	[[nodiscard]] inline ucint getDigitChar(const ullint dig) const noexcept {
+		if (dig == 0) {
+			return this->m_vecSectors[0] % 10;
+		}
+
+		return (this->m_vecSectors[dig / _AEBI_MAX_SECTOR_STORE_DIGITS] / powerOf10Table[(dig % _AEBI_MAX_SECTOR_STORE_DIGITS)]) % 10;
+	}
+
+	[[nodiscard]] inline int getDigit(const ullint dig) const noexcept {
+		return int(this->getDigitChar(dig));
+	}
+
+
+/////////////////
+// setters
+/////////////////
+	inline AEBigint& setNegativity(const bool negative) noexcept {
+		this->m_bNegative = negative;
+		return *this;
+	}
+
+	void setDigit(const ullint dig, const ucint val);
+
 
 //////////////////////////////////
 // miscellanea
@@ -138,11 +161,6 @@ public:
 		AEBigint tmp = *this;
 		tmp.m_bNegative = !tmp.m_bNegative;
 		return tmp;
-	}
-
-	inline AEBigint& setNegativity(const bool negative) noexcept {
-		this->m_bNegative = negative;
-		return *this;
 	}
 
 	[[nodiscard]] inline static AEBigint abs(const AEBigint& bint) {
@@ -187,6 +205,7 @@ private:
 	bool m_bNegative;
 
 };
+
 
 template<typename T>
 void AEBigint::copyFromInt(const T num) requires(std::is_integral<T>::value) {

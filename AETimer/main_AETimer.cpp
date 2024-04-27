@@ -5,6 +5,8 @@
 #include "include/AEMath.hpp"
 
 int main() {
+#if ENGINE_ENABLE_GLOBAL_MODULES
+
 
 	AETimer mytm(ENGINE_FPS);
 	std::cout << mytm.getModuleAmount() << " " << mytm.getModuleName() << NLC;
@@ -47,4 +49,5 @@ int main() {
 
 
 
+#endif // ENGINE_ENABLE_GLOBAL_MODULES
 }

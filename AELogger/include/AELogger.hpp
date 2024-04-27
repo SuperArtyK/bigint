@@ -218,6 +218,7 @@ public:
 		// the code for formatting the log entry (adding that DEBUG-> thing) will be executed in the logWriterThread()
 		return this->writeToLog(logmessg, AELOG_TYPE_DEBUG, logmodule);
 #endif // ENGINE_DEBUG
+		return 0;
 	}
 
 	/// <summary>

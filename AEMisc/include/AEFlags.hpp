@@ -43,7 +43,7 @@
 /// 
 /// @note Set to 1 to enable, and 0 to disable this feature
 /// @remark Disabling this code *may* break your code (from compiling), as it removes the global module declarations completely
-#define ENGINE_ENABLE_GLOBAL_MODULES 1
+#define ENGINE_ENABLE_GLOBAL_MODULES 0
 /// Macro to enable the engine's **assert code**.
 /// 
 /// @note This only works if the debug features are enabled (#ENGINE_DEBUG).
