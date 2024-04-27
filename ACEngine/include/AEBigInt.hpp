@@ -188,14 +188,25 @@ public:
 
 private:
 
+	[[nodiscard]] const char* sectorToString(char* str, const ullint secNum) const noexcept {
+		if (this->m_vecSectors[secNum] == 0) {
+			return "0000000000000000000";
+		}
+		else
+		{
+			snprintf(str, 20, "%0.19llu", this->m_vecSectors[secNum]);
+		}
+
+		return str;
+	}
+
+
 //////////////////////////////////
 // copying
 // AEBigint_construction.cpp
 //////////////////////////////////
 	template<typename T>
 	void copyFromInt(const T num) requires(std::is_integral<T>::value); // defined below class
-
-
 
 	/// The vector that contains all the number sectors
 	std::vector<ullint> m_vecSectors;

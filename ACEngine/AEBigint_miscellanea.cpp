@@ -44,8 +44,7 @@ void AEBigint::setDigit(const ullint dig, const ucint val) {
 	result.append(buf);
 
 	for (std::size_t i = this->m_vecSectors.size() - 1; i > 0; i--) {
-		snprintf(buf, sizeof(buf), "%0.19llu", this->m_vecSectors[i-1]);
-		result.append(buf);
+		result.append(this->sectorToString(buf, i - 1));
 	}
 
 	return result;

@@ -44,10 +44,20 @@ int main() {
 		cout << a.getDigit(i);
 	}
 	cout << NLC << a<<NLC;
-	a.setDigit(256, 9);
-	//cout<<a<<NLC;
-	outputBint(a);
+	a.setDigit(UINT_MAX, 9);
 
+	cout << "Starting timing string processing..." << NLC;
+
+	timePoint<HighResClock> tp1 = getHighResTime();
+	//cout<<a<<NLC;
+	//outputBint(a);
+	std::string b = a.toString();
+	b.clear();
+	cout << "time used processing: " << timeBetween(tp1, getHighResTime(), double) << NLC;
+
+	
+
+	cin.get();
 	return 0;
 }
 
