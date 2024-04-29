@@ -164,9 +164,7 @@ public:
 	}
 
 	[[nodiscard]] inline static AEBigint abs(const AEBigint& bint) {
-		if (bint.isNegative()) { 
-			return -bint; 
-		}
+		if (bint.isNegative()) { return -bint; }
 		return bint;
 	}
 
@@ -185,21 +183,137 @@ public:
 		return (out << bint.toString());
 	}
 
+	std::string toString2() const {
 
+		if (this->isZero()) {
+			return "0"; // a quick shortcut and performance gain :)
+		}
+
+		std::string result;
+		char buf[20]{};
+		char* dataptr;
+
+		if (this->m_bNegative) {
+			result.resize(this->m_ullSize + 1); // reserve space for the '-'
+			result[0] = ('-');
+			dataptr = result.data()+1;
+		}
+		else {
+			result.resize(this->m_ullSize);
+			dataptr = result.data();
+		}
+
+		
+		//snprintf(buf, sizeof(buf), "%llu", this->m_vecSectors[this->m_vecSectors.size() - 1]);
+
+		ucint tmp = snprintf(buf, sizeof(buf), "%llu", this->m_vecSectors[this->m_vecSectors.size() - 1]);
+		std::memcpy(dataptr, buf, tmp);
+
+		dataptr += tmp;
+
+		for (std::size_t i = this->m_vecSectors.size() - 1; i > 0; i--) {
+
+			std::memcpy(dataptr, this->sectorToString2(buf, this->m_vecSectors[i - 1]), 19);
+			dataptr += 19;
+
+
+			//result.append(this->sectorToString2(buf, this->m_vecSectors[i - 1]));
+		}
+
+		return result;
+	}
+
+
+	[[nodiscard]] static constexpr const char* sectorToString2(char* str, ullint val) noexcept {
+
+		switch (val) {
+
+			case 0:
+				return "0000000000000000000";
+				break;
+
+			case 1:
+				return "0000000000000000001";
+				break;
+
+			case 2:
+				return "0000000000000000002";
+				break;
+
+			case 3:
+				return "0000000000000000003";
+				break;
+
+			case 4:
+				return "0000000000000000004";
+				break;
+
+			case 5:
+				return "0000000000000000005";
+				break;
+
+			case 6:
+				return "0000000000000000006";
+				break;
+
+			case 7:
+				return "0000000000000000007";
+				break;
+
+			case 8:
+				return "0000000000000000008";
+				break;
+
+			case 9:
+				return "0000000000000000009";
+				break;
+
+			default:
+				std::memset(str, '0', 19);
+
+				int i = 18;
+
+				while (val > 9) {
+					str[i--] = '0' + val % 10;
+					val /= 10;
+				}
+				str[i] = '0' + val % 10;
+
+				//snprintf(str, 20, "%0.19llu", val);
+
+				return str;
+				break;
+
+		}
+
+
+		
+	}
+
+
+	
 private:
 
-	[[nodiscard]] const char* sectorToString(char* str, const ullint secNum) const noexcept {
-		if (this->m_vecSectors[secNum] == 0) {
+	[[nodiscard]] const char* sectorToString(char* str, ullint val) const noexcept {
+
+		if (val == 0) {
 			return "0000000000000000000";
 		}
-		else
-		{
-			snprintf(str, 20, "%0.19llu", this->m_vecSectors[secNum]);
+
+		std::memset(str, '0', 19);
+
+		int i = 18;
+
+		while (val > 9) {
+			str[i--] = '0' + val % 10;
+			val /= 10;
 		}
+		str[i] = '0' + val % 10;
+
+		//snprintf(str, 20, "%0.19llu", val);
 
 		return str;
 	}
-
 
 //////////////////////////////////
 // copying

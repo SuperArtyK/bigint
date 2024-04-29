@@ -21,16 +21,20 @@ void outputBint(const AEBigint& bint) {
 	cout << "The amount of number sectors: " << bint.getSectorAmount() << NLC;
 	cout << "The memory usage of the bigint (bytes): " << bint.getMemoryUsage() << " (sizeof(AEBigint) = " <<sizeof(AEBigint)<<")" << NLC;
 	cout << "The bigint is negative: " << ace::utils::boolToString(bint.isNegative()) << NLC;
-	cout << "The value of the bigint: " << bint << NLC;
+	cout << "The value of the bigint: " << bint.toString2() << NLC;
 	cout << "--------------------------------------------" << NLC;
 
 }
 
-
+long double runningAvg(const int amt, const long double val, const long double newval) noexcept{
+	return (val * amt + newval) / (amt + 1);
+}
 
 
 
 int main() {
+
+	std::srand(std::time(nullptr));
 
 	AEBigint a = UINT_MAX;
 	outputBint(a);
@@ -43,19 +47,55 @@ int main() {
 	for (int i = a.getSize()-1; i >=0; i--) {
 		cout << a.getDigit(i);
 	}
-	cout << NLC << a<<NLC;
-	a.setDigit(UINT_MAX, 9);
 
-	cout << "Starting timing string processing..." << NLC;
+	a.setDigit(12, 9);
+	cout << NLC << a.toString2()<<NLC;
+	a.setDigit(1024*1024*1024, 9);
 
-	timePoint<HighResClock> tp1 = getHighResTime();
-	//cout<<a<<NLC;
-	//outputBint(a);
-	std::string b = a.toString();
-	b.clear();
-	cout << "time used processing: " << timeBetween(tp1, getHighResTime(), double) << NLC;
+	cout << "Press enter to start benchmark" << NLC;
 
-	
+	cin.get();
+	std::string b;
+	timePoint<HighResClock> tp1;
+	ullint repeat = 0;
+	long double tm1, tm2, avg = 0;
+
+	for (ullint i = 0; i < a.getSize(); i++) {
+		a.setDigit(i, std::rand() % 10);
+	}
+
+	for (;;) {
+
+		
+
+		cout << "Starting timing string processing (optimised)..." << NLC;
+		tp1 = getHighResTime();
+		for (int i = 0; i < 1; i++) {
+			b = a.toString2();
+		}
+		cout << "time used processing (optimised): " << (tm2 = timeBetween(tp1, getHighResTime(), long double) * 1000.0L) << NLC;
+
+		b.clear();
+		b.shrink_to_fit();
+
+		cout << "Starting timing string processing (unoptimised)..." << NLC;
+
+		tp1 = getHighResTime();
+		//cout<<a<<NLC;
+		//outputBint(a);
+		for (int i = 0; i < 1; i++) {
+			b = a.toString();
+		}
+		cout << "time used processing (unoptimised): " << (tm1 = timeBetween(tp1, getHighResTime(), long double) * 1000.0L) << NLC;
+
+		b.clear();
+		b.shrink_to_fit();
+
+		
+
+		cout << "Improvement: " << ((tm1 - tm2) / tm2 * 100) << "%; average: " << (avg = runningAvg(repeat++, avg, ((tm1 - tm2) / tm2 * 100)))<< NLC << NLC;
+
+	}
 
 	cin.get();
 	return 0;
