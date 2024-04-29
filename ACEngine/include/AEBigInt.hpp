@@ -9,11 +9,56 @@
 #include "include/AEUtilsMacros.hpp"
 #include <array>
 
-constexpr ullint powerOf10Table[20] {
+namespace ace::utils {
+	/// <summary>
+	/// Reverses the c-string of the given length (excluding null)
+	/// </summary>
+	/// <param name="str">The c-string to reverse</param>
+	/// <param name="len">The </param>
+	inline void revCString(char* str, const std::size_t len) noexcept {
+		char* ptr = str + len - 1;
+		char tmp = *str;
+
+		while (str < ptr) {
+			*str++ = *ptr;
+			*ptr-- = tmp;
+			tmp = *str;
+		}
+	}
+
+	/// <summary>
+	/// Converts the given ::ullint to a c-string.
+	/// @note This writes directly to the given strings.
+	/// @attention This doesn't clear the passed string; The data it had before will still be there.
+	/// @warning The **str** c-string shall be at least 20 characters in length (excluding null)
+	/// </summary>
+	/// <param name="num">The number to convert</param>
+	/// <param name="str">The c-string to write to</param>
+	/// <returns>The number of characters successfully written (excluding null terminator)</returns>
+	inline std::size_t ullToCString(ullint num, char* const str) noexcept {
+
+		int a = 0;
+		while (num > 9) {
+			str[a++] = '0' + num % 10;
+			num /= 10;
+		}
+		str[a++] = '0' + num % 10;
+		ace::utils::revCString(str, a);
+
+		return a;
+	}
+}
+
+
+
+/// The lookup table of the powers of 10
+/// @note Maximum value is 10^20, since it's the largest that ::ullint can hold.
+constexpr ullint powerOf10Table[21] {
 	1,                       powerOf10Table[0] * 10,  powerOf10Table[1] * 10,  powerOf10Table[2] * 10,  powerOf10Table[3] * 10,   //power 0-4
 	powerOf10Table[4] * 10,  powerOf10Table[5] * 10,  powerOf10Table[6] * 10,  powerOf10Table[7] * 10,  powerOf10Table[8] * 10,   //power 5-9
 	powerOf10Table[9] * 10,  powerOf10Table[10] * 10, powerOf10Table[11] * 10, powerOf10Table[12] * 10, powerOf10Table[13] * 10,  //power 10-14
 	powerOf10Table[14] * 10, powerOf10Table[15] * 10, powerOf10Table[16] * 10, powerOf10Table[17] * 10, powerOf10Table[18] * 10,  //power 11-19
+	powerOf10Table[19] * 10, // power 20
 };
 
 
@@ -190,7 +235,7 @@ public:
 		}
 
 		std::string result;
-		char buf[20]{};
+		char buf[_AEBI_MAX_SECTOR_STORE_DIGITS+1]{};
 		char* dataptr;
 
 		if (this->m_bNegative) {
@@ -206,15 +251,17 @@ public:
 		
 		//snprintf(buf, sizeof(buf), "%llu", this->m_vecSectors[this->m_vecSectors.size() - 1]);
 
-		ucint tmp = snprintf(buf, sizeof(buf), "%llu", this->m_vecSectors[this->m_vecSectors.size() - 1]);
+		//const ucint tmp = snprintf(buf, sizeof(buf), "%llu", this->m_vecSectors[this->m_vecSectors.size() - 1]);
+		const ucint tmp = ace::utils::ullToCString(this->m_vecSectors[this->m_vecSectors.size() - 1], buf);
+		
 		std::memcpy(dataptr, buf, tmp);
 
 		dataptr += tmp;
 
 		for (std::size_t i = this->m_vecSectors.size() - 1; i > 0; i--) {
 
-			std::memcpy(dataptr, this->sectorToString2(buf, this->m_vecSectors[i - 1]), 19);
-			dataptr += 19;
+			std::memcpy(dataptr, this->sectorToString2(buf, this->m_vecSectors[i - 1]), _AEBI_MAX_SECTOR_STORE_DIGITS);
+			dataptr += _AEBI_MAX_SECTOR_STORE_DIGITS;
 
 
 			//result.append(this->sectorToString2(buf, this->m_vecSectors[i - 1]));
@@ -224,83 +271,13 @@ public:
 	}
 
 
-	[[nodiscard]] static constexpr const char* sectorToString2(char* str, ullint val) noexcept {
+	[[nodiscard]] static inline const char* sectorToString2(char* const str, ullint val) noexcept {
 
-		switch (val) {
+// 		if (val == 0) {
+// 			return "0000000000000000000";
+// 		}
 
-			case 0:
-				return "0000000000000000000";
-				break;
-
-			case 1:
-				return "0000000000000000001";
-				break;
-
-			case 2:
-				return "0000000000000000002";
-				break;
-
-			case 3:
-				return "0000000000000000003";
-				break;
-
-			case 4:
-				return "0000000000000000004";
-				break;
-
-			case 5:
-				return "0000000000000000005";
-				break;
-
-			case 6:
-				return "0000000000000000006";
-				break;
-
-			case 7:
-				return "0000000000000000007";
-				break;
-
-			case 8:
-				return "0000000000000000008";
-				break;
-
-			case 9:
-				return "0000000000000000009";
-				break;
-
-			default:
-				std::memset(str, '0', 19);
-
-				int i = 18;
-
-				while (val > 9) {
-					str[i--] = '0' + val % 10;
-					val /= 10;
-				}
-				str[i] = '0' + val % 10;
-
-				//snprintf(str, 20, "%0.19llu", val);
-
-				return str;
-				break;
-
-		}
-
-
-		
-	}
-
-
-	
-private:
-
-	[[nodiscard]] const char* sectorToString(char* str, ullint val) const noexcept {
-
-		if (val == 0) {
-			return "0000000000000000000";
-		}
-
-		std::memset(str, '0', 19);
+		std::memset(str, '0', 18);
 
 		int i = 18;
 
@@ -310,7 +287,32 @@ private:
 		}
 		str[i] = '0' + val % 10;
 
+		
+
+
 		//snprintf(str, 20, "%0.19llu", val);
+
+		return str;
+	}
+
+
+	
+private:
+
+	[[nodiscard]] inline static const char* sectorToString(char* const str, ullint val) noexcept {
+		if (val == 0) {
+			return "0000000000000000000";
+		}
+
+		std::memset(str, '0', 18);
+
+		int i = 18;
+
+		while (val > 9) {
+			str[i--] = '0' + val % 10;
+			val /= 10;
+		}
+		str[i] = '0' + val % 10;
 
 		return str;
 	}

@@ -29,7 +29,7 @@ void AEBigint::setDigit(const ullint dig, const ucint val) {
 	}
 
 	std::string result;
-	char buf[20]{};
+	char buf[_AEBI_MAX_SECTOR_STORE_DIGITS + 1]{};
 	char* dataptr;
 
 	if (this->m_bNegative) {
@@ -42,21 +42,16 @@ void AEBigint::setDigit(const ullint dig, const ucint val) {
 		dataptr = result.data();
 	}
 
+	const ucint tmp = ace::utils::ullToCString(this->m_vecSectors[this->m_vecSectors.size() - 1], buf);
 
-	//snprintf(buf, sizeof(buf), "%llu", this->m_vecSectors[this->m_vecSectors.size() - 1]);
-
-	const ucint tmp = snprintf(buf, sizeof(buf), "%llu", this->m_vecSectors[this->m_vecSectors.size() - 1]) - 1;
 	std::memcpy(dataptr, buf, tmp);
 
 	dataptr += tmp;
 
 	for (std::size_t i = this->m_vecSectors.size() - 1; i > 0; i--) {
 
-		std::memcpy(dataptr, this->sectorToString(buf, this->m_vecSectors[i - 1]), 19);
-		dataptr += 19;
-
-
-		//result.append(this->sectorToString2(buf, this->m_vecSectors[i - 1]));
+		std::memcpy(dataptr, this->sectorToString2(buf, this->m_vecSectors[i - 1]), _AEBI_MAX_SECTOR_STORE_DIGITS);
+		dataptr += _AEBI_MAX_SECTOR_STORE_DIGITS;
 	}
 
 	return result;
