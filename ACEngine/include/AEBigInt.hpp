@@ -142,7 +142,6 @@ public:
 		if (!this->isZero() && num != 0) {
 			this->copyFromInt(num);
 		}
-
 		return *this;
 	}
 
@@ -170,21 +169,26 @@ public:
 		return this->m_vecSectors.size();
 	}
 
-	[[nodiscard]] inline std::size_t getMemoryUsage() const noexcept {
-		return sizeof(AEBigint) + this->m_vecSectors.capacity() * sizeof(ullint);
-	}
-
 	[[nodiscard]] inline ucint getDigitChar(const ullint dig) const noexcept {
 		if (dig == 0) {
 			return this->m_vecSectors[0] % 10;
 		}
-
 		return (this->m_vecSectors[dig / _AEBI_MAX_SECTOR_STORE_DIGITS] / powerOf10Table[(dig % _AEBI_MAX_SECTOR_STORE_DIGITS)]) % 10;
 	}
 
 	[[nodiscard]] inline int getDigit(const ullint dig) const noexcept {
 		return int(this->getDigitChar(dig));
 	}
+
+	inline ullint getSectorValue(const std::size_t sector) const noexcept {
+		return this->m_vecSectors[sector];
+	}
+
+	[[nodiscard]] inline std::size_t getMemoryUsage() const noexcept {
+		return sizeof(AEBigint) + this->m_vecSectors.capacity() * sizeof(ullint);
+	}
+
+	
 
 
 /////////////////
@@ -195,8 +199,9 @@ public:
 		return *this;
 	}
 
-	void setDigit(const ullint dig, const ucint val);
+	[[nodiscard]] void setDigit(const ullint dig, const ucint val);
 
+	[[nodiscard]] void setSectorValue(const std::size_t sector, const ullint val);
 
 //////////////////////////////////
 // miscellanea
@@ -224,47 +229,32 @@ public:
 
 	[[nodiscard]] inline operator bool() const noexcept { return !this->isZero(); }
 
-	friend inline std::ostream& operator<<(std::ostream& out, const AEBigint& bint) {
-		return (out << bint.toString());
-	}
+	friend std::ostream& operator<<(std::ostream& out, const AEBigint& bint);
 
-	std::string toString2() const {
+	[[nodiscard]] std::string toString2() const {
 
 		if (this->isZero()) {
 			return "0"; // a quick shortcut and performance gain :)
 		}
 
 		std::string result;
-		char buf[_AEBI_MAX_SECTOR_STORE_DIGITS+1]{};
-		char* dataptr;
 
 		if (this->m_bNegative) {
-			result.resize(this->m_ullSize + 1); // reserve space for the '-'
-			result[0] = ('-');
-			dataptr = result.data()+1;
+			result.reserve(this->m_ullSize + 1); // reserve space for the '-'
+			result.push_back('-');
 		}
 		else {
-			result.resize(this->m_ullSize);
-			dataptr = result.data();
+			result.reserve(this->m_ullSize);
 		}
 
-		
-		//snprintf(buf, sizeof(buf), "%llu", this->m_vecSectors[this->m_vecSectors.size() - 1]);
+		char buf[20]{};
+		snprintf(buf, sizeof(buf), "%llu", this->m_vecSectors[this->m_vecSectors.size() - 1]);
 
-		//const ucint tmp = snprintf(buf, sizeof(buf), "%llu", this->m_vecSectors[this->m_vecSectors.size() - 1]);
-		const ucint tmp = ace::utils::ullToCString(this->m_vecSectors[this->m_vecSectors.size() - 1], buf);
-		
-		std::memcpy(dataptr, buf, tmp);
-
-		dataptr += tmp;
+		result.append(buf);
 
 		for (std::size_t i = this->m_vecSectors.size() - 1; i > 0; i--) {
-
-			std::memcpy(dataptr, this->sectorToString2(buf, this->m_vecSectors[i - 1]), _AEBI_MAX_SECTOR_STORE_DIGITS);
-			dataptr += _AEBI_MAX_SECTOR_STORE_DIGITS;
-
-
-			//result.append(this->sectorToString2(buf, this->m_vecSectors[i - 1]));
+			snprintf(buf, sizeof(buf), "%0.19llu", this->m_vecSectors[i - 1]);
+			result.append(buf);
 		}
 
 		return result;
@@ -273,9 +263,9 @@ public:
 
 	[[nodiscard]] static inline const char* sectorToString2(char* const str, ullint val) noexcept {
 
-// 		if (val == 0) {
-// 			return "0000000000000000000";
-// 		}
+		if (val == 0) {
+			return "0000000000000000000";
+		}
 
 		std::memset(str, '0', 18);
 
@@ -286,11 +276,6 @@ public:
 			val /= 10;
 		}
 		str[i] = '0' + val % 10;
-
-		
-
-
-		//snprintf(str, 20, "%0.19llu", val);
 
 		return str;
 	}
@@ -365,6 +350,8 @@ void AEBigint::copyFromInt(const T num) requires(std::is_integral<T>::value) {
 	}
 
 }
+
+
 
 
 #endif // !ENGINE_BIGINT_HPP

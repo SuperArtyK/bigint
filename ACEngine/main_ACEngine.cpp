@@ -34,9 +34,7 @@ long double runningAvg(const int amt, const long double val, const long double n
 
 int main() {
 
-	std::cout << ULLINT_MAX - powerOf10Table[20] << NLC;
-
-	std::srand(std::time(nullptr));
+	std::srand(1);
 
 	AEBigint a = UINT_MAX;
 	outputBint(a);
@@ -52,7 +50,12 @@ int main() {
 
 	a.setDigit(18, 9);
 	cout << NLC << a.toString2()<<NLC;
-	a.setDigit(1024, 9);
+	a.clear();
+	a.setDigit(8000000000, 9);
+// 	for (ullint i = 0; i < a.getSectorAmount(); i++) {
+// 		a.setSectorValue(i, std::rand() * powerOf10Table[9] + std::rand());
+// 	}
+
 
 	cout << "Press enter to start benchmark" << NLC;
 
@@ -62,11 +65,9 @@ int main() {
 	ullint repeat = 0;
 	long double tm1, tm2, avg = 0;
 
-	for (ullint i = 0; i < a.getSize(); i++) {
-		a.setDigit(i, std::rand() % 10);
-	}
 
-	constexpr int iter = 1000*1000;
+	
+	constexpr int iter = 1;
 
 	for (;;) {
 
@@ -75,7 +76,7 @@ int main() {
 		cout << "Starting timing string processing (optimised)..." << NLC;
 		tp1 = getHighResTime();
 		for (int i = 0; i < iter; i++) {
-			b = a.toString2();
+			b = a.toString();
 		}
 		cout << "time used processing (optimised): " << (tm2 = timeBetween(tp1, getHighResTime(), long double) * 1000.0L) << NLC;
 
@@ -89,7 +90,7 @@ int main() {
 		//cout<<a<<NLC;
 		//outputBint(a);
 		for (int i = 0; i < iter; i++) {
-			b = a.toString();
+			b = a.toString2();
 		}
 		cout << "time used processing (unoptimised): " << (tm1 = timeBetween(tp1, getHighResTime(), long double) * 1000.0L) << NLC;
 
