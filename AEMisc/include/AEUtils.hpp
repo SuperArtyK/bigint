@@ -139,8 +139,10 @@ namespace ace {
 		///		* **False**
 		/// </returns>
 		template<const bool checkFloat = true>
-		[[nodiscard]] constexpr bool isNum(const std::string_view strnum) noexcept {
-			const std::size_t len = strnum.size();
+		[[nodiscard]] constexpr bool isNum(const std::string_view str) noexcept {
+
+			const char* const strnum = str.data();
+			const std::size_t len = str.size();
 			//is it empty?
 			if (len == 0) {
 				return false;
@@ -166,7 +168,7 @@ namespace ace {
 			if (strnum[i] == '0' && (strnum[++i] != '.' || len == i + 1)) {
 				return false; // the "0X" case
 			}
-			
+
 			for (; i < len; i++) {
 				if (strnum[i] < '0' || strnum[i] > '9') {
 					if constexpr (checkFloat) {
@@ -180,11 +182,11 @@ namespace ace {
 					else {
 						return false;
 					}
-					
+
 				}
 			}
 			//passed
-			return strnum[i-1] != '.'; // check for the final "X."
+			return strnum[i - 1] != '.'; // check for the final "X."
 		}
 
 		/// <summary>

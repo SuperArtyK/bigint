@@ -127,23 +127,22 @@ public:
 		this->copyFromInt<T>(num);
 	}
 
-	~AEBigint() {
-		dprintf("Destroying this bigint");
-	}
+	AEBigint(const std::string_view str);
+
+	~AEBigint();
 
 
 //////////////////////////////////
 // assignment operators
+// AEBigint_construction.cpp
 //////////////////////////////////
 	AEBigint& operator=(const AEBigint& bint);
 
+	AEBigint& operator=(const std::string_view str);
+
 	template<typename T>
-	inline AEBigint& operator=(const T num) requires(std::is_integral<T>::value) {
-		if (!this->isZero() || !num == 0) {
-			this->copyFromInt(num);
-		}
-		return *this;
-	}
+	inline AEBigint& operator=(const T num) requires(std::is_integral<T>::value); // defined below class
+
 
 
 /////////////////
@@ -245,53 +244,6 @@ public:
 
 	void toCString(char* dataptr) const noexcept;
 
-	void copyFromString(const std::string_view str) {
-		if (!ace::utils::isNum<false>(str)) {
-			return;
-		}
-
-		if (str[0] == '0' && str.size() == 1) {
-			this->clear(true);
-			return;
-		}
-		this->clear(false);
-
-
-
-		const char* start = str.data() + str.size();
-		if (start[0] == '-') {
-			this->m_bNegative = true;
-			this->m_ullSize = str.length() - 1;
-		}
-		else {
-			this->m_ullSize = str.length();
-		}
-
-
-		constexpr auto toUllint = [](const char* const str, const ullint sz) {
-			ullint result = 0;
-			for (std::size_t i = 0; i < sz; i++) {
-				result = result * 10 + str[i] - '0';
-			}
-
-			return result;
-			};
-
-		std::size_t i = this->m_ullSize;
-
-		for (; i > _AEBI_MAX_SECTOR_STORE_DIGITS; i -= _AEBI_MAX_SECTOR_STORE_DIGITS) {
-			this->m_vecSectors.emplace_back(toUllint(start -= _AEBI_MAX_SECTOR_STORE_DIGITS, _AEBI_MAX_SECTOR_STORE_DIGITS));
-		}
-		this->m_vecSectors.emplace_back(toUllint(str.data(), i));
-
-
-
-
-
-
-	}
-
-
 private:
 
 	static void sectorToString(char* const str, ullint val) noexcept;
@@ -303,7 +255,8 @@ private:
 	template<typename T>
 	void copyFromInt(const T num) requires(std::is_integral<T>::value); // defined below class
 
-	
+	void copyFromString(const std::string_view str);
+
 
 	/// The vector that contains all the number sectors
 	std::vector<ullint> m_vecSectors;
@@ -313,6 +266,21 @@ private:
 	bool m_bNegative;
 
 };
+
+
+
+//////////////////////////////////
+// Inline function definitions
+// (mostly primitive arithmetic-
+//  related stuff)
+//////////////////////////////////
+template<typename T>
+inline AEBigint& AEBigint::operator=(const T num) requires(std::is_integral<T>::value) {
+	if (!this->isZero() || !num == 0) {
+		this->copyFromInt(num);
+	}
+	return *this;
+}
 
 
 template<typename T>
