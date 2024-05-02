@@ -20,8 +20,8 @@ namespace ace::utils {
 		char tmp = *str;
 
 		while (str < ptr) {
-			*str++ = *ptr;
-			*ptr-- = tmp;
+			*(str++) = *ptr;
+			*(ptr--) = tmp;
 			tmp = *str;
 		}
 	}
@@ -35,7 +35,7 @@ namespace ace::utils {
 	/// <param name="num">The number to convert</param>
 	/// <param name="str">The c-string to write to</param>
 	/// <returns>The number of characters successfully written (excluding null terminator)</returns>
-	inline std::size_t ullToCString(ullint num, char* const str) noexcept {
+	inline int ullToCString(ullint num, char* const str) noexcept {
 
 		int a = 0;
 		while (num > 9) {
@@ -106,7 +106,7 @@ public:
 	/// Default constructor -- constructs the bigint and sets it to 0.
 	/// @note Sets the sector reserve amount to AEBI_RESERVE_SIZE
 	/// </summary>
-	AEBigint();
+	AEBigint(void);
 
 	/// <summary>
 	/// Copy-constructor -- constructs and copies the data from passed bigint.
@@ -139,7 +139,7 @@ public:
 
 	template<typename T>
 	inline AEBigint& operator=(const T num) requires(std::is_integral<T>::value) {
-		if (!this->isZero() && num != 0) {
+		if (!this->isZero() || !num == 0) {
 			this->copyFromInt(num);
 		}
 		return *this;
@@ -149,38 +149,38 @@ public:
 /////////////////
 // getters
 /////////////////
-	[[nodiscard]] inline bool isZero() const noexcept {
-		return this->m_ullSize == 1 && this->m_vecSectors[0] == 0;
+	[[nodiscard]] inline bool isZero(void) const noexcept {
+		return this->getSize() == 1 && this->getFirstSector() == 0;
 	}
 
-	[[nodiscard]] inline bool isNegative() const noexcept {
+	[[nodiscard]] inline bool isNegative(void) const noexcept {
 		return this->m_bNegative;
 	}
 
-	[[nodiscard]] inline bool isPositive() const noexcept {
+	[[nodiscard]] inline bool isPositive(void) const noexcept {
 		return !this->m_bNegative;
 	}
 
-	[[nodiscard]] inline ullint getSize() const noexcept {
+	[[nodiscard]] inline ullint getSize(void) const noexcept {
 		return this->m_ullSize;
 	}
 
-	[[nodiscard]] inline std::size_t getSectorAmount() const noexcept {
+	[[nodiscard]] inline std::size_t getSectorAmount(void) const noexcept {
 		return this->m_vecSectors.size();
 	}
 
 	[[nodiscard]] inline ucint getDigitChar(const ullint dig) const noexcept {
-		if (dig == 0) {
-			return this->m_vecSectors[0] % 10;
-		}
-		return (this->m_vecSectors[dig / _AEBI_MAX_SECTOR_STORE_DIGITS] / powerOf10Table[(dig % _AEBI_MAX_SECTOR_STORE_DIGITS)]) % 10;
+		if (dig == 0) { return this->getFirstSector() % 10; }
+		return (this->getSector(dig / _AEBI_MAX_SECTOR_STORE_DIGITS) / 
+			powerOf10Table[(dig % _AEBI_MAX_SECTOR_STORE_DIGITS)]) 
+			% 10;
 	}
 
 	[[nodiscard]] inline int getDigit(const ullint dig) const noexcept {
 		return int(this->getDigitChar(dig));
 	}
 
-	inline ullint getSectorValue(const std::size_t sector) const noexcept {
+	[[nodiscard]] inline ullint getSector(const std::size_t sector) const noexcept {
 		return this->m_vecSectors[sector];
 	}
 
@@ -188,8 +188,13 @@ public:
 		return sizeof(AEBigint) + this->m_vecSectors.capacity() * sizeof(ullint);
 	}
 
-	
+	[[nodiscard]] inline ullint getLastSector(void) const noexcept {
+		return this->getSector(this->m_vecSectors.size() - 1);
+	}
 
+	[[nodiscard]] inline ullint getFirstSector(void) const noexcept {
+		return this->getSector(0);
+	}
 
 /////////////////
 // setters
@@ -199,15 +204,20 @@ public:
 		return *this;
 	}
 
-	[[nodiscard]] void setDigit(const ullint dig, const ucint val);
+	void setDigit(const ullint dig, const ucint val);
 
-	[[nodiscard]] void setSectorValue(const std::size_t sector, const ullint val);
+	void setSector(const std::size_t sector, const ullint val);
+
+	inline void setLastSector(const ullint val) { this->setSector(this->getSectorAmount() - 1, val); }
+
+	inline void setFirstSector(const ullint val) { this->setSector(0, val); }
+
 
 //////////////////////////////////
 // miscellanea
 // AEBigint_miscellanea.cpp
 //////////////////////////////////
-	[[nodiscard]] inline AEBigint operator-() const {
+	[[nodiscard]] inline AEBigint operator-(void) const {
 		AEBigint tmp = *this;
 		tmp.m_bNegative = !tmp.m_bNegative;
 		return tmp;
@@ -225,82 +235,66 @@ public:
 // conversions
 // AEBigint_miscellanea.cpp
 //////////////////////////////////
-	[[nodiscard]] std::string toString() const;
+	[[nodiscard]] std::string toString(void) const;
 
-	[[nodiscard]] inline operator bool() const noexcept { return !this->isZero(); }
+	[[nodiscard]] inline operator bool(void) const noexcept { return !this->isZero(); }
+
+	[[nodiscard]] inline operator std::string(void) const { return this->toString(); }
 
 	friend std::ostream& operator<<(std::ostream& out, const AEBigint& bint);
 
-	[[nodiscard]] std::string toString2() const {
+	void toCString(char* dataptr) const noexcept;
 
-		if (this->isZero()) {
-			return "0"; // a quick shortcut and performance gain :)
+	void copyFromString(const std::string_view str) {
+		if (!ace::utils::isNum<false>(str)) {
+			return;
 		}
 
-		std::string result;
+		if (str[0] == '0' && str.size() == 1) {
+			this->clear(true);
+			return;
+		}
+		this->clear(false);
 
-		if (this->m_bNegative) {
-			result.reserve(this->m_ullSize + 1); // reserve space for the '-'
-			result.push_back('-');
+
+
+		const char* start = str.data() + str.size();
+		if (start[0] == '-') {
+			this->m_bNegative = true;
+			this->m_ullSize = str.length() - 1;
 		}
 		else {
-			result.reserve(this->m_ullSize);
+			this->m_ullSize = str.length();
 		}
 
-		char buf[20]{};
-		snprintf(buf, sizeof(buf), "%llu", this->m_vecSectors[this->m_vecSectors.size() - 1]);
 
-		result.append(buf);
+		constexpr auto toUllint = [](const char* const str, const ullint sz) {
+			ullint result = 0;
+			for (std::size_t i = 0; i < sz; i++) {
+				result = result * 10 + str[i] - '0';
+			}
 
-		for (std::size_t i = this->m_vecSectors.size() - 1; i > 0; i--) {
-			snprintf(buf, sizeof(buf), "%0.19llu", this->m_vecSectors[i - 1]);
-			result.append(buf);
+			return result;
+			};
+
+		std::size_t i = this->m_ullSize;
+
+		for (; i > _AEBI_MAX_SECTOR_STORE_DIGITS; i -= _AEBI_MAX_SECTOR_STORE_DIGITS) {
+			this->m_vecSectors.emplace_back(toUllint(start -= _AEBI_MAX_SECTOR_STORE_DIGITS, _AEBI_MAX_SECTOR_STORE_DIGITS));
 		}
+		this->m_vecSectors.emplace_back(toUllint(str.data(), i));
 
-		return result;
+
+
+
+
+
 	}
 
 
-	[[nodiscard]] static inline const char* sectorToString2(char* const str, ullint val) noexcept {
-
-		if (val == 0) {
-			return "0000000000000000000";
-		}
-
-		std::memset(str, '0', 18);
-
-		int i = 18;
-
-		while (val > 9) {
-			str[i--] = '0' + val % 10;
-			val /= 10;
-		}
-		str[i] = '0' + val % 10;
-
-		return str;
-	}
-
-
-	
 private:
 
-	[[nodiscard]] inline static const char* sectorToString(char* const str, ullint val) noexcept {
-		if (val == 0) {
-			return "0000000000000000000";
-		}
-
-		std::memset(str, '0', 18);
-
-		int i = 18;
-
-		while (val > 9) {
-			str[i--] = '0' + val % 10;
-			val /= 10;
-		}
-		str[i] = '0' + val % 10;
-
-		return str;
-	}
+	static void sectorToString(char* const str, ullint val) noexcept;
 
 //////////////////////////////////
 // copying
@@ -308,6 +302,8 @@ private:
 //////////////////////////////////
 	template<typename T>
 	void copyFromInt(const T num) requires(std::is_integral<T>::value); // defined below class
+
+	
 
 	/// The vector that contains all the number sectors
 	std::vector<ullint> m_vecSectors;
@@ -321,7 +317,13 @@ private:
 
 template<typename T>
 void AEBigint::copyFromInt(const T num) requires(std::is_integral<T>::value) {
+	if (num == 0) {
+		this->clear(true);
+		return;
+	}
+
 	this->clear(false);
+	
 	this->m_ullSize = ace::math::lengthOfInt<T>(num);
 
 	if constexpr (std::is_signed<T>::value) { // its signed and may be negative

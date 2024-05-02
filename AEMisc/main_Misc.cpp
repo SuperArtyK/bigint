@@ -66,6 +66,8 @@ int main() {
 	cout << (ace::utils::toLowerVal("abc123def")) << "; " << (ace::utils::toUpperVal("abc123def")) << endl;
 	cout << ace::utils::boolToString(ace::utils::isNum<true>("-123.567")) << "; " << ace::utils::boolToString(ace::utils::isNum<false>("-1234567890")) << endl;
 	cout << ace::utils::boolToString(ace::utils::isNum<false>("-123.567")) << "; " << ace::utils::boolToString(ace::utils::isNum<true>("-1234567890")) << endl;
+	cout << ace::utils::boolToString(ace::utils::isNum<false>("-123.567.")) << "; " << ace::utils::boolToString(ace::utils::isNum<true>("-01234567890")) << endl;
+	cout << ace::utils::boolToString(ace::utils::isNum<false>("-.123.567.")) << "; " << ace::utils::boolToString(ace::utils::isNum<true>("-01234567890")) << endl;
 	cout << ace::utils::getCurrentDate() << "; " << ace::utils::addrToStr(&testv) << endl;
 	cout << endl;
 

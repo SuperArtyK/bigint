@@ -21,13 +21,13 @@ AEBigint::AEBigint(const AEBigint& bint) : m_vecSectors(bint.m_vecSectors), m_ul
 AEBigint& AEBigint::operator=(const AEBigint& bint) {
 	dprintf("Assigning from another Bigint");
 
-	if (this == &bint || (this->m_ullSize == bint.m_ullSize && this->isZero())) {
+	if (this == &bint || (this->isZero() && bint.isZero())) {
 		dprintf("Tried self-assigning or assign to 0-bigint while 0 originally");
 		return *this;
 	}
 
+	this->m_vecSectors.reserve(bint.m_vecSectors.size() + AEBI_RESERVE_SIZE);
 	this->m_vecSectors = bint.m_vecSectors;
-	this->m_vecSectors.reserve(AEBI_RESERVE_SIZE);
 	this->m_ullSize = bint.m_ullSize;
 	this->m_bNegative = bint.m_bNegative;
 	return *this;

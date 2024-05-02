@@ -145,28 +145,33 @@ namespace ace {
 			if (len == 0) {
 				return false;
 			}
-			size_t i = 0;
-			if (strnum[0] == '-') {
-				//check if string has only the minus in it
-				if (len < 2) {
-					return false;
-				}
-				i = 1;
-			}
-			//quick check, if string has 0 as the first number, minus before it
-			//and no dot after
-			if (strnum[i] == '0' && i == 1 &&
-				(len == 2 || 
-					(len > 2 && strnum[++i] != '.'))) {
-				return false; //hey that's invalid!
+
+			if (len == 1) { // if a single number
+				return ace::utils::isInRange('0', '9', strnum[0]);
 			}
 
-			bool metDecimal = false;
+			size_t i = 0;
+			bool decimal = false;
+			constexpr bool outOfRange = [](const char left, const char right, const char val) {
+				return (val < left || val > right);
+				};
+
+			if (strnum[0] == '-') {
+				i++;
+				if (len == 2) {
+					return ace::utils::isInRange('1', '9', strnum[i]); // there cannot be "-0"
+				}
+			}
+
+			if (strnum[i] == '0' && (strnum[++i] != '.' || len == i + 1)) {
+				return false; // the "0X" case
+			}
+			
 			for (; i < len; i++) {
 				if (strnum[i] < '0' || strnum[i] > '9') {
 					if constexpr (checkFloat) {
-						if (strnum[i] == '.' && !metDecimal) {
-							metDecimal = true;
+						if (strnum[i] == '.' && !decimal) {
+							decimal = true;
 						}
 						else {
 							return false;
@@ -179,7 +184,7 @@ namespace ace {
 				}
 			}
 			//passed
-			return true;
+			return strnum[i-1] != '.'; // check for the final "X."
 		}
 
 		/// <summary>
