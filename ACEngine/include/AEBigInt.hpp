@@ -243,6 +243,19 @@ public:
 	friend std::ostream& operator<<(std::ostream& out, const AEBigint& bint);
 
 	void toCString(char* dataptr) const noexcept;
+	void toCString2(char* dataptr) const noexcept;
+
+
+	void copyFromFloat(const long double num) {
+		if (ace::math::absval(num) < 1) {
+			this->clear(true); // welp, I guess you're still 0
+		}
+
+		this->clear(false);
+		
+
+
+	}
 
 private:
 

@@ -1,5 +1,5 @@
 #include "../include/AEBigint.hpp"
-
+#include "../include/jeaiii_to_text.h"
 
 /////////////////
 // setters
@@ -41,8 +41,8 @@ void AEBigint::setSector(const std::size_t sector, const ullint val) {
 	if (this->isZero()) {
 		return "0";
 	}
-	std::string result(this->getSize() + this->isNegative(), '\0');
-	this->toCString(result.data());
+	std::string result(this->getSize() + this->isNegative(), '0');
+	this->toCString2(result.data());
 	return result;
 }
 
@@ -90,6 +90,46 @@ void AEBigint::toCString(char* dataptr) const noexcept {
 	for (std::size_t i = this->getSectorAmount() - 1; i-- > 0;) {
 
 		this->sectorToString(dataptr, this->getSector(i));
+		dataptr += _AEBI_MAX_SECTOR_STORE_DIGITS;
+	}
+
+	*dataptr = AENULL; //null-terminate it, at least
+}
+
+void AEBigint::toCString2(char* dataptr) const noexcept {
+	if (!dataptr) {
+		return;
+	}
+
+	if (this->isZero()) {
+		std::memcpy(dataptr, "0", 2);
+		return;
+	}
+
+	if (this->isNegative()) {
+		*dataptr++ = '-';
+	}
+
+	dataptr += ace::utils::ullToCString(this->getLastSector(), dataptr);
+	//dataptr = jeaiii::to_text_from_integer(dataptr, this->getLastSector());
+
+	char str[_AEBI_MAX_SECTOR_STORE_DIGITS + 1]{};
+
+	int sz = 0;
+
+	for (std::size_t i = this->getSectorAmount() - 1; i-- > 0;) {
+
+		// HUUGE thanks to jeaiii for making this thing!
+		// It's literally 100% faster than the previous "sectorToString" method
+		// https://github.com/jeaiii/itoa
+		
+		//jeaiii::to_text_from_integer(dataptr, this->getSector(i), 19);
+		//this->sectorToString(dataptr, this->getSector(i));
+		
+		sz = jeaiii::to_text_from_integer(str, this->getSector(i)) - str;
+
+		std::memcpy(dataptr + (_AEBI_MAX_SECTOR_STORE_DIGITS - sz ) , str, sz);
+
 		dataptr += _AEBI_MAX_SECTOR_STORE_DIGITS;
 	}
 

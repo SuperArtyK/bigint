@@ -6,6 +6,8 @@ It is made with the help of my game engine ACEngine, to not reimplement the tool
 
 In future there are plans to merging this project back with the ACEngine to provide arbitrary-width arithmetics in there.
 
+Special thanks to [@jeaiii](https://github.com/jeaiii "jeaiii") for the integer-to-string conversion library he wrote: [jeaiii/itoa](https://github.com/jeaiii/itoa "jeaiii/itoa").
+
 Below is the original docs from the ACEngine at the time of the project creation.
 
 # ACEngine

@@ -212,6 +212,7 @@
     <ClInclude Include="..\AEVector\include\AEVector.hpp" />
     <ClInclude Include="..\resources\resource1.h" />
     <ClInclude Include="include\AEBigint.hpp" />
+    <ClInclude Include="include\jeaiii_to_text.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
