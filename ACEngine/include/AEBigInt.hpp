@@ -125,7 +125,7 @@ public:
 	/// <param name="num">The number to set the value to</param>
 	template<typename T>
 	AEBigint(const T num) requires(std::is_integral<T>::value) {
-		dprintf("Constructing with a integral value");
+		dprintf("Constructing with a integral value (digits: %u)", ace::math::lengthOfInt<T>(num));
 		this->copyFromInt<T>(num);
 	}
 
@@ -133,7 +133,7 @@ public:
 
 	template<typename T>
 	AEBigint(const T flt) requires(std::is_floating_point<T>::value) {
-		dprintf("Constructing with a floating-point value");
+		dprintf("Constructing with a floating-point value (digits: %u, negative: %s)", ace::math::lengthOfFloat<T>(flt), ace::utils::boolToString(flt < 0).data());
 		this->copyFromFloat(flt);
 	}
 
@@ -155,6 +155,28 @@ public:
 	inline AEBigint& operator=(const T flt) requires(std::is_floating_point<T>::value); // defined below class
 
 
+//////////////////////////////////
+// comparison operators
+// AEBigint_construction.cpp
+//////////////////////////////////
+// equality
+/////////////////
+	bool operator==(const AEBigint& bint) const noexcept;
+
+	bool operator==(const std::string_view str) const;
+
+	template<typename T>
+	inline bool operator==(const T num) const noexcept requires(std::is_integral<T>::value);
+
+	template<typename T>
+	inline bool operator==(const T flt) const requires(std::is_floating_point<T>::value);
+
+
+// greater than
+/////////////////
+
+
+
 
 /////////////////
 // getters
@@ -173,6 +195,10 @@ public:
 
 	[[nodiscard]] inline ullint size(void) const noexcept {
 		return this->m_ullSize;
+	}
+
+	[[nodiscard]] inline ullint length(void) const noexcept {
+		return this->size();
 	}
 
 	[[nodiscard]] inline std::size_t sectorAmount(void) const noexcept {
@@ -262,7 +288,7 @@ public:
 
 private:
 
-	static void sectorToString(char* const str, ullint val) noexcept;
+	static void sectorToCString(char* const str, ullint val) noexcept;
 
 
 	template<class T>
@@ -280,7 +306,7 @@ private:
 	template<typename T>
 	void copyFromInt(const T num) requires(std::is_integral<T>::value); // defined below class
 
-	void copyFromString(const std::string_view str);
+	void copyFromString(const std::string_view str, const bool check = true);
 
 	template<typename T>
 	inline void copyFromFloat(const T flt) requires(std::is_floating_point<T>::value); // defined below class
@@ -298,14 +324,17 @@ private:
 
 
 
-//////////////////////////////////
-// Inline function definitions
-// (mostly primitive arithmetic-
-//  related stuff)
-//////////////////////////////////
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Inline function definitions (mostly primitive arithmetic-related stuff)
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 template<typename T>
 inline AEBigint& AEBigint::operator=(const T num) requires(std::is_integral<T>::value) {
-	dprintf("Assigning from integral value");
+	dprintf("Assigning from integral value (digits: %u)", ace::math::lengthOfInt<T>(num));
 	this->copyFromInt(num);
 	return *this;
 }
@@ -356,7 +385,7 @@ inline void AEBigint::copyFromFloat(const T flt) requires(std::is_floating_point
 		return;
 	}
 
-	this->clear(false);
+// 	this->clear(false);
 	//allocate enough space for the maximum value of the float + negative sign + decimal ".X" + null terminator
 	char fltnum[std::numeric_limits<T>::max_exponent10 + 3]{};
 
@@ -368,15 +397,43 @@ inline void AEBigint::copyFromFloat(const T flt) requires(std::is_floating_point
 	this->copyFromString(
 		std::string_view(
 			fltnum,
-			std::to_chars(fltnum, fltnum + sizeof(fltnum) - 1, std::trunc(flt), std::chars_format::fixed, 0).ptr));
+			std::to_chars(fltnum, fltnum + sizeof(fltnum) - 1, std::trunc(flt), std::chars_format::fixed, 0).ptr), false);
 }
-
 
 template<typename T>
 inline AEBigint& AEBigint::operator=(const T flt) requires(std::is_floating_point<T>::value) {
-	dprintf("Assigning from floating-point value");
+	dprintf("Assigning from floating-point value (digits: %u, negative: %s)", ace::math::lengthOfFloat<T>(flt), ace::utils::boolToString(flt < 0).data());
 	this->copyFromFloat(flt);
 	return *this;
+}
+
+
+
+template<typename T>
+inline bool AEBigint::operator==(const T num) const noexcept requires(std::is_integral<T>::value) {
+
+	if constexpr (IS_SAME_NOCV(T, ullint)) {
+		if (num >= powerOf10Table[19]) { //doesn't fit into 1 sector
+			if (this->sectorAmount() != 2 ||
+				this->getSector(0) != (num % powerOf10Table[19]) ||
+				this->getSector(1) != (num / powerOf10Table[19])) {
+				return false;
+			}
+		}
+	}
+	if (this->sectorAmount() != 1 || this->getFirstSector() != num) {
+		return false;
+	}
+
+	return true;
+}
+
+template<typename T>
+inline bool AEBigint::operator==(const T flt) const requires(std::is_floating_point<T>::value) {
+
+	return (this->isNegative() != (flt < 0) || !ace::math::fequals(flt, std::trunc(flt)) || this->size() != ace::math::lengthOfFloat<T>(flt))
+		? false
+		: this->operator==(AEBigint(flt));
 }
 
 

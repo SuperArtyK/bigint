@@ -64,7 +64,7 @@ std::ostream& operator<<(std::ostream& out, const AEBigint& bint) {
 	tmp = std::string_view(buf, _AEBI_MAX_SECTOR_STORE_DIGITS);
 
 	for (std::size_t i = bint.sectorAmount() - 1; i-- > 0;) {
-		AEBigint::sectorToString(buf, bint.getSector(i));
+		AEBigint::sectorToCString(buf, bint.getSector(i));
 		out << tmp;
 	}
 	
@@ -96,7 +96,7 @@ void AEBigint::toCString(char* dataptr) const noexcept {
 
 }
 
-void AEBigint::sectorToString(char* const str, ullint val) noexcept {
+void AEBigint::sectorToCString(char* const str, ullint val) noexcept {
 	std::memset(str, '0', 19);
 
 	if (val == 0) {

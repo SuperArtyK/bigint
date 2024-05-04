@@ -93,7 +93,7 @@
 /// <param name="T">The first type to compare</param>
 /// <param name="Y">The second type to compare</param>
 /// @note This discards the cv-qualifiers from the types in the comparison
-#define IS_SAME_NOCV(T, Y) (std::is_same<std::remove_cv<T>::type, std::remove_cv<Y>::type>::value)
+#define IS_SAME_NOCV(T, Y) (std::is_same<typename std::remove_cv<T>::type, typename std::remove_cv<Y>::type>::value)
 
 /// Macro to check **if the given type T is the same as Y**.
 /// The decay happens before the removal of cv-qualifiers
@@ -101,7 +101,7 @@
 /// <param name="Y">The second type to compare</param>
 /// @note This decays the types used in the comparison
 /// @note This discards the cv-qualifiers from the types in the comparison
-#define IS_SAME_NOCV_DECAY(T, Y) (std::is_same<std::remove_cv<std::decay<T>::type>::type, std::remove_cv<std::decay<Y>::type>::type>::value)
+#define IS_SAME_NOCV_DECAY(T, Y) (std::is_same<typename std::remove_cv<std::decay<T>::type>::type, typename std::remove_cv<std::decay<Y>::type>::type>::value)
 
 
 /// Macro to convert the normal **string literal to utf-8 string literal**.

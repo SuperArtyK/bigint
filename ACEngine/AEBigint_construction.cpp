@@ -9,18 +9,18 @@ AEBigint::AEBigint() {
 }
 
 AEBigint::AEBigint(const AEBigint& bint) : m_vecSectors(bint.m_vecSectors), m_ullSize(bint.m_ullSize), m_bNegative(bint.m_bNegative) {
-	dprintf("Constructing AEBigint with another AEBigint");
+	dprintf("Constructing AEBigint with another AEBigint (digits: %llu, negative: %s)", bint.size(), ace::utils::boolToString(bint.isNegative()).data());
 	m_vecSectors.reserve(AEBI_RESERVE_SIZE);
 }
 
 AEBigint::AEBigint(const std::string_view str) {
-	dprintf("Constructing AEBigint with a string (std::string_view)");
+	dprintf("Constructing AEBigint with a std::string_view (characters: %llu)", ullint(str.size()) );
 	this->copyFromString(str);
 }
 
 
 AEBigint::~AEBigint() {
-	dprintf("Destroying this AEBigint");
+	dprintf("Destroying this AEBigint (digits: %llu, negative: %s)", this->size(), ace::utils::boolToString(this->isNegative()).data());
 }
 
 
@@ -28,7 +28,7 @@ AEBigint::~AEBigint() {
 // assignment operators
 //////////////////////////////////
 AEBigint& AEBigint::operator=(const AEBigint& bint) {
-	dprintf("Assigning from another Bigint");
+	dprintf("Assigning from another Bigint (digits: %llu, negative: %s)", bint.size(), ace::utils::boolToString(bint.isNegative()).data());
 
 	if (this == &bint || (this->isZero() && bint.isZero())) {
 		dprintf("Tried self-assigning or assign to 0-bigint while 0 originally");
@@ -43,7 +43,7 @@ AEBigint& AEBigint::operator=(const AEBigint& bint) {
 }
 
 AEBigint& AEBigint::operator=(const std::string_view str) {
-	dprintf("Assigning from string (std::string_view)");
+	dprintf("Assigning from a std::string_view (characters: %llu)", ullint(str.size()));
 	this->copyFromString(str);
 	return *this;
 }
@@ -53,8 +53,9 @@ AEBigint& AEBigint::operator=(const std::string_view str) {
 // copying
 // AEBigint_construction.cpp
 //////////////////////////////////
-void AEBigint::copyFromString(const std::string_view str) {
-	if (!ace::utils::isNum<false>(str)) {
+void AEBigint::copyFromString(const std::string_view str, const bool check) {
+
+	if (check && !ace::utils::isNum<false>(str)) {
 		return;
 	}
 
@@ -63,11 +64,15 @@ void AEBigint::copyFromString(const std::string_view str) {
 		this->clear(true);
 		return;
 	}
-	//this->clear(false);
+	this->clear(false);
 
 	
 	if (start[0] == '-') {
 		this->m_bNegative = true;
+	}
+	else
+	{
+		this->m_bNegative = false;
 	}
 
 	this->m_ullSize = str.length() - this->m_bNegative;
