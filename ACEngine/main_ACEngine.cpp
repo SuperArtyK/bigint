@@ -105,9 +105,9 @@ int main() {
 
 
 	a = 10.0L;
-	cout << (a == 10.0L) << NLC;
-	cout << (a == -10.0f) << NLC;
-	cout << (a == 10.1) << NLC;
+	cout << (a != 10.0L) << NLC;
+	cout << (a != -10.0f) << NLC;
+	cout << (a != 10.1) << NLC;
 	//a = getStr();
 
 	//cout << (a.toString() == getStr()) << NLC;

@@ -171,9 +171,25 @@ public:
 	template<typename T>
 	inline bool operator==(const T flt) const requires(std::is_floating_point<T>::value);
 
-
-// greater than
+// inequality
 /////////////////
+	inline bool operator!=(const AEBigint& bint) const noexcept {
+		return !this->operator==(bint);
+	}
+
+	inline bool operator!=(const std::string_view str) const {
+		return !this->operator==(str);
+	}
+
+	template<typename T>
+	inline bool operator!=(const T num) const noexcept requires(std::is_integral<T>::value) {
+		return !this->operator==<T>(num);
+	}
+
+	template<typename T>
+	inline bool operator!=(const T flt) const requires(std::is_floating_point<T>::value) {
+		return !this->operator==<T>(flt);
+	}
 
 
 
