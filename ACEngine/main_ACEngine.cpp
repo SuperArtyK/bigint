@@ -47,7 +47,7 @@ void benchmark() {
 	//cout << (num.size()) << " " << (((num.sectorAmount() - 1) * _AEBI_MAX_SECTOR_STORE_DIGITS + ace::math::lengthOfInt(num.getLastSector()))) << NLC;
 
 	ullint repeat = 0;
-	constexpr int iter = 1024*128;
+	constexpr int iter = 1024*1024*8;
 	std::string str;
 	timePoint<SteadyClock> tp1;
 	long double tm1 = 0, tm2 = 0, avg = 0;
@@ -61,7 +61,7 @@ void benchmark() {
 		//cout<<a<<NLC;
 		//outputBint(a);
 		for (int i = 0; i < iter; i++) {
-			//num.copyFromString2(getStr());
+			//num.copyFromFloat(-LDBL_MAX);
 		}
 		cout << "time used processing (optimised): " << (tm2 = timeBetween(tp1, getSteadyTime(), long double) * 1000.0L) << NLC;
 
@@ -72,7 +72,7 @@ void benchmark() {
 		//cin.get();
 		tp1 = getSteadyTime();
 		for (int i = 0; i < iter; i++) {
-			//num.copyFromString(getStr());
+			//num.copyFromFloat2(-LDBL_MAX);
 		}
 		//cin.get();
 		cout << "time used processing (unoptimised): " << (tm1 = timeBetween(tp1, getSteadyTime(), long double) * 1000.0L) << NLC;
@@ -103,11 +103,17 @@ int main() {
 	outputBint(LLINT_MIN);
 	outputBint(ULLINT_MAX);
 
-	a.copyFromString2(getStr());
 
-	cout << (a.toString() == getStr()) << NLC;
+	a = 1.9999999L;
+	cout << int(1.9999999L) << NLC;
+	cout << a.toString() << NLC;
 
-	outputBint(a);
+
+	//a = getStr();
+
+	//cout << (a.toString() == getStr()) << NLC;
+
+	//outputBint(a);
 
 // 	a = getStr();
 // 
@@ -122,7 +128,7 @@ int main() {
 // 
 // 	cout << str << NLC;
 
-	benchmark();
+	//benchmark();
 
 	cin.get();
 	return 0;

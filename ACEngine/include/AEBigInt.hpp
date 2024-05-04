@@ -131,6 +131,12 @@ public:
 
 	AEBigint(const std::string_view str);
 
+	template<typename T>
+	AEBigint(const T flt) requires(std::is_floating_point<T>::value) {
+		dprintf("Constructing with a floating-point value");
+		this->copyFromFloat(flt);
+	}
+
 	~AEBigint();
 
 
@@ -144,6 +150,9 @@ public:
 
 	template<typename T>
 	inline AEBigint& operator=(const T num) requires(std::is_integral<T>::value); // defined below class
+
+	template<typename T>
+	inline AEBigint& operator=(const T flt) requires(std::is_floating_point<T>::value); // defined below class
 
 
 
@@ -247,26 +256,9 @@ public:
 	void toCString(char* dataptr) const noexcept;
 
 
+	
 
-	template<typename T>
-	void copyFromFloat(const T num) requires(std::is_floating_point<T>::value) {
-		if (ace::math::absval(num) < 1) {
-			this->clear(true); // welp, I guess you're still 0
-		}
-
-		this->clear(false);
-
-		char fltnum[(2 + LDBL_MAX_10_EXP + 2) + 1]{};
-		//snprintf(fltnum, sizeof(fltnum), "%.0Lf", std::round(num));
-
-
-		//std::to_chars(fltnum, fltnum + sizeof(fltnum) - 1, num, std::chars_format::fixed, 1);
-
-		this->copyFromString(
-			std::string_view(
-				fltnum,
-				std::to_chars(fltnum, fltnum + sizeof(fltnum) - 1, num, std::chars_format::fixed, 1).ptr - 2));
-	}
+	
 
 private:
 
@@ -290,6 +282,10 @@ private:
 
 	void copyFromString(const std::string_view str);
 
+	template<typename T>
+	inline void copyFromFloat(const T flt) requires(std::is_floating_point<T>::value); // defined below class
+
+	
 
 	/// The vector that contains all the number sectors
 	std::vector<ullint> m_vecSectors;
@@ -309,9 +305,8 @@ private:
 //////////////////////////////////
 template<typename T>
 inline AEBigint& AEBigint::operator=(const T num) requires(std::is_integral<T>::value) {
-	if (!this->isZero() || !num == 0) {
-		this->copyFromInt(num);
-	}
+	dprintf("Assigning from integral value");
+	this->copyFromInt(num);
 	return *this;
 }
 
@@ -352,6 +347,36 @@ void AEBigint::copyFromInt(const T num) requires(std::is_integral<T>::value) {
 		this->m_bNegative = false;
 	}
 
+}
+
+template<typename T>
+inline void AEBigint::copyFromFloat(const T flt) requires(std::is_floating_point<T>::value) {
+	if (ace::math::absval(flt) < 1.0L) {
+		this->clear(true); // welp, I guess you're still 0
+		return;
+	}
+
+	this->clear(false);
+	//allocate enough space for the maximum value of the float + negative sign + decimal ".X" + null terminator
+	char fltnum[std::numeric_limits<T>::max_exponent10 + 3]{};
+
+	//using precision and then "-1" to try to simulate rounding down
+// 	this->copyFromString(
+// 		std::string_view(
+// 			fltnum,
+// 			std::to_chars(fltnum, fltnum + sizeof(fltnum) - 1, flt, std::chars_format::fixed, 1).ptr - 2));
+	this->copyFromString(
+		std::string_view(
+			fltnum,
+			std::to_chars(fltnum, fltnum + sizeof(fltnum) - 1, std::trunc(flt), std::chars_format::fixed, 0).ptr));
+}
+
+
+template<typename T>
+inline AEBigint& AEBigint::operator=(const T flt) requires(std::is_floating_point<T>::value) {
+	dprintf("Assigning from floating-point value");
+	this->copyFromFloat(flt);
+	return *this;
 }
 
 
