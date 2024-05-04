@@ -9,7 +9,7 @@ void AEBigint::setDigit(const ullint dig, const ucint val) {
 	const std::size_t digSector = dig / _AEBI_MAX_SECTOR_STORE_DIGITS;
 	const int digp10 = dig % _AEBI_MAX_SECTOR_STORE_DIGITS;
 
-	if (digSector < this->getSectorAmount()) {
+	if (digSector < this->sectorAmount()) {
 		const ullint temp = this->m_vecSectors[digSector];
 		this->setSector(digSector, (val * powerOf10Table[digp10] +
 			temp - temp % powerOf10Table[digp10 + 1] +
@@ -29,7 +29,7 @@ void AEBigint::setSector(const std::size_t sector, const ullint val) {
 			this->m_vecSectors.resize(sector + 1);
 			this->m_ullSize = sector * _AEBI_MAX_SECTOR_STORE_DIGITS;
 		}
-		this->m_ullSize += ace::math::lengthOfInt(val);
+		this->m_ullSize = (this->sectorAmount()-1)*_AEBI_MAX_SECTOR_STORE_DIGITS + ace::math::lengthOfInt(val);
 	}
 	this->m_vecSectors[sector] = val;
 
@@ -41,8 +41,8 @@ void AEBigint::setSector(const std::size_t sector, const ullint val) {
 	if (this->isZero()) {
 		return "0";
 	}
-	std::string result(this->getSize() + this->isNegative(), '0');
-	this->toCString2(result.data());
+	std::string result(this->size() + this->isNegative(), '0');
+	this->toCString(result.data());
 	return result;
 }
 
@@ -63,7 +63,7 @@ std::ostream& operator<<(std::ostream& out, const AEBigint& bint) {
 
 	tmp = std::string_view(buf, _AEBI_MAX_SECTOR_STORE_DIGITS);
 
-	for (std::size_t i = bint.getSectorAmount() - 1; i-- > 0;) {
+	for (std::size_t i = bint.sectorAmount() - 1; i-- > 0;) {
 		AEBigint::sectorToString(buf, bint.getSector(i));
 		out << tmp;
 	}
@@ -85,55 +85,15 @@ void AEBigint::toCString(char* dataptr) const noexcept {
 		*dataptr++ = '-';
 	}
 
-	dataptr += ace::utils::ullToCString(this->getLastSector(), dataptr);
+	dataptr = jeaiii::to_text_from_integer(dataptr, this->getLastSector());
 
-	for (std::size_t i = this->getSectorAmount() - 1; i-- > 0;) {
+	for (std::size_t i = this->sectorAmount() - 1; i-- > 0;) {
 
-		this->sectorToString(dataptr, this->getSector(i));
-		dataptr += _AEBI_MAX_SECTOR_STORE_DIGITS;
-	}
-
-	*dataptr = AENULL; //null-terminate it, at least
-}
-
-void AEBigint::toCString2(char* dataptr) const noexcept {
-	if (!dataptr) {
-		return;
-	}
-
-	if (this->isZero()) {
-		std::memcpy(dataptr, "0", 2);
-		return;
-	}
-
-	if (this->isNegative()) {
-		*dataptr++ = '-';
-	}
-
-	dataptr += ace::utils::ullToCString(this->getLastSector(), dataptr);
-	//dataptr = jeaiii::to_text_from_integer(dataptr, this->getLastSector());
-
-	char str[_AEBI_MAX_SECTOR_STORE_DIGITS + 1]{};
-
-	int sz = 0;
-
-	for (std::size_t i = this->getSectorAmount() - 1; i-- > 0;) {
-
-		// HUUGE thanks to jeaiii for making this thing!
-		// It's literally 100% faster than the previous "sectorToString" method
-		// https://github.com/jeaiii/itoa
-		
-		//jeaiii::to_text_from_integer(dataptr, this->getSector(i), 19);
-		//this->sectorToString(dataptr, this->getSector(i));
-		
-		sz = jeaiii::to_text_from_integer(str, this->getSector(i)) - str;
-
-		std::memcpy(dataptr + (_AEBI_MAX_SECTOR_STORE_DIGITS - sz ) , str, sz);
+		AEBigint::sectorToString2(dataptr, this->getSector(i));
 
 		dataptr += _AEBI_MAX_SECTOR_STORE_DIGITS;
 	}
 
-	*dataptr = AENULL; //null-terminate it, at least
 }
 
 void AEBigint::sectorToString(char* const str, ullint val) noexcept {

@@ -7,6 +7,7 @@
 #include "include/AETypedefs.hpp"
 #include "include/AEUtils.hpp"
 #include "include/AEUtilsMacros.hpp"
+#include "jeaiii_to_text.h"
 #include <array>
 
 namespace ace::utils {
@@ -69,7 +70,7 @@ constexpr ullint powerOf10Table[21] {
 /// @note Corresponds to the 10^19 - 1, the largest value of 9999.... that can fit into uint64
 #define _AEBI_MAX_SECTOR_STORE_VALUE (_AEBI_MAX_SECTOR_STORE_P10 - 1)
 
-/// The length in digits of the largest representable value per number sector
+/// The length in jeaiii::digits of the largest representable value per number sector
 constexpr int _AEBI_MAX_SECTOR_STORE_DIGITS = ace::math::lengthOfInt(_AEBI_MAX_SECTOR_STORE_VALUE);
 
 /// The power of 10 of the largest value per sector to operate on.
@@ -79,7 +80,7 @@ constexpr int _AEBI_MAX_SECTOR_STORE_DIGITS = ace::math::lengthOfInt(_AEBI_MAX_S
 #define _AEBI_MAX_SECTOR_OPERATION_VALUE (_AEBI_MAX_SECTOR_OPERATION_P10 - 1)
 
 /// The default vector of sectors reserve size.
-/// Default value is 32 sectors, total of 608 digits
+/// Default value is 32 sectors, total of 608 jeaiii::digits
 #define AEBI_RESERVE_SIZE 32
 
 
@@ -149,7 +150,7 @@ public:
 // getters
 /////////////////
 	[[nodiscard]] inline bool isZero(void) const noexcept {
-		return this->getSize() == 1 && this->getFirstSector() == 0;
+		return this->size() == 1 && this->getFirstSector() == 0;
 	}
 
 	[[nodiscard]] inline bool isNegative(void) const noexcept {
@@ -160,11 +161,11 @@ public:
 		return !this->m_bNegative;
 	}
 
-	[[nodiscard]] inline ullint getSize(void) const noexcept {
+	[[nodiscard]] inline ullint size(void) const noexcept {
 		return this->m_ullSize;
 	}
 
-	[[nodiscard]] inline std::size_t getSectorAmount(void) const noexcept {
+	[[nodiscard]] inline std::size_t sectorAmount(void) const noexcept {
 		return this->m_vecSectors.size();
 	}
 
@@ -207,7 +208,7 @@ public:
 
 	void setSector(const std::size_t sector, const ullint val);
 
-	inline void setLastSector(const ullint val) { this->setSector(this->getSectorAmount() - 1, val); }
+	inline void setLastSector(const ullint val) { this->setSector(this->sectorAmount() - 1, val); }
 
 	inline void setFirstSector(const ullint val) { this->setSector(0, val); }
 
@@ -243,8 +244,6 @@ public:
 	friend std::ostream& operator<<(std::ostream& out, const AEBigint& bint);
 
 	void toCString(char* dataptr) const noexcept;
-	void toCString2(char* dataptr) const noexcept;
-
 
 	void copyFromFloat(const long double num) {
 		if (ace::math::absval(num) < 1) {
@@ -261,6 +260,15 @@ private:
 
 	static void sectorToString(char* const str, ullint val) noexcept;
 
+
+	template<class T>
+#if defined(_MSC_VER)
+	__forceinline
+#else
+	inline
+#endif
+	static constexpr char* sectorToString2(char* b, const T i) noexcept; // defined below class
+
 //////////////////////////////////
 // copying
 // AEBigint_construction.cpp
@@ -273,7 +281,7 @@ private:
 
 	/// The vector that contains all the number sectors
 	std::vector<ullint> m_vecSectors;
-	/// The size of the number in digits
+	/// The size of the number in jeaiii::digits
 	ullint m_ullSize;
 	/// The flag whether the number is negative
 	bool m_bNegative;
@@ -335,6 +343,59 @@ void AEBigint::copyFromInt(const T num) requires(std::is_integral<T>::value) {
 }
 
 
+template<class T>
+#if defined(_MSC_VER)
+__forceinline
+#else
+inline
+#endif
+constexpr char* AEBigint::sectorToString2(char* b, const T i) noexcept
+{
+
+	using u32 = jeaiii::u32;
+	using u64 = jeaiii::u64;
+
+	constexpr auto q = sizeof(T);
+	using U = jeaiii::cond<q == 1, unsigned char, jeaiii::cond<q <= sizeof(short), unsigned short, jeaiii::cond<q <= sizeof(u32), u32, u64>>>;
+
+	// convert bool to int before test with unary + to silence warning if T happens to be bool
+	const U n = +i < 0 ? *b++ = '-', U(0) - U(i) : U(i);
+	const u32 z = n % u32(100000000);
+	u64 u = n / u32(100000000);
+
+	const u32 y = u % u32(100000000);
+	u /= u32(100000000);
+	{
+		const auto f0 = u32(10 * (1 << 24) / 1e3 + 1) * u;
+		*reinterpret_cast<jeaiii::pair*>(b) = jeaiii::digits.fd[f0 >> 24];
+		b -= u < u32(1e3);
+		const auto f2 = (f0 & jeaiii::mask24) * 100;
+		*reinterpret_cast<jeaiii::pair*>(b + 2) = jeaiii::digits.dd[f2 >> 24];
+		b += 4;
+	}
+	{
+		// do 8 jeaiii::digits
+		const auto f0 = (u64((1ull << 48ull) / 1e6 + 1) * y >> 16) + 1;
+		*reinterpret_cast<jeaiii::pair*>(b) = jeaiii::digits.dd[f0 >> 32];
+		const auto f2 = (f0 & jeaiii::mask32) * 100;
+		*reinterpret_cast<jeaiii::pair*>(b + 2) = jeaiii::digits.dd[f2 >> 32];
+		const auto f4 = (f2 & jeaiii::mask32) * 100;
+		*reinterpret_cast<jeaiii::pair*>(b + 4) = jeaiii::digits.dd[f4 >> 32];
+		const auto f6 = (f4 & jeaiii::mask32) * 100;
+		*reinterpret_cast<jeaiii::pair*>(b + 6) = jeaiii::digits.dd[f6 >> 32];
+		b += 8;
+	}
+	// do 8 jeaiii::digits
+	const auto f0 = (u64((1ull << 48ull) / 1e6 + 1) * z >> 16) + 1;
+	*reinterpret_cast<jeaiii::pair*>(b) = jeaiii::digits.dd[f0 >> 32];
+	const auto f2 = (f0 & jeaiii::mask32) * 100;
+	*reinterpret_cast<jeaiii::pair*>(b + 2) = jeaiii::digits.dd[f2 >> 32];
+	const auto f4 = (f2 & jeaiii::mask32) * 100;
+	*reinterpret_cast<jeaiii::pair*>(b + 4) = jeaiii::digits.dd[f4 >> 32];
+	const auto f6 = (f4 & jeaiii::mask32) * 100;
+	*reinterpret_cast<jeaiii::pair*>(b + 6) = jeaiii::digits.dd[f6 >> 32];
+	return b + 8;
+}
 
 
 #endif // !ENGINE_BIGINT_HPP

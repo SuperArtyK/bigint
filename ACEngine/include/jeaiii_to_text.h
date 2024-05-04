@@ -82,7 +82,7 @@ namespace jeaiii
 #else
     inline
 #endif
-    constexpr char* to_text_from_integer(char* b, T i) noexcept
+    constexpr char* to_text_from_integer(char* b, const T i) noexcept
     {
         constexpr auto q = sizeof(T);
         using U = cond<q == 1, unsigned char, cond<q <= sizeof(short), unsigned short, cond<q <= sizeof(u32), u32, u64>>>;
