@@ -16,7 +16,7 @@
 using namespace std;
 
 
-std::string getStr();
+std::string_view getStr();
 
 void outputBint(const AEBigint& bint) {
 	cout << "--------------------------------------------" << NLC;
@@ -37,52 +37,47 @@ constexpr long double runningAvg(const int amt, const long double val, const lon
 void benchmark() {
 
 	AEBigint num;
-	num.setDigit(ullint(1024)*1024*1024*4, 1);
-	for (ullint i = 0; i < num.sectorAmount(); i++) {
-		num.setSector(i, std::rand() * powerOf10Table[9] + std::rand());
-	}
+// 	num.setDigit(ullint(1024)*1024*1024*4, 1);
+// 	for (ullint i = 0; i < num.sectorAmount(); i++) {
+// 		num.setSector(i, std::rand() * powerOf10Table[9] + std::rand());
+// 	}
 
 	//num = getStr();
 
 	//cout << (num.size()) << " " << (((num.sectorAmount() - 1) * _AEBI_MAX_SECTOR_STORE_DIGITS + ace::math::lengthOfInt(num.getLastSector()))) << NLC;
 
 	ullint repeat = 0;
-	constexpr int iter = 4;
+	constexpr int iter = 1024*128;
 	std::string str;
 	timePoint<SteadyClock> tp1;
 	long double tm1 = 0, tm2 = 0, avg = 0;
 
 	char* cstr = new char[num.size() + 1];
 
-	//jeaiii::to_text_from_integer(cstr, 3155397579311771027);
-
-	std::memset(cstr, 'd', 19);
-
-	//jeaiii::test(cstr, 3155397579311771027);
-	
 	for (;;) {
-
-		
-
-		cout << "Starting timing string processing (unoptimised)..." << NLC;
-		tp1 = getSteadyTime();
-		for (int i = 0; i < iter; i++) {
-			//num.toCString(cstr);
-		}
-		cout << "time used processing (unoptimised): " << (tm1 = timeBetween(tp1, getSteadyTime(), long double) * 1000.0L) << NLC;
-
-		str.clear();
-		str.shrink_to_fit();
 
 		cout << "Starting timing string processing (optimised)..." << NLC;
 		tp1 = getSteadyTime();
 		//cout<<a<<NLC;
 		//outputBint(a);
 		for (int i = 0; i < iter; i++) {
-			//num.toCString2(cstr);
+			//num.copyFromString2(getStr());
 		}
 		cout << "time used processing (optimised): " << (tm2 = timeBetween(tp1, getSteadyTime(), long double) * 1000.0L) << NLC;
 
+		str.clear();
+		str.shrink_to_fit();
+
+		cout << "Starting timing string processing (unoptimised)..." << NLC;
+		//cin.get();
+		tp1 = getSteadyTime();
+		for (int i = 0; i < iter; i++) {
+			//num.copyFromString(getStr());
+		}
+		//cin.get();
+		cout << "time used processing (unoptimised): " << (tm1 = timeBetween(tp1, getSteadyTime(), long double) * 1000.0L) << NLC;
+
+				
 		str.clear();
 		str.shrink_to_fit();
 
@@ -108,11 +103,17 @@ int main() {
 	outputBint(LLINT_MIN);
 	outputBint(ULLINT_MAX);
 
-	a = getStr();
+	a.copyFromString2(getStr());
 
-	cout << (getStr() == a.toString()) << NLC;
+	cout << (a.toString() == getStr()) << NLC;
 
- 	cout << getStr() << NLC << NLC << a.toString() << NLC;
+	outputBint(a);
+
+// 	a = getStr();
+// 
+// 	cout << (getStr() == a.toString()) << NLC;
+// 
+//  	cout << getStr() << NLC << NLC << a.toString() << NLC;
 // 
 // 	char str[10];
 // 	std::memset(str, '0', 10);
@@ -121,14 +122,14 @@ int main() {
 // 
 // 	cout << str << NLC;
 
-	//benchmark();
+	benchmark();
 
 	cin.get();
 	return 0;
 }
 
 
-std::string getStr() {
+std::string_view getStr() {
 /*	return "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";*/
 
 

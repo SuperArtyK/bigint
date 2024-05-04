@@ -8,6 +8,7 @@
 #include "include/AEUtils.hpp"
 #include "include/AEUtilsMacros.hpp"
 #include "jeaiii_to_text.h"
+#include <charconv>
 #include <array>
 
 namespace ace::utils {
@@ -245,15 +246,26 @@ public:
 
 	void toCString(char* dataptr) const noexcept;
 
-	void copyFromFloat(const long double num) {
+
+
+	template<typename T>
+	void copyFromFloat(const T num) requires(std::is_floating_point<T>::value) {
 		if (ace::math::absval(num) < 1) {
 			this->clear(true); // welp, I guess you're still 0
 		}
 
 		this->clear(false);
-		
+
+		char fltnum[(2 + LDBL_MAX_10_EXP + 2) + 1]{};
+		//snprintf(fltnum, sizeof(fltnum), "%.0Lf", std::round(num));
 
 
+		//std::to_chars(fltnum, fltnum + sizeof(fltnum) - 1, num, std::chars_format::fixed, 1);
+
+		this->copyFromString(
+			std::string_view(
+				fltnum,
+				std::to_chars(fltnum, fltnum + sizeof(fltnum) - 1, num, std::chars_format::fixed, 1).ptr - 2));
 	}
 
 private:

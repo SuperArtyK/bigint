@@ -65,14 +65,13 @@ void AEBigint::copyFromString(const std::string_view str) {
 	}
 	//this->clear(false);
 
-	start += str.size();
+	
 	if (start[0] == '-') {
 		this->m_bNegative = true;
-		this->m_ullSize = str.length() - 1;
 	}
-	else {
-		this->m_ullSize = str.length();
-	}
+
+	this->m_ullSize = str.length() - this->m_bNegative;
+	start += str.size();
 
 	{
 		const std::size_t alloc = (this->m_ullSize - 1) / _AEBI_MAX_SECTOR_STORE_DIGITS + 1;
@@ -94,5 +93,5 @@ void AEBigint::copyFromString(const std::string_view str) {
 	for (; i > _AEBI_MAX_SECTOR_STORE_DIGITS; i -= _AEBI_MAX_SECTOR_STORE_DIGITS) {
 		this->m_vecSectors[a++] = toUllint(start -= _AEBI_MAX_SECTOR_STORE_DIGITS, _AEBI_MAX_SECTOR_STORE_DIGITS);
 	}
-	this->m_vecSectors[a] = toUllint(str.data(), i);
+	this->m_vecSectors[a] = toUllint(str.data() + this->m_bNegative, i);
 }
