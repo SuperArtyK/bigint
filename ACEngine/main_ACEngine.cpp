@@ -21,7 +21,7 @@ std::string_view getStr();
 void outputBint(const AEBigint& bint) {
 	cout << "--------------------------------------------" << NLC;
 	cout << "The size of the bigint (digits): " << bint.size()<<NLC;
-	cout << "The amount of number sectors: " << bint.sectorAmount() << NLC;
+	cout << "The amount of number sectors: " << bint.getSectorAmount() << NLC;
 	cout << "The memory usage of the bigint (bytes): " << bint.getMemoryUsage() << " (sizeof(AEBigint) = " <<sizeof(AEBigint)<<")" << NLC;
 	cout << "The bigint is negative: " << ace::utils::boolToString(bint.isNegative()) << NLC;
 	cout << "The value of the bigint: " << bint << NLC;
@@ -38,13 +38,13 @@ void benchmark() {
 
 	AEBigint num;
 // 	num.setDigit(ullint(1024)*1024*1024*4, 1);
-// 	for (ullint i = 0; i < num.sectorAmount(); i++) {
+// 	for (ullint i = 0; i < num.getSectorAmount(); i++) {
 // 		num.setSector(i, std::rand() * powerOf10Table[9] + std::rand());
 // 	}
 
 	//num = getStr();
 
-	//cout << (num.size()) << " " << (((num.sectorAmount() - 1) * _AEBI_MAX_SECTOR_STORE_DIGITS + ace::math::lengthOfInt(num.getLastSector()))) << NLC;
+	//cout << (num.size()) << " " << (((num.getSectorAmount() - 1) * _AEBI_MAX_SECTOR_STORE_DIGITS + ace::math::lengthOfInt(num.getLastSector()))) << NLC;
 
 	ullint repeat = 0;
 	constexpr int iter = 1024*1024*8;
@@ -104,29 +104,16 @@ int main() {
 	outputBint(ULLINT_MAX);
 
 
-	a = 10.0L;
-	cout << (a != 10.0L) << NLC;
-	cout << (a != -10.0f) << NLC;
-	cout << (a != 10.1) << NLC;
-	//a = getStr();
+	AEBigint b = INT_MAX;
 
-	//cout << (a.toString() == getStr()) << NLC;
+	a.setNegativity(true);
 
-	//outputBint(a);
 
-// 	a = getStr();
-// 
-// 	cout << (getStr() == a.toString()) << NLC;
-// 
-//  	cout << getStr() << NLC << NLC << a.toString() << NLC;
-// 
-// 	char str[10];
-// 	std::memset(str, '0', 10);
-// 
-// 	jeaiii::to_text_from_integer(str, 10);
-// 
-// 	cout << str << NLC;
+	//cout << (a < "4294967295") << NLC;
+	cout << (a > -123) << NLC;
 
+
+	
 	//benchmark();
 
 	cin.get();

@@ -9,7 +9,7 @@ void AEBigint::setDigit(const ullint dig, const ucint val) {
 	const std::size_t digSector = dig / _AEBI_MAX_SECTOR_STORE_DIGITS;
 	const int digp10 = dig % _AEBI_MAX_SECTOR_STORE_DIGITS;
 
-	if (digSector < this->sectorAmount()) {
+	if (digSector < this->getSectorAmount()) {
 		const ullint temp = this->m_vecSectors[digSector];
 		this->setSector(digSector, (val * powerOf10Table[digp10] +
 			temp - temp % powerOf10Table[digp10 + 1] +
@@ -29,7 +29,7 @@ void AEBigint::setSector(const std::size_t sector, const ullint val) {
 			this->m_vecSectors.resize(sector + 1);
 			this->m_ullSize = sector * _AEBI_MAX_SECTOR_STORE_DIGITS;
 		}
-		this->m_ullSize = (this->sectorAmount()-1)*_AEBI_MAX_SECTOR_STORE_DIGITS + ace::math::lengthOfInt(val);
+		this->m_ullSize = (this->getSectorAmount()-1)*_AEBI_MAX_SECTOR_STORE_DIGITS + ace::math::lengthOfInt(val);
 	}
 	this->m_vecSectors[sector] = val;
 
@@ -63,7 +63,7 @@ std::ostream& operator<<(std::ostream& out, const AEBigint& bint) {
 
 	tmp = std::string_view(buf, _AEBI_MAX_SECTOR_STORE_DIGITS);
 
-	for (std::size_t i = bint.sectorAmount() - 1; i-- > 0;) {
+	for (std::size_t i = bint.getSectorAmount() - 1; i-- > 0;) {
 		AEBigint::sectorToCString(buf, bint.getSector(i));
 		out << tmp;
 	}
@@ -87,7 +87,7 @@ void AEBigint::toCString(char* dataptr) const noexcept {
 
 	dataptr = jeaiii::to_text_from_integer(dataptr, this->getLastSector());
 
-	for (std::size_t i = this->sectorAmount() - 1; i-- > 0;) {
+	for (std::size_t i = this->getSectorAmount() - 1; i-- > 0;) {
 
 		AEBigint::sectorToString2(dataptr, this->getSector(i));
 

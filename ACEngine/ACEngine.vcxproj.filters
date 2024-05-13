@@ -77,10 +77,16 @@
     <ClInclude Include="..\resources\resource1.h">
       <Filter>Resource Files\Logo resources</Filter>
     </ClInclude>
-    <ClInclude Include="include\AEBigint.hpp">
+    <ClInclude Include="include\AEBigint_declaration.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\jeaiii_to_text.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AEBigint.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AEBigint_definition.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

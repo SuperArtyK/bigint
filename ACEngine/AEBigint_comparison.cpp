@@ -1,5 +1,7 @@
-#include "../include/AEBigInt.hpp"
+#include "../include/AEBigint_declaration.hpp"
 
+// equality
+/////////////////
 
 bool AEBigint::operator==(const AEBigint& bint) const noexcept {
 
@@ -20,8 +22,10 @@ bool AEBigint::operator==(const AEBigint& bint) const noexcept {
 }
 
 bool AEBigint::operator==(const std::string_view str) const {
+	if (!ace::utils::isNum<false>(str) || 
+		this->isNegative() != (str[0] == '-') || 
+		this->size() != (str.size() - (str[0] == '-') )  ) {
 
-	if (!ace::utils::isNum<false>(str)) {
 		return false;
 	}
 
@@ -29,3 +33,41 @@ bool AEBigint::operator==(const std::string_view str) const {
 	b.copyFromString(str, false);
 	return this->operator==(b);
 }
+
+
+// inequality
+/////////////////
+
+bool AEBigint::operator>(const AEBigint& bint) const noexcept {
+	const bool neg = this->isNegative();
+
+	if (neg != bint.isNegative()) {
+		return !neg; // let the most positive win)
+	}
+
+	const auto checkNum = (neg)
+		? [](const ullint num1, const ullint num2) noexcept { return num1 > num2; }
+		: [](const ullint num1, const ullint num2) noexcept { return num1 < num2; };
+
+	if (checkNum(this->size(), bint.size())) {
+		return false;
+	}
+
+	bool diff = false;
+
+	for (std::size_t i = this->getSectorAmount(); i-- > 0;) {
+		if (checkNum(this->getSector(i), bint.getSector(i))) {
+			return false;
+		}
+		if (this->getSector(i) != bint.getSector(i)) {
+			diff = true;
+		}
+
+	}
+
+	// mechanism against numbers being exactly the same
+	// if is different -- true, if not -- false
+	return diff; 
+}
+
+

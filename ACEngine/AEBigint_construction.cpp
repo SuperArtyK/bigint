@@ -1,4 +1,4 @@
-#include "../include/AEBigint.hpp"
+#include "../include/AEBigint_declaration.hpp"
 
 /////////////////
 // constructors
