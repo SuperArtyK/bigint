@@ -512,7 +512,44 @@ namespace ace {
 		}
 
 
-	}	
+		/// <summary>
+	/// Reverses the c-string of the given length (excluding null)
+	/// </summary>
+	/// <param name="str">The c-string to reverse</param>
+	/// <param name="len">The </param>
+		inline void revCString(char* str, const std::size_t len) noexcept {
+			char* ptr = str + len - 1;
+			char tmp = *str;
+
+			while (str < ptr) {
+				*(str++) = *ptr;
+				*(ptr--) = tmp;
+				tmp = *str;
+			}
+		}
+
+		/// <summary>
+		/// Converts the given ::ullint to a c-string.
+		/// @note This writes directly to the given strings.
+		/// @attention This doesn't clear the passed string; The data it had before will still be there.
+		/// @warning The **str** c-string shall be at least 20 characters in length (excluding null)
+		/// </summary>
+		/// <param name="num">The number to convert</param>
+		/// <param name="str">The c-string to write to</param>
+		/// <returns>The number of characters successfully written (excluding null terminator)</returns>
+		inline int ullToCString(ullint num, char* const str) noexcept {
+
+			int a = 0;
+			while (num > 9) {
+				str[a++] = '0' + num % 10;
+				num /= 10;
+			}
+			str[a++] = '0' + num % 10;
+			ace::utils::revCString(str, a);
+
+			return a;
+		}
+	}
 }
 
 #endif // !ENGINE_UTILS_HPP

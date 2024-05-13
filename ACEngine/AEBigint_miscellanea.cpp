@@ -56,8 +56,7 @@ std::ostream& operator<<(std::ostream& out, const AEBigint& bint) {
 	if (bint.isNegative()) {
 		out << '-';
 	}
-
-	std::string_view tmp(buf, ace::utils::ullToCString(bint.getLastSector(), buf));
+	std::string_view tmp(buf, jeaiii::to_text_from_integer(buf, bint.getLastSector()) - buf);
 
 	out << tmp;
 
@@ -89,30 +88,12 @@ void AEBigint::toCString(char* dataptr) const noexcept {
 
 	for (std::size_t i = this->getSectorAmount() - 1; i-- > 0;) {
 
-		AEBigint::sectorToString2(dataptr, this->getSector(i));
+		AEBigint::sectorToCString(dataptr, this->getSector(i));
 
 		dataptr += _AEBI_MAX_SECTOR_STORE_DIGITS;
 	}
 
 }
-
-void AEBigint::sectorToCString(char* const str, ullint val) noexcept {
-	std::memset(str, '0', 19);
-
-	if (val == 0) {
-		return;
-	}
-
-	int i = 18;
-
-	while (val > 9) {
-		str[i--] = '0' + val % 10;
-		val /= 10;
-	}
-	str[i] = '0' + val % 10;
-
-}
-
 
 /////////////////
 // miscellania

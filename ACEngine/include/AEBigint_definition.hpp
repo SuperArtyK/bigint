@@ -296,7 +296,7 @@ __forceinline
 #else
 inline
 #endif
-constexpr char* AEBigint::sectorToString2(char* b, const T i) noexcept
+constexpr char* AEBigint::sectorToCString(char* b, const T i) noexcept
 {
 
 	using u32 = jeaiii::u32;
