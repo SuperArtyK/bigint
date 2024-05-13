@@ -209,13 +209,33 @@ public:
 		return this->compareFloat<T, true>(flt);
 	}
 
-// greater than
+// greater than or equal to
+//////////////////////////////////
+	bool operator>=(const AEBigint& bint) const noexcept {
+		return !this->operator<(bint);
+	}
+
+	bool operator>=(const std::string_view str) const {
+		return !this->operator<(str);
+	}
+
+	template<typename T>
+	inline bool operator>=(const T num) const noexcept requires(std::is_integral<T>::value) {
+		return !this->operator< <T>(num);
+	}
+
+	template<typename T>
+	inline bool operator>=(const T flt) const requires(std::is_floating_point<T>::value) {
+		return !this->operator< <T>(flt);
+	}
+
+// less than
 /////////////////
-	bool operator<(const AEBigint& bint) const noexcept {
+	inline bool operator<(const AEBigint& bint) const noexcept {
 		return bint.operator>(*this);
 	}
 
-	bool operator<(const std::string_view str) const {
+	inline bool operator<(const std::string_view str) const {
 		return this->compareString<false>(str);
 	}
 
@@ -229,8 +249,25 @@ public:
 		return this->compareFloat<T, false>(flt);
 	}
 
+// less than or equal to
+//////////////////////////////////
+	inline bool operator<=(const AEBigint& bint) const noexcept {
+		return !this->operator>(bint);
+	}
 
+	inline bool operator<=(const std::string_view str) const {
+		return !this->operator>(str);
+	}
 
+	template<typename T>
+	inline bool operator<=(const T num) const noexcept requires(std::is_integral<T>::value) {
+		return !this->operator> <T>(num);
+	}
+
+	template<typename T>
+	inline bool operator<=(const T flt) const requires(std::is_floating_point<T>::value) {
+		return !this->operator> <T>(flt);
+	}
 
 /////////////////
 // getters
@@ -362,7 +399,7 @@ private:
 
 
 	template<const bool greaterThan>
-	bool compareString(const std::string_view str) const;
+	inline bool compareString(const std::string_view str) const;
 
 	template<typename T, const bool greaterThan>
 	inline bool compareInt(const T num) const noexcept requires(std::is_integral<T>::value);

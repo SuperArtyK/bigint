@@ -106,11 +106,11 @@ int main() {
 
 	AEBigint b = INT_MAX;
 
-	a.setNegativity(true);
+	//a.setNegativity(true);
 
 
 	//cout << (a < "4294967295") << NLC;
-	cout << (a > -123) << NLC;
+	cout << (a <= UINT_MAX) << NLC;
 
 
 	
