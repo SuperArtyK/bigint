@@ -108,9 +108,9 @@ int main() {
 
 	//a.setNegativity(true);
 
-
+		
 	//cout << (a < "4294967295") << NLC;
-	cout << (a <= UINT_MAX) << NLC;
+	cout << (a <= "4294967295"_bi) << NLC;
 
 
 	

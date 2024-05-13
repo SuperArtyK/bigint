@@ -327,9 +327,9 @@ public:
 
 	[[nodiscard]] inline operator std::string(void) const { return this->toString(); }
 
-	friend std::ostream& operator<<(std::ostream& out, const AEBigint& bint);
-
 	void toCString(char* dataptr) const noexcept;
+
+	friend std::ostream& operator<<(std::ostream& out, const AEBigint& bint);
 
 private:
 
@@ -371,6 +371,10 @@ private:
 	bool m_bNegative;
 
 };
+
+inline AEBigint operator ""_bi(const char* str, const std::size_t sz) {
+	return AEBigint(std::string_view(str, sz));
+}
 
 
 #endif // !ENGINE_BIGINT_DECLARATION_HPP
