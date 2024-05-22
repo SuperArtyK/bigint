@@ -2,9 +2,9 @@
 
 This is a lightweight and more efficient implementation of BigInt type for and on C++.
 
-It is made with the help of my game engine ACEngine, to not reimplement the tools that it has already.
+It is made with the help of my game engine ACEngine, to not reimplement the tools that it already has.
 
-In future there are plans to merging this project back with the ACEngine to provide arbitrary-width arithmetics in there.
+In future there are plans to merge this project back with the ACEngine to add arbitrary-width arithmetics to its functionality.
 
 Special thanks to [@jeaiii](https://github.com/jeaiii "jeaiii") for the integer-to-string conversion library he wrote: [jeaiii/itoa](https://github.com/jeaiii/itoa "jeaiii/itoa").
 
