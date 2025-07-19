@@ -13,6 +13,7 @@
 
 #include "AEBigint.hpp"
 #include "jeaiii_to_text.h"
+#include <thread>
 using namespace std;
 
 
@@ -34,7 +35,7 @@ constexpr long double runningAvg(const int amt, const long double val, const lon
 }
 
 
-void benchmark() {
+void compareMethods() {
 
 	AEBigint num;
 // 	num.setDigit(ullint(1024)*1024*1024*4, 1);
@@ -61,25 +62,25 @@ void benchmark() {
 		//cout<<a<<NLC;
 		//outputBint(a);
 		for (int i = 0; i < iter; i++) {
-			//num.copyFromFloat(-LDBL_MAX);
+			num = -LDBL_MAX;
 		}
 		cout << "time used processing (optimised): " << (tm2 = timeBetween(tp1, getSteadyTime(), long double) * 1000.0L) << NLC;
 
 		str.clear();
 		str.shrink_to_fit();
 
-		cout << "Starting timing string processing (unoptimised)..." << NLC;
-		//cin.get();
-		tp1 = getSteadyTime();
-		for (int i = 0; i < iter; i++) {
-			//num.copyFromFloat2(-LDBL_MAX);
-		}
-		//cin.get();
-		cout << "time used processing (unoptimised): " << (tm1 = timeBetween(tp1, getSteadyTime(), long double) * 1000.0L) << NLC;
-
-				
-		str.clear();
-		str.shrink_to_fit();
+		//cout << "Starting timing string processing (unoptimised)..." << NLC;
+		////cin.get();
+		//tp1 = getSteadyTime();
+		//for (int i = 0; i < iter; i++) {
+		//	//num.copyFromFloat2(-LDBL_MAX);
+		//}
+		////cin.get();
+		//cout << "time used processing (unoptimised): " << (tm1 = timeBetween(tp1, getSteadyTime(), long double) * 1000.0L) << NLC;
+		//
+		//		
+		//str.clear();
+		//str.shrink_to_fit();
 
 
 
@@ -90,39 +91,55 @@ void benchmark() {
 	delete[] cstr;
 }
 
+void benchmark() {
+
+
+}
 
 int main() {
 	
-	cout << ace::utils::isInRange(0, 9, 5) << " " << ace::utils::isInRange(9, 0, 5) << " " << ace::utils::isInRange(9, 0, 15) << NLC;
-
-	std::srand(1);
-
-	AEBigint a = UINT_MAX;
-	outputBint(a);
-	outputBint(0);
-	outputBint(LLINT_MIN);
-	outputBint(ULLINT_MAX);
-
-
-	AEBigint b = INT_MAX;
-
-	//a.setNegativity(true);
-
+	//cout << ace::utils::isInRange(0, 9, 5) << " " << ace::utils::isInRange(9, 0, 5) << " " << ace::utils::isInRange(9, 0, 15) << NLC;
+	//
+	//std::srand(1);
+	//
+	//AEBigint a = UINT_MAX;
+	//outputBint(a);
+	//outputBint(0);
+	//outputBint(LLINT_MIN);
+	//outputBint(ULLINT_MAX);
+	//
+	//
+	//AEBigint b = INT_MAX;
+	//
+	////a.setNegativity(true);
+	//
+	//constexpr std::string_view str = "800925";
+	//AEBigint testnum = "501104"sv;
+	//cout <<"Addend 1: "<<(testnum) << NLC;
+	//testnum.rawSelfAdd(getStr());
+	//cout << testnum << NLC;
+	//
+	//
 	
-	AEBigint testnum = "1283891029394020"sv;
-	cout << (testnum) << NLC;
-	testnum.rawSelfAdd("192391203910239019"sv);
-	cout << testnum << NLC;
+	//compareMethods();
+
+	AEBigint a = "2"sv;
+	ullint b = 1024;
+	AEBigint c = a;
 
 
-	
-	//benchmark();
+	cout << "a( "<<a<<" ) ^ " << b << " = ";
+
+	for (ullint i = 0; i < b-1; i++) {
+		c.rawSelfAdd(c);
+	}
+	cout << c << NLC;
 
 	cin.get();
 	return 0;
 }
 
-
+/*
 std::string_view getStr() {
 	return "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
 
@@ -146,3 +163,4 @@ std::string_view getStr() {
 		"397579311771027";
 }
 
+*/

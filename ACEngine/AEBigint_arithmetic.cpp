@@ -1,4 +1,4 @@
-#include "../include/AEBigint_declaration.hpp"
+#include "../include/AEBigint.hpp"
 
 
 

@@ -1,13 +1,8 @@
-#include "../include/AEBigint_declaration.hpp"
+#include "../include/AEBigint.hpp"
 
 /////////////////
 // constructors
 /////////////////
-AEBigint::AEBigint() {
-	dprintf("Constructing an empty AEBigint");
-	this->clear(true);
-}
-
 AEBigint::AEBigint(const AEBigint& bint) : m_vecSectors(bint.m_vecSectors), m_ullSize(bint.m_ullSize), m_bNegative(bint.m_bNegative) {
 	dprintf("Constructing AEBigint with another AEBigint (digits: %llu, negative: %s)", bint.size(), ace::utils::boolToString(bint.isNegative()).data());
 	this->m_vecSectors.reserve(this->m_vecSectors.size() + AEBI_RESERVE_SIZE);

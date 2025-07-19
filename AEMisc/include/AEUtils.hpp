@@ -30,12 +30,13 @@
 #include "AEFlags.hpp"
 #include "AETypedefs.hpp"
 #include <algorithm>
+#include <string_view>
 #include <string>
 #include <cstring>
 #include <ctime>
 #include <sstream>
 #include <iomanip>
-
+using namespace std::string_view_literals;
 
 /// This namespace contains **everything that belongs to the engine**.
 /// 
@@ -61,7 +62,7 @@ namespace ace {
 		///		* The **const std::string_view** of "false"
 		/// </returns>
 		[[nodiscard]] constexpr const std::string_view boolToString(const bool b) noexcept {
-			return (b) ? "true" : "false";
+			return (b) ? "true"sv : "false"sv;
 		}
 
 		/// <summary>
@@ -178,7 +179,8 @@ namespace ace {
 			}
 
 			for (; i < len; i++) {
-				if (strnum[i] < '0' || strnum[i] > '9') {
+				//if (strnum[i] < '0' || strnum[i] > '9') {
+				if (!ace::utils::isInRange('0', '9', strnum[i])) {
 					if constexpr (checkFloat) {
 						if (strnum[i] == '.' && !decimal) {
 							decimal = true;
@@ -388,6 +390,7 @@ namespace ace {
 		/// 
 		/// @remark Requires the type **T** to be an integral type
 		/// </summary>
+		/// <typeparam name="disableSanityChecks">Flag to disable sanity range checks</typeparam>
 		/// <typeparam name="T">The type of the int to convert the char to</typeparam>
 		/// <param name="c">The numeric char to convert</param>
 		/// <returns>
@@ -396,15 +399,24 @@ namespace ace {
 		///		
 		///		Otherwise:
 		///		* **-1** as the type **T**
+		///		
+		///		If the **disableSanityChecks** is set to true:
+		///		* The value of char - '0' is returned. Identical to the above, if char value is within the range. Faster, but more unsafe.
 		///	</returns>
-		template<typename T = int>
+		template<bool disableSanityChecks = false, typename T = int>
 		[[nodiscard]] constexpr T numCharToInt(const char c) noexcept requires(std::is_integral<T>::value) {
-			return (ace::utils::isInRange<char, char, char>('0', '9', c)) ? (c - '0') : -1;
+			if constexpr (disableSanityChecks) {
+				return c - '0';
+			}
+			else {
+				return (ace::utils::isInRange<char, char, char>('0', '9', c)) ? (c - '0') : -1;
+			}
 		}
 		
 		/// <summary>
 		/// Converts the given **int of type T to numeric char**.
 		/// </summary>
+		/// <typeparam name="disableSanityChecks">Flag to disable sanity range checks</typeparam>
 		/// <typeparam name="T">The type of the int to check</typeparam>
 		/// <param name="i">The integer value to convert</param>
 		/// <returns>
@@ -412,11 +424,19 @@ namespace ace {
 		///		* The value of type char that corresponds to the given int value of type **T**
 		///		
 		///		Otherwise:
-		///		* **-1** as the char type
+		///		* **-1** as the **char** type
+		///		
+		///		If the **disableSanityChecks** is set to true:
+		///		* The value of int + '0' is returned. Identical to the above, if int value is within the range. Faster, but more unsafe.
 		///	</returns>
-		template<typename T = int>
+		template<bool disableSanityChecks = false, typename T = int>
 		[[nodiscard]] constexpr char intToNumChar(const T i) noexcept {
-			return (ace::utils::isInRange<T, T, T>(0, 9, i)) ? (i + '0') : -1;
+			if constexpr (disableSanityChecks) {
+				return i + '0';
+			}
+			else {
+				return (ace::utils::isInRange<T, T, T>(0, 9, i)) ? (i + '0') : -1;
+			}
 		}
 
 		/// <summary>

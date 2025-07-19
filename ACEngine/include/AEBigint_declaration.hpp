@@ -39,9 +39,7 @@ constexpr uint _AEBI_MAX_SECTOR_STORE_DIGITS = ace::math::lengthOfInt(_AEBI_MAX_
 /// The largest value to perform operations on per sector.
 #define _AEBI_MAX_SECTOR_OPERATION_VALUE (_AEBI_MAX_SECTOR_OPERATION_P10 - 1)
 
-/// The default vector of sectors reserve size.
-/// Default value is 32 sectors, total of 608 digits
-#define AEBI_RESERVE_SIZE 32
+
 
 
 
@@ -60,6 +58,9 @@ constexpr uint _AEBI_MAX_SECTOR_STORE_DIGITS = ace::math::lengthOfInt(_AEBI_MAX_
 /// @todo Make the cell type a typedef and fix constants/macros that play on the type limits (e.g. _AEBI_MAX_SECTOR_STORE_P10)
 /// @todo Make a separate function to modify a cell, make it force inline
 /// @todo Add compatibility with functions that work with non-bigints and that work on the cell directly (e.g. AEBigint::copyFromInt() )
+/// @todo Add the const char* function overloads (inline), that would call the std::string_view overloads under the hood.
+/// @todo Create a flag to preallocate the sectors on default constructor; This will allow to mark default constructor as noexcept if set to false.
+/// @todo Add functionality to reserve more cells in vector after modifying operations.
 /// </summary>
 class AEBigint {
 
@@ -73,7 +74,16 @@ public:
 	/// 
 	/// @note Sets the sector reserve amount to AEBI_RESERVE_SIZE
 	/// </summary>
-	AEBigint(void);
+#if AEBI_DEFAULT_CSTOR_PREALLOCATE == 1
+	inline AEBigint(void) {
+		dprintf("Constructing an empty AEBigint");
+		this->clear(true);
+	}
+#else
+	inline AEBigint(void) noexcept : m_ullSize(1) {
+		dprintf("Constructing an empty AEBigint");
+	}
+#endif
 
 	/// <summary>
 	/// Copy-constructor -- constructs and copies the data from passed bigint.
@@ -597,7 +607,7 @@ public:
 	///		* **false**
 	/// </returns>
 	[[nodiscard]] inline bool isZero(void) const noexcept {
-		return this->size() == 1 && this->getFirstSector() == 0;
+		return this->size() == 1 && (this->getFirstSector() == 0); // fix for vector being empty
 	}
 
 	/// <summary>
@@ -663,29 +673,31 @@ public:
 	[[nodiscard]] inline std::size_t getSectorAmount(void) const noexcept {
 		return this->m_vecSectors.size();
 	}
-
+	
 	/// <summary>
-	/// Returns the single digit of **this** as **char** type (not as the ascii character)
+	/// Returns the single numeric digit of **this** as **char* (ascii character representation)
 	/// 
-	/// @note Similar to AEBigint::getDigit(const ullint)
 	/// </summary>
 	/// <param name="dig">The n'th digit to retrieve (zero-indexed)</param>
 	/// <returns>
 	///		The selected digit of **this** as type **char** (direct value not ascii text)
 	/// </returns>
-	[[nodiscard]] inline ucint getDigitChar(const ullint dig) const noexcept {
-		if (dig == 0) { return this->getFirstSector() % 10; }
-		return (this->getSector(dig / _AEBI_MAX_SECTOR_STORE_DIGITS) / 
-			powerOf10Table[(dig % _AEBI_MAX_SECTOR_STORE_DIGITS)]) 
+	[[nodiscard]] inline char getDigitChar(const ullint dig) const noexcept {
+		if (dig == 0ull) { return ace::utils::intToNumChar<true>(this->getFirstSector() % 10ull); }
+		return ace::utils::intToNumChar<true>((this->getSector(dig / _AEBI_MAX_SECTOR_STORE_DIGITS) /
+			powerOf10Table[(dig % _AEBI_MAX_SECTOR_STORE_DIGITS)])
+			% 10);
+	}
+
+	[[nodiscard]] inline ullint getDigit(const ullint dig) const noexcept {
+		if (dig == 0) { return this->getFirstSector() % 10ull; }
+		return (this->getSector(dig / _AEBI_MAX_SECTOR_STORE_DIGITS) /
+			powerOf10Table[(dig % _AEBI_MAX_SECTOR_STORE_DIGITS)])
 			% 10;
 	}
 
-	[[nodiscard]] inline int getDigit(const ullint dig) const noexcept {
-		return int(this->getDigitChar(dig));
-	}
-
 	[[nodiscard]] inline ullint getSector(const std::size_t sector) const noexcept {
-		return this->m_vecSectors[sector];
+		return (this->getSectorAmount()) ? this->m_vecSectors[sector] : 0ull;
 	}
 
 	[[nodiscard]] inline std::size_t getMemoryUsage() const noexcept {
