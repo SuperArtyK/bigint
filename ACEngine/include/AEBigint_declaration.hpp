@@ -31,7 +31,7 @@ constexpr ullint powerOf10Table[21] {
 #define _AEBI_MAX_SECTOR_STORE_VALUE (_AEBI_MAX_SECTOR_STORE_P10 - 1)
 
 /// The length in jeaiii::digits of the largest representable value per number sector
-constexpr int _AEBI_MAX_SECTOR_STORE_DIGITS = ace::math::lengthOfInt(_AEBI_MAX_SECTOR_STORE_VALUE);
+constexpr uint _AEBI_MAX_SECTOR_STORE_DIGITS = ace::math::lengthOfInt(_AEBI_MAX_SECTOR_STORE_VALUE);
 
 /// The power of 10 of the largest value per sector to operate on.
 #define _AEBI_MAX_SECTOR_OPERATION_P10 (powerOf10Table[18])
@@ -40,7 +40,7 @@ constexpr int _AEBI_MAX_SECTOR_STORE_DIGITS = ace::math::lengthOfInt(_AEBI_MAX_S
 #define _AEBI_MAX_SECTOR_OPERATION_VALUE (_AEBI_MAX_SECTOR_OPERATION_P10 - 1)
 
 /// The default vector of sectors reserve size.
-/// Default value is 32 sectors, total of 608 jeaiii::digits
+/// Default value is 32 sectors, total of 608 digits
 #define AEBI_RESERVE_SIZE 32
 
 
@@ -55,47 +55,71 @@ constexpr int _AEBI_MAX_SECTOR_STORE_DIGITS = ace::math::lengthOfInt(_AEBI_MAX_S
 /// 
 /// And all of the operations are done on the sectors, which drastically improves performance on normal
 /// operations like addition, but reduces performance on per-digit operations.
+/// @todo Add a flag to enable exceptions in string_view functions
+/// @todo Make functions abstracted from the number cell type
+/// @todo Make the cell type a typedef and fix constants/macros that play on the type limits (e.g. _AEBI_MAX_SECTOR_STORE_P10)
+/// @todo Make a separate function to modify a cell, make it force inline
+/// @todo Add compatibility with functions that work with non-bigints and that work on the cell directly (e.g. AEBigint::copyFromInt() )
 /// </summary>
 class AEBigint {
 
 public:
-
+	
 /////////////////
 // constructors
 /////////////////
 	/// <summary>
 	/// Default constructor -- constructs the bigint and sets it to 0.
+	/// 
 	/// @note Sets the sector reserve amount to AEBI_RESERVE_SIZE
 	/// </summary>
 	AEBigint(void);
 
 	/// <summary>
 	/// Copy-constructor -- constructs and copies the data from passed bigint.
-	/// @note Sets the sector reserve amount to AEBI_RESERVE_SIZE
+	/// 
+	/// @note Sets the sector reserve amount to AEBI_RESERVE_SIZE (which is applied only if the size of copied big int is less than AEBI_RESERVE_SIZE)
 	/// </summary>
 	/// <param name="bint">The second bigint to construct from</param>
 	AEBigint(const AEBigint& bint);
 
 	/// <summary>
-	/// Integer constructor -- constructs and sets the value to the passed  integral number
+	/// Integer constructor -- constructs and sets the value from the passed integral number
+	/// 
 	/// @note Exists only to remove the "ambiguous" error. **A very big kludge**.
 	/// </summary>
 	/// <typeparam name="T">The type of integer</typeparam>
-	/// <param name="num">The number to set the value to</param>
+	/// <param name="num">The number to set the bigint value to</param>
 	template<typename T>
-	AEBigint(const T num) requires(std::is_integral<T>::value) {
+	inline AEBigint(const T num) requires(std::is_integral<T>::value) {
 		dprintf("Constructing with a integral value (digits: %u)", ace::math::lengthOfInt<T>(num));
 		this->copyFromInt<T>(num);
 	}
 
+	/// <summary>
+	/// String-view constructor -- constructs and sets the value from the passed string (as string-view)
+	/// 
+	/// @note See ace::utils::isNum() for rules for a std::string_view to be interpreted as a valid number.
+	/// @note If the passed string is invalid, sets the value to 0 instead.
+	/// @attention The string view needs to be valid (that reading it won't cause a read access violation), otherwise, as always, it may explode.
+	/// </summary>
+	/// <param name="str">The string view to set the bigint value to</param>	
 	AEBigint(const std::string_view str);
 
+	/// <summary>
+	/// Float constructor -- constructs and sets the value from the passed floating point
+	/// </summary>
+	/// <typeparam name="T">The type of the passed float</typeparam>
+	/// <param name="flt">The number to set the bigint value to</param>
 	template<typename T>
-	AEBigint(const T flt) requires(std::is_floating_point<T>::value) {
+	inline AEBigint(const T flt) requires(std::is_floating_point<T>::value) {
 		dprintf("Constructing with a floating-point value (digits: %u, negative: %s)", ace::math::lengthOfFloat<T>(flt), ace::utils::boolToString(flt < 0).data());
 		this->copyFromFloat(flt);
 	}
 
+	/// <summary>
+	/// The destructor
+	/// </summary>
 	~AEBigint();
 
 
@@ -103,13 +127,49 @@ public:
 // assignment operators
 // AEBigint_construction.cpp
 //////////////////////////////////
+
+	/// <summary>
+	/// Copy-assignment -- assigns the value from the passed bigint
+	/// </summary>
+	/// <param name="bint">The bigint to copy</param>
+	/// <returns>
+	///		The reference to **this** (for chain assignment)
+	///	</returns>
 	AEBigint& operator=(const AEBigint& bint);
 
+	/// <summary>
+	/// String-assignment -- assigns the value from the passed string view
+	/// 
+	/// @note See ace::utils::isNum() for rules for a std::string_view to be interpreted as a valid number.
+	/// @note If the passed string is invalid, sets the value to 0 instead
+	/// </summary>
+	/// <param name="bint">The string to set the value from</param>
+	/// <returns>
+	///		The reference to **this** (for chain assignment)
+	///	</returns>
 	AEBigint& operator=(const std::string_view str);
 
+	/// <summary>
+	/// Integer-assignment -- assigns the value from the passed integral number
+	///	
+	/// @note Exists only to remove the "ambiguous" error. **A very big kludge**.
+	/// </summary>
+	/// <typeparam name="T">The type of integer</typeparam>
+	/// <param name="num">The number to set the bigint value to</param>
+	/// <returns>
+	///		The reference to **this** (for chain assignment)
+	///	</returns>
 	template<typename T>
 	inline AEBigint& operator=(const T num) requires(std::is_integral<T>::value); // defined below class
 
+	/// <summary>
+	/// Float-assignment -- assigns the value from the passed floating point
+	/// </summary>
+	/// <typeparam name="T">The type of the passed float</typeparam>
+	/// <param name="flt">The number to set the bigint value to</param>
+	/// <returns>
+	///		The reference to **this** (for chain assignment)
+	///	</returns>
 	template<typename T>
 	inline AEBigint& operator=(const T flt) requires(std::is_floating_point<T>::value); // defined below class
 
@@ -120,31 +180,129 @@ public:
 //////////////////////////////////
 // equality
 /////////////////
+	
+	/// <summary>
+	/// Comparison (equality) between **this** and passed AEBigint, **bint**.
+	/// </summary>
+	/// <param name="bint">The AEBigint number to compare</param>
+	/// <returns>
+	///		If both numbers are equal:
+	///		* **true**
+	///		
+	///		Otherwise:
+	///		* **false**
+	/// </returns>
 	bool operator==(const AEBigint& bint) const noexcept;
 
+	/// <summary>
+	/// Comparison (equality) between **this** and passed std::string_view, **str**.
+	///
+	/// @note See ace::utils::isNum() for rules for a std::string_view to be interpreted as a valid number.
+	/// </summary>
+	/// <param name="str">The std::string_view supposedly containing a number</param>
+	/// <returns>
+	///		If **this** and the number converted from the **str** are equal:
+	///		* **true**
+	///		
+	///		Otherwise, or if the **str** doesn't contain a valid number:
+	///		* **false**
+	/// </returns>
 	bool operator==(const std::string_view str) const;
 
+	/// <summary>
+	/// Comparison (equality) between **this** and passed integral type, **num**.
+	/// </summary>
+	/// <typeparam name="T">The type of integer</typeparam>
+	/// <param name="num">The integral type value to compare</param>
+	/// <returns>
+	///		If **this** and **num** are equal:
+	///		* **true**
+	///		
+	///		Otherwise:
+	///		* **false**
+	/// </returns>
 	template<typename T>
 	inline bool operator==(const T num) const noexcept requires(std::is_integral<T>::value);
 
+	/// <summary>
+	/// Comparison (equality) between **this** and passed floating point type, **flt**.
+	/// </summary>
+	/// <typeparam name="T">The type of floating point</typeparam>
+	/// <param name="num">The floating type value to compare</param>
+	/// <returns>
+	///		If **this** and value converted from **flt** are equal:
+	///		* **true**
+	///		
+	///		Otherwise:
+	///		* **false**
+	/// </returns>
 	template<typename T>
 	inline bool operator==(const T flt) const requires(std::is_floating_point<T>::value);
 
 // inequality
 /////////////////
+	
+	/// <summary>
+	/// Comparison (inequality) between **this** and passed AEBigint, **bint**.
+	/// </summary>
+	/// <param name="bint">The AEBigint number to compare</param>
+	/// <returns>
+	///		If both numbers are mot equal:
+	///		* **true**
+	///		
+	///		Otherwise:
+	///		* **false**
+	/// </returns>
 	inline bool operator!=(const AEBigint& bint) const noexcept {
 		return !this->operator==(bint);
 	}
 
+	/// <summary>
+	/// Comparison (equality) between **this** and passed std::string_view, **str**.
+	///
+	/// @note See ace::utils::isNum() for rules for a std::string_view to be interpreted as a valid number.
+	/// </summary>
+	/// <param name="str">The std::string_view supposedly containing a number</param>
+	/// <returns>
+	///		If **this** and the number converted from the **str** are not equal, or if the **str** doesn't contain a valid number:
+	///		* **true**
+	///		
+	///		Otherwise:
+	///		* **false**
+	/// </returns>
 	inline bool operator!=(const std::string_view str) const {
 		return !this->operator==(str);
 	}
 
+	/// <summary>
+	/// Comparison (inequality) between **this** and passed integral type, **num**.
+	/// </summary>
+	/// <typeparam name="T">The type of integer</typeparam>
+	/// <param name="num">The integral type value to compare</param>
+	/// <returns>
+	///		If **this** and **num** are mot equal:
+	///		* **true**
+	///		
+	///		Otherwise:
+	///		* **false**
+	/// </returns>
 	template<typename T>
 	inline bool operator!=(const T num) const noexcept requires(std::is_integral<T>::value) {
 		return !this->operator==<T>(num);
 	}
 
+	/// <summary>
+	/// Comparison (inequality) with **this** and passed floating point type, **flt**.
+	/// </summary>
+	/// <typeparam name="T">The type of floating point</typeparam>
+	/// <param name="num">The floating type value to compare</param>
+	/// <returns>
+	///		If **this** and value converted from **flt** are not equal:
+	///		* **true**
+	///		
+	///		Otherwise:
+	///		* **false**
+	/// </returns>
 	template<typename T>
 	inline bool operator!=(const T flt) const requires(std::is_floating_point<T>::value) {
 		return !this->operator==<T>(flt);
@@ -152,17 +310,66 @@ public:
 
 // greater than
 /////////////////
+	
+	/// <summary>
+	/// Comparison (greater than) between **this** and passed AEBigint, **bint**.
+	/// </summary>
+	/// <param name="bint">The AEBigint number to compare</param>
+	/// <returns>
+	///		If **this** is greater than **bint**:
+	///		* **true**
+	///		
+	///		Otherwise:
+	///		* **false**
+	/// </returns>
 	bool operator>(const AEBigint& bint) const noexcept;
 
+	/// <summary>
+	/// Comparison (greater than) between **this** and passed std::string_view, **str**.
+	///
+	/// @note See ace::utils::isNum() for rules for a std::string_view to be interpreted as a valid number.
+	/// </summary>
+	/// <param name="str">The std::string_view supposedly containing a number</param>
+	/// <returns>
+	///		If **this** is greater than the number converted from the **str** are not equal:
+	///		* **true**
+	///		
+	///		Otherwise, or if the **str** doesn't contain a valid numbe:
+	///		* **false**
+	/// </returns>
 	bool operator>(const std::string_view str) const {
 		return this->compareString<true>(str);
 	}
 
+	/// <summary>
+	/// Comparison (greater than) between **this** and passed integral type, **num**.
+	/// </summary>
+	/// <typeparam name="T">The type of integer</typeparam>
+	/// <param name="num">The integral type value to compare</param>
+	/// <returns>
+	///		If **this** is greater than the **num**:
+	///		* **true**
+	///		
+	///		Otherwise:
+	///		* **false**
+	/// </returns>
 	template<typename T>
 	inline bool operator>(const T num) const noexcept requires(std::is_integral<T>::value) {
 		return this->compareInt<T, true>(num);
 	}
 
+	/// <summary>
+	/// Comparison (greater than) between **this** and passed floating point type, **flt**.
+	/// </summary>
+	/// <typeparam name="T">The type of floating point</typeparam>
+	/// <param name="num">The floating type value to compare</param>
+	/// <returns>
+	///		If **this** is greater than the value converted from **flt**:
+	///		* **true**
+	///		
+	///		Otherwise:
+	///		* **false**
+	/// </returns>
 	template<typename T>
 	inline bool operator>(const T flt) const requires(std::is_floating_point<T>::value) {
 		return this->compareFloat<T, true>(flt);
@@ -170,19 +377,68 @@ public:
 
 // greater than or equal to
 //////////////////////////////////
+
+	/// <summary>
+	/// Comparison (greater than or equal to) between **this** and passed AEBigint, **bint**.
+	/// </summary>
+	/// <param name="bint">The AEBigint number to compare</param>
+	/// <returns>
+	///		If **this** is greater than or equal to **bint**:
+	///		* **true**
+	///		
+	///		Otherwise:
+	///		* **false**
+	/// </returns>
 	bool operator>=(const AEBigint& bint) const noexcept {
 		return !this->operator<(bint);
 	}
 
+	/// <summary>
+	/// Comparison (greater than or equal to) between **this** and passed std::string_view, **str**.
+	///
+	/// @note See ace::utils::isNum() for rules for a std::string_view to be interpreted as a valid number.
+	/// </summary>
+	/// <param name="str">The std::string_view supposedly containing a number</param>
+	/// <returns>
+	///		If **this** is greater than or equal to the number converted from the **str** are not equal:
+	///		* **true**
+	///		
+	///		Otherwise, or if the **str** doesn't contain a valid numbe:
+	///		* **false**
+	/// </returns>
 	bool operator>=(const std::string_view str) const {
 		return !this->operator<(str);
 	}
 
+	/// <summary>
+	/// Comparison (greater than or equal to) between **this** and passed integral type, **num**.
+	/// </summary>
+	/// <typeparam name="T">The type of integer</typeparam>
+	/// <param name="num">The integral type value to compare</param>
+	/// <returns>
+	///		If **this** is greater than or equal to the **num**:
+	///		* **true**
+	///		
+	///		Otherwise:
+	///		* **false**
+	/// </returns>
 	template<typename T>
 	inline bool operator>=(const T num) const noexcept requires(std::is_integral<T>::value) {
 		return !this->operator< <T>(num);
 	}
-
+	
+	/// <summary>
+	/// Comparison (greater than or equal to) between **this** and passed floating point type, **flt**.
+	/// </summary>
+	/// <typeparam name="T">The type of floating point</typeparam>
+	/// <param name="num">The floating type value to compare</param>
+	/// <returns>
+	///		If **this** is greater than or equal to the value converted from **flt**:
+	///		* **true**
+	///		
+	///		Otherwise:
+	///		* **false**
+	/// </returns>
 	template<typename T>
 	inline bool operator>=(const T flt) const requires(std::is_floating_point<T>::value) {
 		return !this->operator< <T>(flt);
@@ -190,19 +446,68 @@ public:
 
 // less than
 /////////////////
+	
+	/// <summary>
+	/// Comparison (less than) between **this** and passed AEBigint, **bint**.
+	/// </summary>
+	/// <param name="bint">The AEBigint number to compare</param>
+	/// <returns>
+	///		If **this** is less than **bint**:
+	///		* **true**
+	///		
+	///		Otherwise:
+	///		* **false**
+	/// </returns>
 	inline bool operator<(const AEBigint& bint) const noexcept {
 		return bint.operator>(*this);
 	}
 
+	/// <summary>
+	/// Comparison (less than) between **this** and passed std::string_view, **str**.
+	///
+	/// @note See ace::utils::isNum() for rules for a std::string_view to be interpreted as a valid number.
+	/// </summary>
+	/// <param name="str">The std::string_view supposedly containing a number</param>
+	/// <returns>
+	///		If **this** is less than the number converted from the **str** are not equal:
+	///		* **true**
+	///		
+	///		Otherwise, or if the **str** doesn't contain a valid numbe:
+	///		* **false**
+	/// </returns>
 	inline bool operator<(const std::string_view str) const {
 		return this->compareString<false>(str);
 	}
 
+	/// <summary>
+	/// Comparison (less than) between **this** and passed integral type, **num**.
+	/// </summary>
+	/// <typeparam name="T">The type of integer</typeparam>
+	/// <param name="num">The integral type value to compare</param>
+	/// <returns>
+	///		If **this** is less than the **num**:
+	///		* **true**
+	///		
+	///		Otherwise:
+	///		* **false**
+	/// </returns>
 	template<typename T>
 	inline bool operator<(const T num) const noexcept requires(std::is_integral<T>::value) {
 		return this->compareInt<T, false>(num);
 	}
 
+	/// <summary>
+	/// Comparison (less than) between **this** and passed floating point type, **flt**.
+	/// </summary>
+	/// <typeparam name="T">The type of floating point</typeparam>
+	/// <param name="num">The floating type value to compare</param>
+	/// <returns>
+	///		If **this** is less than the value converted from **flt**:
+	///		* **true**
+	///		
+	///		Otherwise:
+	///		* **false**
+	/// </returns>
 	template<typename T>
 	inline bool operator<(const T flt) const requires(std::is_floating_point<T>::value) {
 		return this->compareFloat<T, false>(flt);
@@ -210,19 +515,68 @@ public:
 
 // less than or equal to
 //////////////////////////////////
+
+	/// <summary>
+	/// Comparison (less than or equal to) between **this** and passed AEBigint, **bint**.
+	/// </summary>
+	/// <param name="bint">The AEBigint number to compare</param>
+	/// <returns>
+	///		If **this** is less than or equal to **bint**:
+	///		* **true**
+	///		
+	///		Otherwise:
+	///		* **false**
+	/// </returns>
 	inline bool operator<=(const AEBigint& bint) const noexcept {
 		return !this->operator>(bint);
 	}
 
+	/// <summary>
+	/// Comparison (less than or equal to) between **this** and passed std::string_view, **str**.
+	///
+	/// @note See ace::utils::isNum() for rules for a std::string_view to be interpreted as a valid number.
+	/// </summary>
+	/// <param name="str">The std::string_view supposedly containing a number</param>
+	/// <returns>
+	///		If **this** is less than or equal to the number converted from the **str** are not equal:
+	///		* **true**
+	///		
+	///		Otherwise, or if the **str** doesn't contain a valid numbe:
+	///		* **false**
+	/// </returns>
 	inline bool operator<=(const std::string_view str) const {
 		return !this->operator>(str);
 	}
 
+	/// <summary>
+	/// Comparison (less than or equal to) between **this** and passed integral type, **num**.
+	/// </summary>
+	/// <typeparam name="T">The type of integer</typeparam>
+	/// <param name="num">The integral type value to compare</param>
+	/// <returns>
+	///		If **this** is less than or equal to the **num**:
+	///		* **true**
+	///		
+	///		Otherwise:
+	///		* **false**
+	/// </returns>
 	template<typename T>
 	inline bool operator<=(const T num) const noexcept requires(std::is_integral<T>::value) {
 		return !this->operator> <T>(num);
 	}
 
+	/// <summary>
+	/// Comparison (less than or equal to) between **this** and passed floating point type, **flt**.
+	/// </summary>
+	/// <typeparam name="T">The type of floating point</typeparam>
+	/// <param name="num">The floating type value to compare</param>
+	/// <returns>
+	///		If **this** is less than or equal to the value converted from **flt**:
+	///		* **true**
+	///		
+	///		Otherwise:
+	///		* **false**
+	/// </returns>
 	template<typename T>
 	inline bool operator<=(const T flt) const requires(std::is_floating_point<T>::value) {
 		return !this->operator> <T>(flt);
@@ -231,30 +585,94 @@ public:
 /////////////////
 // getters
 /////////////////
+
+	/// <summary>
+	/// Checks if **this** is equivalent to zero (1 digit and first sector is 0)
+	/// </summary>
+	/// <returns>
+	///		If the number is zero:
+	///		* **true**
+	///		
+	///		Otherwise:
+	///		* **false**
+	/// </returns>
 	[[nodiscard]] inline bool isZero(void) const noexcept {
 		return this->size() == 1 && this->getFirstSector() == 0;
 	}
 
+	/// <summary>
+	/// Checks if **this** is negative (negative flag is set)
+	/// </summary>
+	/// <returns>
+	///		If the number is negative:
+	///		* **true**
+	///		
+	///		Otherwise:
+	///		* **false**
+	/// </returns>
 	[[nodiscard]] inline bool isNegative(void) const noexcept {
 		return this->m_bNegative;
 	}
 
+	/// <summary>
+	/// Checks if **this** is positive (negative flag is unset)
+	/// </summary>
+	/// <returns>
+	///		If the number is positive:
+	///		* **true**
+	///		
+	///		Otherwise:
+	///		* **false**
+	/// </returns>
 	[[nodiscard]] inline bool isPositive(void) const noexcept {
 		return !this->m_bNegative;
 	}
 
+	/// <summary>
+	/// Returns the length of the number in digits **this**
+	/// 
+	/// @note Equivalent to AEBigint::length(void)
+	/// @see AEBigint::length(void)
+	/// </summary>
+	/// <returns>
+	///		Length of the number in digits as type **ullint**.
+	/// </returns>
 	[[nodiscard]] inline ullint size(void) const noexcept {
 		return this->m_ullSize;
 	}
 
+	/// <summary>
+	/// Returns the length of the number in digits in **this**
+	/// 
+	/// @note Equivalent to AEBigint::size(void)
+	/// @see AEBigint::size(void)
+	/// </summary>
+	/// <returns>
+	///		Length of the number in digits as type **ullint**.
+	/// </returns>
 	[[nodiscard]] inline ullint length(void) const noexcept {
 		return this->size();
 	}
 
+	/// <summary>
+	/// Returns the amount of number sectors in **this** (length of value-storing **std::vector**)
+	/// </summary>
+	/// <returns>
+	///		Amount of number sectors as type **std::size_t**.
+	/// </returns>
 	[[nodiscard]] inline std::size_t getSectorAmount(void) const noexcept {
 		return this->m_vecSectors.size();
 	}
 
+	/// <summary>
+	/// Returns the single digit of **this** as **char** type (not as the ascii character)
+	/// 
+	/// @note Similar to AEBigint::getDigit(const ullint)
+	/// </summary>
+	/// <param name="dig">The n'th digit to retrieve (zero-indexed)</param>
+	/// <returns>
+	///		The selected digit of **this** as type **char** (direct value not ascii text)
+	/// </returns>
 	[[nodiscard]] inline ucint getDigitChar(const ullint dig) const noexcept {
 		if (dig == 0) { return this->getFirstSector() % 10; }
 		return (this->getSector(dig / _AEBI_MAX_SECTOR_STORE_DIGITS) / 
@@ -331,6 +749,19 @@ public:
 
 	friend std::ostream& operator<<(std::ostream& out, const AEBigint& bint);
 
+
+
+//////////////////////////////////
+// basic arithmetic
+// AEBigint_arithmetic.cpp
+//////////////////////////////////
+
+	/// <summary>
+	/// Performs raw self addition of **bint** to **this** (without looking into the 
+	/// </summary>
+	/// <param name="bint">The AEBigint value to add</param>
+	void rawSelfAdd(const AEBigint& bint);
+
 private:
 
 	template<class T>
@@ -345,15 +776,25 @@ private:
 // copying
 // AEBigint_construction.cpp
 //////////////////////////////////
+	
+	/// <summary>
+	/// Perform a copy-assignment operation on **this** using the value in **bint**
+	/// </summary>
+	/// <param name="bint">The AEBigint value to copy from</param>
+	void copyFromBigint(const AEBigint& bint);
+
 	template<typename T>
 	inline void copyFromInt(const T num) requires(std::is_integral<T>::value); // defined below class
 
-	void copyFromString(const std::string_view str, const bool check = true);
+	bool copyFromString(const std::string_view str, const bool check = true);
 
 	template<typename T>
 	inline void copyFromFloat(const T flt) requires(std::is_floating_point<T>::value); // defined below class
 
-
+//////////////////////////////////
+// Comparison
+// AEBigint_construction.cpp
+//////////////////////////////////
 	template<const bool greaterThan>
 	inline bool compareString(const std::string_view str) const;
 
@@ -363,9 +804,15 @@ private:
 	template<typename T, const bool greaterThan>
 	inline bool compareFloat(const T flt) const requires(std::is_integral<T>::value);
 
+
+
+
+//////////////////////
+// VARIABLES
+//////////////////////
 	/// The vector that contains all the number sectors
 	std::vector<ullint> m_vecSectors;
-	/// The size of the number in jeaiii::digits
+	/// The size of the number in digits
 	ullint m_ullSize;
 	/// The flag whether the number is negative
 	bool m_bNegative;

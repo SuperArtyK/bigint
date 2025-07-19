@@ -10,12 +10,14 @@ AEBigint::AEBigint() {
 
 AEBigint::AEBigint(const AEBigint& bint) : m_vecSectors(bint.m_vecSectors), m_ullSize(bint.m_ullSize), m_bNegative(bint.m_bNegative) {
 	dprintf("Constructing AEBigint with another AEBigint (digits: %llu, negative: %s)", bint.size(), ace::utils::boolToString(bint.isNegative()).data());
-	m_vecSectors.reserve(AEBI_RESERVE_SIZE);
+	this->m_vecSectors.reserve(this->m_vecSectors.size() + AEBI_RESERVE_SIZE);
 }
 
 AEBigint::AEBigint(const std::string_view str) {
 	dprintf("Constructing AEBigint with a std::string_view (characters: %llu)", ullint(str.size()) );
-	this->copyFromString(str);
+	if (!this->copyFromString(str)) {
+		this->clear(true);
+	}
 }
 
 
@@ -28,23 +30,15 @@ AEBigint::~AEBigint() {
 // assignment operators
 //////////////////////////////////
 AEBigint& AEBigint::operator=(const AEBigint& bint) {
-	dprintf("Assigning from another Bigint (digits: %llu, negative: %s)", bint.size(), ace::utils::boolToString(bint.isNegative()).data());
-
-	if (this == &bint || (this->isZero() && bint.isZero())) {
-		dprintf("Tried self-assigning or assign to 0-bigint while 0 originally");
-		return *this;
-	}
-
-	this->m_vecSectors.reserve(bint.m_vecSectors.size() + AEBI_RESERVE_SIZE);
-	this->m_vecSectors = bint.m_vecSectors;
-	this->m_ullSize = bint.m_ullSize;
-	this->m_bNegative = bint.m_bNegative;
+	this->copyFromBigint(bint);
 	return *this;
 }
 
 AEBigint& AEBigint::operator=(const std::string_view str) {
 	dprintf("Assigning from a std::string_view (characters: %llu)", ullint(str.size()));
-	this->copyFromString(str);
+	if (this->copyFromString(str)) {
+		this->clear(true);
+	}
 	return *this;
 }
 
@@ -53,16 +47,32 @@ AEBigint& AEBigint::operator=(const std::string_view str) {
 // copying
 // AEBigint_construction.cpp
 //////////////////////////////////
-void AEBigint::copyFromString(const std::string_view str, const bool check) {
+
+void AEBigint::copyFromBigint(const AEBigint& bint) {
+	dprintf("Assigning from another Bigint (digits: %llu, negative: %s)", bint.size(), ace::utils::boolToString(bint.isNegative()).data());
+
+	if (this == &bint || (this->isZero() && bint.isZero())) {
+		dprintf("Tried self-assigning or assign to 0-bigint while 0 originally");
+		return;
+	}
+
+
+	this->m_vecSectors = bint.m_vecSectors;
+	this->m_vecSectors.reserve(bint.m_vecSectors.size() + AEBI_RESERVE_SIZE);
+	this->m_ullSize = bint.m_ullSize;
+	this->m_bNegative = bint.m_bNegative;
+}
+
+bool AEBigint::copyFromString(const std::string_view str, const bool check) {
 
 	if (check && !ace::utils::isNum<false>(str)) {
-		return;
+		return false;
 	}
 
 	const char* start = str.data();
 	if (start[0] == '0' && str.size() == 1) {
 		this->clear(true);
-		return;
+		return true;
 	}
 	this->clear(false);
 
@@ -99,4 +109,6 @@ void AEBigint::copyFromString(const std::string_view str, const bool check) {
 		this->m_vecSectors[a++] = toUllint(start -= _AEBI_MAX_SECTOR_STORE_DIGITS, _AEBI_MAX_SECTOR_STORE_DIGITS);
 	}
 	this->m_vecSectors[a] = toUllint(str.data() + this->m_bNegative, i);
+
+	return true;
 }

@@ -7,7 +7,7 @@
 
 void AEBigint::setDigit(const ullint dig, const ucint val) {
 	const std::size_t digSector = dig / _AEBI_MAX_SECTOR_STORE_DIGITS;
-	const int digp10 = dig % _AEBI_MAX_SECTOR_STORE_DIGITS;
+	const uint digp10 = dig % _AEBI_MAX_SECTOR_STORE_DIGITS;
 
 	if (digSector < this->getSectorAmount()) {
 		const ullint temp = this->m_vecSectors[digSector];

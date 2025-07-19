@@ -7,10 +7,13 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Inline function definitions (mostly primitive arithmetic-related stuff)
+// Inline function definitions (mostly templated primitive arithmetic type-related stuff)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+//////////////////////////////////
+// copying
+//////////////////////////////////
 template<typename T>
 inline AEBigint& AEBigint::operator=(const T num) requires(std::is_integral<T>::value) {
 	dprintf("Assigning from integral value (digits: %u)", ace::math::lengthOfInt<T>(num));
@@ -80,6 +83,11 @@ inline AEBigint& AEBigint::operator=(const T flt) requires(std::is_floating_poin
 	return *this;
 }
 
+
+//////////////////////////////////
+// Comparison
+// AEBigint_construction.cpp
+//////////////////////////////////
 template<typename T>
 inline bool AEBigint::operator==(const T num) const noexcept requires(std::is_integral<T>::value) {
 
@@ -227,7 +235,7 @@ inline bool AEBigint::compareInt(const T num) const noexcept requires(std::is_in
 
 template<const bool greaterThan>
 bool AEBigint::compareString(const std::string_view str) const {
-	if (!ace::utils::isNum<false>(str)) {
+	if (!ace::utils::isNum<false>(str)) { //if has decimals -- not equal instantly
 		return false;
 	}
 	const bool neg = (str[0] == '-');

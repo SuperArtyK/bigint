@@ -44,7 +44,7 @@ bool AEBigint::operator>(const AEBigint& bint) const noexcept {
 	if (neg != bint.isNegative()) {
 		return !neg; // let the most positive win)
 	}
-
+	
 	const auto checkNum = (neg)
 		? [](const ullint num1, const ullint num2) noexcept { return num1 > num2; }
 		: [](const ullint num1, const ullint num2) noexcept { return num1 < num2; };

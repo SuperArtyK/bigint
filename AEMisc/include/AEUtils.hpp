@@ -128,8 +128,16 @@ namespace ace {
 		
 		/// <summary>
 		/// Checks if the given **string is a numerical value**.
+		/// 
+		/// 
+		/// @todo implement exponent detection, eg: 1.99E+3
+		/// @note To pass the test the number shall Contain:
+		///		* At least 1 digit: 6
+		///		* (If negative) Only 1 minus sign as the first character: -9
+		///			* The -0 case still fails
+		///		* (If checking for a float) Only 1 dot '.' to indicate decimal fraction followed by at least 1 digit: 4.2
 		/// </summary>
-		/// <typeparam name="checkFloat">Template flag whether to check for integer values (false) or any/float values (true)</typeparam>
+		/// <typeparam name="checkFloat">Template flag whether to include checking for a dot that floats have</typeparam>
 		/// <param name="strnum">String object (any, std::string, c-string, etc), "number" to check</param>
 		/// <returns>
 		///		If **strnum** is a numeric string:
@@ -154,9 +162,9 @@ namespace ace {
 
 			size_t i = 0;
 			bool decimal = false;
-			constexpr bool outOfRange = [](const char left, const char right, const char val) {
-				return (val < left || val > right);
-				};
+			//constexpr bool outOfRange = [](const char left, const char right, const char val) {
+			//	return (val < left || val > right);
+			//	};
 
 			if (strnum[0] == '-') {
 				i++;
@@ -537,14 +545,14 @@ namespace ace {
 		/// <param name="num">The number to convert</param>
 		/// <param name="str">The c-string to write to</param>
 		/// <returns>The number of characters successfully written (excluding null terminator)</returns>
-		inline int ullToCString(ullint num, char* const str) noexcept {
+		inline uint ullToCString(ullint num, char* const str) noexcept {
 
-			int a = 0;
-			while (num > 9) {
-				str[a++] = '0' + num % 10;
-				num /= 10;
+			uint a = 0u;
+			while (num > 9ull) {
+				str[a++] = ullint('0') + num % 10ull;
+				num /= 10ull;
 			}
-			str[a++] = '0' + num % 10;
+			str[a++] = ullint('0') + num % 10ull;
 			ace::utils::revCString(str, a);
 
 			return a;

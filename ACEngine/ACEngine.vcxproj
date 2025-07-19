@@ -194,6 +194,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AEBigint_arithmetic.cpp" />
     <ClCompile Include="AEBigint_comparison.cpp" />
     <ClCompile Include="AEBigint_construction.cpp" />
     <ClCompile Include="AEBigint_miscellanea.cpp" />

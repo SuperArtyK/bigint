@@ -39,6 +39,9 @@
     <ClCompile Include="AEBigint_comparison.cpp">
       <Filter>Source Files\src</Filter>
     </ClCompile>
+    <ClCompile Include="AEBigint_arithmetic.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\AEFileWriter\include\AEFileWriter.hpp">

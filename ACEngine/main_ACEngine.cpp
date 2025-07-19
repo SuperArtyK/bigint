@@ -108,9 +108,11 @@ int main() {
 
 	//a.setNegativity(true);
 
-		
-	//cout << (a < "4294967295") << NLC;
-	cout << (a <= "4294967295"_bi) << NLC;
+	
+	AEBigint testnum = "1283891029394020"sv;
+	cout << (testnum) << NLC;
+	testnum.rawSelfAdd("192391203910239019"sv);
+	cout << testnum << NLC;
 
 
 	
