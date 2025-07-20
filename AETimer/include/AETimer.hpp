@@ -307,6 +307,12 @@ private:
 			this->m_rDelay.sleep();
 			this->m_ullTicks.fetch_add(1, std::memory_order::relaxed);
 		}
+
+
+		//fix the additional tick that was added after the last sleep before closing the thread
+		if (this->m_ullTicks.load(std::memory_order::relaxed) > 0) {
+			this->m_ullTicks.fetch_sub(1, std::memory_order::relaxed);
+		}
 	}
 
 	/// The **frame-rater of the timer** for proper delay in the tick-counting function loop.

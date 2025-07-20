@@ -3,9 +3,14 @@
 #ifndef ENGINE_BIGINT_HPP
 #define ENGINE_BIGINT_HPP
 
+
+#include "include/AETypedefs.hpp"
+
 /// The default vector of sectors reserve size.
 /// Default value is 32 sectors, total of 608 digits.
-#define AEBI_RESERVE_SIZE 32
+/// 
+/// @note Set to 0 to disable preallocation of the sectors.
+constexpr std::size_t AEBI_RESERVE_SIZE = 32;
 
 /// Macro to indicate whether to preallocate the sectors on default constructor (when no value is passed).
 /// 
@@ -15,6 +20,13 @@
 /// @note Set to 1 to enable, and 0 to disable this feature.
 /// @see AEBigint::AEBigint(void)
 #define AEBI_DEFAULT_CSTOR_PREALLOCATE 0
+
+/// The type of the number cell to hold bigint values
+typedef ullint AEBigintSector;
+
+/// The type of the digit index in the bigint number
+/// @note The largest int type available.
+typedef ullint AEBigintDigitIndex;
 
 #include "AEBigint_declaration.hpp"
 #include "AEBigint_definition.hpp"

@@ -4,7 +4,6 @@
 #define ENGINE_BIGINT_DECLARATION_HPP
 
 #include "include/AEMath.hpp"
-#include "include/AETypedefs.hpp"
 #include "include/AEUtils.hpp"
 #include "include/AEUtilsMacros.hpp"
 #include "jeaiii_to_text.h"
@@ -22,17 +21,9 @@ constexpr ullint powerOf10Table[21] {
 	powerOf10Table[19] * 10, // power 20
 };
 
-
-/// The type of the number cell to hold bigint values
-typedef uint AEBigintSector; 
-
-/// The type of the digit index in the bigint number
-/// @note The largest int type available.
-typedef ullint AEBigintDigitIndex; 
-
 static_assert(std::is_integral<AEBigintSector>::value, "AEBigintSector should be an integral type!! No floats allowed!1!!11");
-static_assert(std::is_integral<AEBigintDigitIndex>::value, "AEBigintSector should be an integral type!! No floats allowed!1!!11");
-
+static_assert(std::is_integral<AEBigintDigitIndex>::value, "AEBigintDigitIndex should be an integral type!! No floats allowed!1!!11");
+static_assert(AEBI_RESERVE_SIZE > 0, "AEBI_RESERVE_SIZE should be a positive number! We can't reserve a negative amount of sectors!");
 
 /// The length in digits of the largest representable value per number sector
 /// 
@@ -776,16 +767,16 @@ public:
 	/// </summary>
 	/// <param name="bint">The AEBigint value to add</param>
 	void rawSelfAdd(const AEBigint& bint);
-
-private:
-
 	template<class T>
 #if defined(_MSC_VER)
 	__forceinline
 #else
 	inline
 #endif
-	static constexpr char* sectorToCString(char* b, const T i) noexcept; // defined below class
+		static constexpr char* sectorToCString(char* b, const T i) noexcept; // defined below class
+private:
+
+	
 
 //////////////////////////////////
 // copying

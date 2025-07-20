@@ -35,6 +35,71 @@ constexpr long double runningAvg(const int amt, const long double val, const lon
 	return (val * amt + newval) / (amt + 1);
 }
 
+void timechecker(const ullint exp, std::atomic<ullint>& progress) {
+	AEFrame myfr(1000);
+	AETimer mytm(1000); // 1 tick per second
+
+	ullint curprog = 0;
+	while (curprog < exp) {
+		curprog = progress.load(std::memory_order::relaxed);
+		cout << "Current progress: 2^" << curprog << " out of 2^" << exp << " (" << (double(curprog) / exp * 100) << "% done); Elapsed time: " << mytm.getWorldTime() << " seconds " << NLC;
+		myfr.sleep();
+
+	}
+	mytm.stopThread();
+	cout << "Finished calculating 2^" << exp << " Took time: " << mytm.getWorldTime() << " seconds" << NLC << "Exiting progress counter...";
+}
+
+AEBigintSector getnum() {
+	AEBigintSector num = 0;
+	for (int i = 0; i < _AEBI_MAX_SECTOR_STORE_DIGITS; i++) {
+		num *= 10;
+		num += 9;
+	}
+	return num;
+}
+
+
+void benchmarkstr() {
+
+	ullint exp = INT_MAX;
+	cout << "type: ucint" << NLC;
+	//cin >> exp;
+
+	if (exp < 0) {
+		cout << "Exponent must be non-negative!" << NLC;
+		return;
+	}
+
+	std::atomic<ullint> progress = 1;
+	std::thread thd = std::thread(timechecker, exp, std::ref(progress));
+	AEBigint a = 2;
+	AEBigintSector num = getnum();
+	char cstr[100]{};
+	for (ullint i = 1; i < exp; i++) {
+		//a.rawSelfAdd(a);
+		AEBigint::sectorToCString(cstr, num);
+		//jeaiii::to_text_from_integer(cstr, num);
+		progress.fetch_add(1, std::memory_order::relaxed); // increment the progress
+	}
+
+	thd.join(); // wait for the progress thread to finish
+	//cout << "Waiting 3000ms for the progress thread to finish..." << NLC;
+	//ace::utils::sleepMS(3000);
+
+	cout << "Press enter to show the results..." << NLC;
+
+	cin.ignore(std::numeric_limits<streamsize>::max(), '\n');
+	cin.get();
+
+
+	cout << "2^" << exp << " = " << a << NLC;
+
+
+
+
+}
+
 
 void compareMethods() {
 
@@ -92,20 +157,7 @@ void compareMethods() {
 	delete[] cstr;
 }
 
-void timechecker(const ullint exp, std::atomic<ullint>& progress) {
-	AEFrame myfr(60);
-	AETimer mytm(60); // 1 tick per second
 
-	ullint curprog = 0;
-	while (curprog < exp) {
-		curprog = progress.load(std::memory_order::relaxed);
-		cout << "Current progress: 2^" << curprog << " out of 2^"<<exp<< " ("<<(double(curprog) / exp * 100)<<"% done); Elapsed time: "<<mytm.getWorldTime()<<" seconds " << NLC;
-		myfr.sleep();
-
-	}
-	mytm.stopThread();
-	cout << "Finished calculating 2^" << exp <<" Took time: "<< mytm.getWorldTime()<<" seconds"<< NLC << "Exiting progress counter...";
-}
 
 void benchmark() {
 
