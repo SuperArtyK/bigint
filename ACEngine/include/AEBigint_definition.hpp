@@ -32,30 +32,28 @@ inline void AEBigint::copyFromInt(const T num) requires(std::is_integral<T>::val
 
 	this->m_ullSize = ace::math::lengthOfInt<T>(num);
 
-	if constexpr (std::is_signed<T>::value) { // its signed and may be negative
 
-		if (num < 0) {
-			//also its less than allowed sector size, so we can just mash it there
-			this->m_vecSectors.emplace_back(ace::math::absval<llint>(num));
-			this->m_bNegative = true;
+	if constexpr (std::is_signed<T>::value) { // its signed and may be negative
+		if constexpr (std::numeric_limits<T>::max() > _AEBI_MAX_SECTOR_STORE_VALUE) {
+			this->m_vecSectors.emplace_back(ace::math::absval(num % intmax_t(_AEBI_MAX_SECTOR_STORE_P10)));
+			this->m_vecSectors.emplace_back(ace::math::absval(num / intmax_t(_AEBI_MAX_SECTOR_STORE_P10)));
 		}
 		else {
-			this->m_vecSectors.emplace_back(num);
-			this->m_bNegative = false;
+			this->m_vecSectors.emplace_back(ace::math::absval(num));
 		}
+		this->m_bNegative = (num < 0);
 	}
-	else
-	{
-		if (num > _AEBI_MAX_SECTOR_OPERATION_VALUE) {
-
-			this->m_vecSectors.emplace_back(num % _AEBI_MAX_SECTOR_STORE_P10);
-			this->m_vecSectors.emplace_back(num / _AEBI_MAX_SECTOR_STORE_VALUE);
+	else {
+		if constexpr (std::numeric_limits<T>::max() > _AEBI_MAX_SECTOR_STORE_VALUE) {
+			this->m_vecSectors.emplace_back(num % intmax_t(_AEBI_MAX_SECTOR_STORE_P10));
+			this->m_vecSectors.emplace_back(num / intmax_t(_AEBI_MAX_SECTOR_STORE_P10));
 		}
 		else {
 			this->m_vecSectors.emplace_back(num);
 		}
 		this->m_bNegative = false;
 	}
+
 
 }
 
@@ -91,6 +89,8 @@ inline AEBigint& AEBigint::operator=(const T flt) requires(std::is_floating_poin
 template<typename T>
 inline bool AEBigint::operator==(const T num) const noexcept requires(std::is_integral<T>::value) {
 
+
+	/// @fixme Rewrite the comparison to support the new type-(and length)-abstracted system
 	if constexpr (std::is_signed<T>::value) {
 		if (this->isNegative() != (num < 0)) {
 			return false;
@@ -104,11 +104,12 @@ inline bool AEBigint::operator==(const T num) const noexcept requires(std::is_in
 			return false;
 		}
 
-		if constexpr (IS_SAME_NOCV(T, ullint)) {
-			if (num >= powerOf10Table[19]) { //doesn't fit into 1 sector
+		// do we have a single sector?
+		if constexpr (std::numeric_limits<T>::max() > _AEBI_MAX_SECTOR_STORE_VALUE) {
+			if (num >= _AEBI_MAX_SECTOR_STORE_P10) { //doesn't fit into 1 sector
 				if (this->getSectorAmount() != 2 ||
-					this->getSector(0) != (num % powerOf10Table[19]) ||
-					this->getSector(1) != (num / powerOf10Table[19])) {
+					this->getSector(0) != (num % _AEBI_MAX_SECTOR_STORE_P10) ||
+					this->getSector(1) != (num / _AEBI_MAX_SECTOR_STORE_P10)) {
 					return false;
 				}
 			}
@@ -139,6 +140,8 @@ inline bool AEBigint::operator==(const T flt) const requires(std::is_floating_po
 
 template<typename T, const bool greaterThan>
 inline bool AEBigint::compareInt(const T num) const noexcept requires(std::is_integral<T>::value) {
+
+	// @fixme Rewrite the comparison to support the new type-(and length)-abstracted system
 
 	if (this->isNegative() == (num > 0)) {
 		if constexpr (greaterThan) {
@@ -190,15 +193,15 @@ inline bool AEBigint::compareInt(const T num) const noexcept requires(std::is_in
 		}
 	}
 	else {
-		if constexpr (IS_SAME_NOCV(T, ullint)) {
-			if (num > powerOf10Table[19]) { // 2 sectors wide
+		if constexpr (std::numeric_limits<T>::max() > _AEBI_MAX_SECTOR_STORE_VALUE) {
+			if (num > _AEBI_MAX_SECTOR_STORE_P10) { // 2 sectors wide
 				if constexpr (greaterThan) {
 					if (this->getSectorAmount() > 2) {
 						return true;
 					}
 					if ((this->getSectorAmount() < 2) ||
-						(this->getFirstSector() <= (num % powerOf10Table[19]) &&
-							this->getLastSector() <= (num / powerOf10Table[19])
+						(this->getFirstSector() <= (num % _AEBI_MAX_SECTOR_STORE_P10) &&
+							this->getLastSector() <= (num / _AEBI_MAX_SECTOR_STORE_P10)
 							)
 						) {
 						return false;
@@ -209,8 +212,8 @@ inline bool AEBigint::compareInt(const T num) const noexcept requires(std::is_in
 						return true;
 					}
 					if ((this->getSectorAmount() > 2) ||
-						(this->getFirstSector() >= (num % powerOf10Table[19]) &&
-							this->getLastSector() >= (num / powerOf10Table[19])
+						(this->getFirstSector() >= (num % _AEBI_MAX_SECTOR_STORE_P10) &&
+							this->getLastSector() >= (num / _AEBI_MAX_SECTOR_STORE_P10)
 							)
 						) {
 						return false;
@@ -251,8 +254,8 @@ bool AEBigint::compareString(const std::string_view str) const {
 	}
 
 	const auto checkNum = (this->isNegative())
-		? [](const ullint num1, const ullint num2) noexcept { return num1 > num2; }
-	: [](const ullint num1, const ullint num2) noexcept {return num1 < num2; };
+		? [](const AEBigintDigitIndex num1, const AEBigintDigitIndex num2) noexcept { return num1 > num2; }
+	: [](const AEBigintDigitIndex num1, const AEBigintDigitIndex num2) noexcept {return num1 < num2; };
 
 	if constexpr (greaterThan) {
 		if (checkNum(this->size(), (str.size() - neg))) {

@@ -89,10 +89,10 @@ bool AEBigint::copyFromString(const std::string_view str, const bool check) {
 		this->m_vecSectors.resize(alloc);
 	}
 
-	constexpr auto toUllint = [](const char* const str, const ullint sz) {
-		ullint result = 0;
+	constexpr auto toAEBigintCell = [](const char* const str, const AEBigintSector sz) {
+		AEBigintSector result = 0;
 		for (std::size_t i = 0; i < sz; i++) {
-			result = result * 10 + str[i] - '0';
+			result = result * 10 + ace::utils::numCharToInt<true, AEBigintSector>(str[i]);
 		}
 		return result;
 		};
@@ -100,10 +100,16 @@ bool AEBigint::copyFromString(const std::string_view str, const bool check) {
 	std::size_t i = this->m_ullSize;
 	std::size_t a = 0;
 
+
+	// walking through the string backwards, to fill the sectors
+	// since our numeric conventions are big endian (most significant digit first), we need to reverse the order of digits for our little-endian storage
+	// until there are less than _AEBI_MAX_SECTOR_STORE_DIGITS digits left
 	for (; i > _AEBI_MAX_SECTOR_STORE_DIGITS; i -= _AEBI_MAX_SECTOR_STORE_DIGITS) {
-		this->m_vecSectors[a++] = toUllint(start -= _AEBI_MAX_SECTOR_STORE_DIGITS, _AEBI_MAX_SECTOR_STORE_DIGITS);
+		this->m_vecSectors[a++] = toAEBigintCell(start -= _AEBI_MAX_SECTOR_STORE_DIGITS, _AEBI_MAX_SECTOR_STORE_DIGITS);
 	}
-	this->m_vecSectors[a] = toUllint(str.data() + this->m_bNegative, i);
+	// there are less than _AEBI_MAX_SECTOR_STORE_DIGITS digits left, so we need to fill the last sector with the remaining digits
+	// and shift the pointer to the left if the number is negative, to avoid capturing the minus 
+	this->m_vecSectors[a] = toAEBigintCell(str.data() + this->m_bNegative, i);
 
 	return true;
 }

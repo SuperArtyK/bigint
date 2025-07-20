@@ -46,8 +46,8 @@ bool AEBigint::operator>(const AEBigint& bint) const noexcept {
 	}
 	
 	const auto checkNum = (neg)
-		? [](const ullint num1, const ullint num2) noexcept { return num1 > num2; }
-		: [](const ullint num1, const ullint num2) noexcept { return num1 < num2; };
+		? [](const AEBigintSector num1, const AEBigintSector num2) noexcept { return num1 > num2; }
+		: [](const AEBigintSector num1, const AEBigintSector num2) noexcept { return num1 < num2; };
 
 	if (checkNum(this->size(), bint.size())) {
 		return false;

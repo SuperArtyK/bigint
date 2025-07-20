@@ -15,44 +15,56 @@ void AEBigint::rawSelfAdd(const AEBigint& bint) {
 		return;
 	}
 
-	const std::size_t len = ace::math::min(this->getSectorAmount(), bint.getSectorAmount());
-	const std::size_t len2 = ace::math::max(this->getSectorAmount(), bint.getSectorAmount());
-	this->m_vecSectors.reserve(len2 + AEBI_RESERVE_SIZE + 1);
-	this->m_vecSectors.resize(len2);
 
-	ullint part1 = 0;
-	ullint part2 = 0;
-	ullint carry = 0;
+	//get lowest and highest length sector amounts
+	// lowest is used for general addition between 2 numbers
+	// highest is used for left-over carry stuff (and resizing)
+	const std::size_t lowestLen = ace::math::min(this->getSectorAmount(), bint.getSectorAmount());
+	const std::size_t highestLen = ace::math::max(this->getSectorAmount(), bint.getSectorAmount());
+	this->m_vecSectors.reserve(highestLen + AEBI_RESERVE_SIZE + 1);
+	this->m_vecSectors.resize(highestLen);
+
+	// local storage for numbers
+	// faster access (I think)
+	AEBigintSector tempresult = 0;
+	AEBigintSector carry = 0;
 
 	std::size_t i = 0;
-	for (; i < len; i++) {
-		part1 = (this->getSector(i) % _AEBI_MAX_SECTOR_OPERATION_P10) + (bint.getSector(i) % _AEBI_MAX_SECTOR_OPERATION_P10) + carry;
-		part2 = (this->getSector(i) / _AEBI_MAX_SECTOR_OPERATION_P10) + (bint.getSector(i) / _AEBI_MAX_SECTOR_OPERATION_P10) + (part1 / _AEBI_MAX_SECTOR_OPERATION_P10);
-		carry = part2 / 10;
-		part2 %= 10;
-		part1 %= _AEBI_MAX_SECTOR_OPERATION_P10;
 
-		this->m_vecSectors[i] = part1 + part2 * _AEBI_MAX_SECTOR_OPERATION_P10;
+	for (; i < lowestLen; i++) {
+
+		tempresult = this->getSector(i) + bint.getSector(i) + carry;
+		carry = tempresult / _AEBI_MAX_SECTOR_STORE_P10;
+		this->m_vecSectors[i] = tempresult % _AEBI_MAX_SECTOR_STORE_P10;
 	}
 
 	if (this->getSectorAmount() > bint.getSectorAmount()) {
-		for (; i < len2 && carry; i++) { // the numbers are already there, so care only for carry
-			this->m_vecSectors[i] += carry;
-			carry = this->m_vecSectors[i] / _AEBI_MAX_SECTOR_STORE_P10;
-			this->m_vecSectors[i] %= _AEBI_MAX_SECTOR_STORE_P10;
+		for (; i < highestLen && carry; i++) { // the numbers are already there, so care only for carry
+			tempresult = this->m_vecSectors[i] + carry;
+			carry = tempresult / _AEBI_MAX_SECTOR_STORE_P10;
+			this->m_vecSectors[i] = tempresult % _AEBI_MAX_SECTOR_STORE_P10;
 		}
 	}
 	else {
-		for (; i < len2; i++) {
-			this->m_vecSectors[i] = carry + bint.m_vecSectors[i];
-			carry = this->m_vecSectors[i] / _AEBI_MAX_SECTOR_STORE_P10;
-			this->m_vecSectors[i] %= _AEBI_MAX_SECTOR_STORE_P10;
+		// numbers aren't there, we need to copy them over
+		// care for carry right now
+		for (; i < highestLen && carry; i++) {
+			tempresult = carry + bint.m_vecSectors[i];
+			carry = tempresult / _AEBI_MAX_SECTOR_STORE_P10;
+			this->m_vecSectors[i] = tempresult % _AEBI_MAX_SECTOR_STORE_P10;
+		}
+		// just so we don't continue costly division and modulo, carry is 0
+		// (and if i is highestLen -- then we skip it too
+		for (; i < highestLen; i++) {
+			this->m_vecSectors[i] = bint.m_vecSectors[i];
 		}
 	}
 
-	if (carry) { // edge case for "9999999...." number
+	// edge case for "9999999...." number
+	if (carry) { 
 		this->m_vecSectors.emplace_back(carry);
 	}
 
-	this->m_ullSize = (this->m_vecSectors.size() - 1) * _AEBI_MAX_SECTOR_STORE_DIGITS + ace::math::lengthOfInt(this->getLastSector());
+	//update the size
+	this->m_ullSize = (this->getSectorAmount() - 1) * _AEBI_MAX_SECTOR_STORE_DIGITS + ace::math::lengthOfInt(this->getLastSector());
 }

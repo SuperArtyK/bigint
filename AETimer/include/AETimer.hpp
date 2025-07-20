@@ -75,7 +75,7 @@ public:
 	}
 
 	/// <summary>
-	/// Class constructor -- assigns **default delay (ENGINE_FPS) and doesn't start the thread**.
+	/// Class constructor -- assigns **default delay (#ENGINE_FPS) and doesn't start the thread**.
 	/// </summary>
 	AETimer(void) noexcept : 
 		m_rDelay(ENGINE_FPS), m_ullTicks(0), m_bRunTrd(false) 

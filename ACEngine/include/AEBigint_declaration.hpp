@@ -13,7 +13,7 @@
 
 
 /// The lookup table of the powers of 10
-/// @note Maximum value is 10^20, since it's the largest that ::ullint can hold.
+/// @note Maximum value is 10^20, since it's the largest that ullint can hold.
 constexpr ullint powerOf10Table[21] {
 	1,                       powerOf10Table[0] * 10,  powerOf10Table[1] * 10,  powerOf10Table[2] * 10,  powerOf10Table[3] * 10,   //power 0-4
 	powerOf10Table[4] * 10,  powerOf10Table[5] * 10,  powerOf10Table[6] * 10,  powerOf10Table[7] * 10,  powerOf10Table[8] * 10,   //power 5-9
@@ -23,25 +23,31 @@ constexpr ullint powerOf10Table[21] {
 };
 
 
+/// The type of the number cell to hold bigint values
+typedef uint AEBigintSector; 
+
+/// The type of the digit index in the bigint number
+/// @note The largest int type available.
+typedef ullint AEBigintDigitIndex; 
+
+static_assert(std::is_integral<AEBigintSector>::value, "AEBigintSector should be an integral type!! No floats allowed!1!!11");
+static_assert(std::is_integral<AEBigintDigitIndex>::value, "AEBigintSector should be an integral type!! No floats allowed!1!!11");
+
+
+/// The length in digits of the largest representable value per number sector
+/// 
+/// @note This depends on the AEBigintSector type and its' max value. Some types allow to store 19 at their largest 2 digits
+/// @note For example int -- 2147483647, can hold 1999999999, while uint64 can't do that since it's first digits are 18..
+/// @attention If the type can't hold 19 at their largest 2 digits, then subtract 1 from the value here. Recommended to always subtract 1.
+constexpr uint _AEBI_MAX_SECTOR_STORE_DIGITS = std::numeric_limits<AEBigintSector>::digits10-1;
+
+
 /// The largest representable power of 10 per number sector
-#define _AEBI_MAX_SECTOR_STORE_P10 (powerOf10Table[19])
+constexpr AEBigintSector _AEBI_MAX_SECTOR_STORE_P10 = (powerOf10Table[_AEBI_MAX_SECTOR_STORE_DIGITS]);
 
-/// The largest representable value per number sector
-/// @note Corresponds to the 10^19 - 1, the largest value of 9999.... that can fit into uint64
-#define _AEBI_MAX_SECTOR_STORE_VALUE (_AEBI_MAX_SECTOR_STORE_P10 - 1)
-
-/// The length in jeaiii::digits of the largest representable value per number sector
-constexpr uint _AEBI_MAX_SECTOR_STORE_DIGITS = ace::math::lengthOfInt(_AEBI_MAX_SECTOR_STORE_VALUE);
-
-/// The power of 10 of the largest value per sector to operate on.
-#define _AEBI_MAX_SECTOR_OPERATION_P10 (powerOf10Table[18])
-
-/// The largest value to perform operations on per sector.
-#define _AEBI_MAX_SECTOR_OPERATION_VALUE (_AEBI_MAX_SECTOR_OPERATION_P10 - 1)
-
-
-
-
+/// The largest representable value of 9999... per number sector
+/// @note This is 1 less than _AEBI_MAX_SECTOR_STORE_P10
+constexpr AEBigintSector _AEBI_MAX_SECTOR_STORE_VALUE = (_AEBI_MAX_SECTOR_STORE_P10 - 1);
 
 
 /// <summary>
@@ -645,9 +651,9 @@ public:
 	/// @see AEBigint::length(void)
 	/// </summary>
 	/// <returns>
-	///		Length of the number in digits as type **ullint**.
+	///		Length of the number in digits as type **AEBigintDigitIndex**.
 	/// </returns>
-	[[nodiscard]] inline ullint size(void) const noexcept {
+	[[nodiscard]] inline AEBigintDigitIndex size(void) const noexcept {
 		return this->m_ullSize;
 	}
 
@@ -658,9 +664,9 @@ public:
 	/// @see AEBigint::size(void)
 	/// </summary>
 	/// <returns>
-	///		Length of the number in digits as type **ullint**.
+	///		Length of the number in digits as type **AEBigintDigitIndex**.
 	/// </returns>
-	[[nodiscard]] inline ullint length(void) const noexcept {
+	[[nodiscard]] inline AEBigintDigitIndex length(void) const noexcept {
 		return this->size();
 	}
 
@@ -682,34 +688,31 @@ public:
 	/// <returns>
 	///		The selected digit of **this** as type **char** (direct value not ascii text)
 	/// </returns>
-	[[nodiscard]] inline char getDigitChar(const ullint dig) const noexcept {
-		if (dig == 0ull) { return ace::utils::intToNumChar<true>(this->getFirstSector() % 10ull); }
-		return ace::utils::intToNumChar<true>((this->getSector(dig / _AEBI_MAX_SECTOR_STORE_DIGITS) /
-			powerOf10Table[(dig % _AEBI_MAX_SECTOR_STORE_DIGITS)])
-			% 10);
+	[[nodiscard]] inline char getDigitChar(const AEBigintDigitIndex dig) const {
+		return ace::utils::intToNumChar<true, AEBigintSector>(this->getDigit(dig));
 	}
 
-	[[nodiscard]] inline ullint getDigit(const ullint dig) const noexcept {
-		if (dig == 0) { return this->getFirstSector() % 10ull; }
+	[[nodiscard]] inline AEBigintSector getDigit(const AEBigintDigitIndex dig) const {
+		if (dig == 0) { return this->getFirstSector() % 10; }
 		return (this->getSector(dig / _AEBI_MAX_SECTOR_STORE_DIGITS) /
 			powerOf10Table[(dig % _AEBI_MAX_SECTOR_STORE_DIGITS)])
 			% 10;
 	}
 
-	[[nodiscard]] inline ullint getSector(const std::size_t sector) const noexcept {
+	[[nodiscard]] inline AEBigintSector getSector(const std::size_t sector) const {
 		return (this->getSectorAmount()) ? this->m_vecSectors[sector] : 0ull;
 	}
 
 	[[nodiscard]] inline std::size_t getMemoryUsage() const noexcept {
-		return sizeof(AEBigint) + this->m_vecSectors.capacity() * sizeof(ullint);
+		return sizeof(AEBigint) + this->m_vecSectors.capacity() * sizeof(AEBigintSector);
 	}
 
-	[[nodiscard]] inline ullint getLastSector(void) const noexcept {
-		return this->getSector(this->m_vecSectors.size() - 1);
+	[[nodiscard]] inline AEBigintSector getLastSector(void) const  {
+		return this->getSector(this->getSectorAmount() - 1);
 	}
 
-	[[nodiscard]] inline ullint getFirstSector(void) const noexcept {
-		return this->getSector(0);
+	[[nodiscard]] inline AEBigintSector getFirstSector(void) const noexcept {
+		return (this->getSectorAmount()) ? this->m_vecSectors[0] : 0ull; // sure, a repeat; but this can actually be noexcept
 	}
 
 /////////////////
@@ -720,13 +723,13 @@ public:
 		return *this;
 	}
 
-	void setDigit(const ullint dig, const ucint val);
+	void setDigit(const AEBigintDigitIndex dig, const ucint val);
 
-	void setSector(const std::size_t sector, const ullint val);
+	void setSector(const std::size_t sector, const AEBigintSector val);
 
-	inline void setLastSector(const ullint val) { this->setSector(this->getSectorAmount() - 1, val); }
+	inline void setLastSector(const AEBigintSector val) { this->setSector(this->getSectorAmount() - 1, val); }
 
-	inline void setFirstSector(const ullint val) { this->setSector(0, val); }
+	inline void setFirstSector(const AEBigintSector val) { this->setSector(0, val); }
 
 
 //////////////////////////////////
@@ -823,9 +826,9 @@ private:
 // VARIABLES
 //////////////////////
 	/// The vector that contains all the number sectors
-	std::vector<ullint> m_vecSectors;
+	std::vector<AEBigintSector> m_vecSectors;
 	/// The size of the number in digits
-	ullint m_ullSize;
+	AEBigintDigitIndex m_ullSize;
 	/// The flag whether the number is negative
 	bool m_bNegative;
 

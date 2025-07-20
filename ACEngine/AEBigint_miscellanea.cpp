@@ -5,12 +5,15 @@
 // setters
 /////////////////
 
-void AEBigint::setDigit(const ullint dig, const ucint val) {
+void AEBigint::setDigit(const AEBigintDigitIndex dig, const ucint val) {
+
+	// get the sector and the position within it
 	const std::size_t digSector = dig / _AEBI_MAX_SECTOR_STORE_DIGITS;
 	const uint digp10 = dig % _AEBI_MAX_SECTOR_STORE_DIGITS;
 
+	// set the value in the sector if it exists
 	if (digSector < this->getSectorAmount()) {
-		const ullint temp = this->m_vecSectors[digSector];
+		const AEBigintSector temp = this->m_vecSectors[digSector];
 		this->setSector(digSector, (val * powerOf10Table[digp10] +
 			temp - temp % powerOf10Table[digp10 + 1] +
 			temp % powerOf10Table[digp10]
@@ -18,11 +21,14 @@ void AEBigint::setDigit(const ullint dig, const ucint val) {
 		);
 	}
 	else {
+		// otherwise, create the sector and set the value
 		this->setSector(digSector, val * powerOf10Table[digp10]);
 	}
 }
 
-void AEBigint::setSector(const std::size_t sector, const ullint val) {
+void AEBigint::setSector(const std::size_t sector, const AEBigintSector val) {
+	// if the sector (0-based) index is larger than the current amount of sectors, resize the vector
+	// and get sum more reserve space
 	if ((sector + 1) >= this->m_vecSectors.size()) {
 		if (sector >= this->m_vecSectors.size()) {
 			this->m_vecSectors.reserve(sector + AEBI_RESERVE_SIZE + 1);
