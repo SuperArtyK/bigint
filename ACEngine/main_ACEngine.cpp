@@ -36,8 +36,8 @@ constexpr long double runningAvg(const int amt, const long double val, const lon
 }
 
 void timechecker(const ullint exp, std::atomic<ullint>& progress) {
-	AEFrame myfr(1000);
-	AETimer mytm(1000); // 1 tick per second
+	AEFrame myfr(100);
+	AETimer mytm(100); // 1 tick per second
 
 	ullint curprog = 0;
 	while (curprog < exp) {

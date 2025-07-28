@@ -66,10 +66,10 @@ bool AEBigint::copyFromString(const std::string_view str, const bool check) {
 
 	const char* start = str.data();
 	if (start[0] == '0' && str.size() == 1) {
-		this->clear(true);
+		this->clear<true>(0);
 		return true;
 	}
-	this->clear(false);
+	
 
 	
 	if (start[0] == '-') {
@@ -83,11 +83,12 @@ bool AEBigint::copyFromString(const std::string_view str, const bool check) {
 	this->m_ullSize = str.length() - this->m_bNegative;
 	start += str.size();
 
-	{
+	{ // temporary storage for alloc variable; not hog stack and not re-calculate 
 		const std::size_t alloc = (this->m_ullSize - 1) / _AEBI_MAX_SECTOR_STORE_DIGITS + 1;
-		this->m_vecSectors.reserve(alloc + AEBI_RESERVE_SIZE);
+		this->clear<false>(alloc);
 		this->m_vecSectors.resize(alloc);
 	}
+	
 
 	constexpr auto toAEBigintCell = [](const char* const str, const AEBigintSector sz) {
 		AEBigintSector result = 0;

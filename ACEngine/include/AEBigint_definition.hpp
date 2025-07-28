@@ -23,6 +23,9 @@ inline AEBigint& AEBigint::operator=(const T num) requires(std::is_integral<T>::
 
 template<typename T>
 inline void AEBigint::copyFromInt(const T num) requires(std::is_integral<T>::value) {
+	// @fixme Rewrite to support the new type-(and length)-abstracted system
+
+	// small performance optimization :P
 	if (num == 0) {
 		this->clear(true);
 		return;
@@ -59,7 +62,7 @@ inline void AEBigint::copyFromInt(const T num) requires(std::is_integral<T>::val
 
 template<typename T>
 inline void AEBigint::copyFromFloat(const T flt) requires(std::is_floating_point<T>::value) {
-	if (ace::math::absval(flt) < 1.0L) {
+	if (ace::math::absval(flt) < T(1.0)) {
 		this->clear(true); // welp, I guess you're still 0
 		return;
 	}
@@ -90,41 +93,26 @@ template<typename T>
 inline bool AEBigint::operator==(const T num) const noexcept requires(std::is_integral<T>::value) {
 
 
-	/// @fixme Rewrite the comparison to support the new type-(and length)-abstracted system
 	if constexpr (std::is_signed<T>::value) {
+		// check if the sign is different
 		if (this->isNegative() != (num < 0)) {
 			return false;
 		}
-		if (this->getSectorAmount() != 1 || this->getFirstSector() != ace::math::absval(num)) {
-			return false;
-		}
-	}
-	else {
-		if (this->isNegative()) { // no negatives allowed
-			return false;
-		}
-
-		// do we have a single sector?
+		// 2+ sector long
 		if constexpr (std::numeric_limits<T>::max() > _AEBI_MAX_SECTOR_STORE_VALUE) {
-			if (num >= _AEBI_MAX_SECTOR_STORE_P10) { //doesn't fit into 1 sector
-				if (this->getSectorAmount() != 2 ||
-					this->getSector(0) != (num % _AEBI_MAX_SECTOR_STORE_P10) ||
-					this->getSector(1) != (num / _AEBI_MAX_SECTOR_STORE_P10)) {
-					return false;
-				}
-			}
-			else { // sadly I have to repeat the code, or I'll have an unnecessary branch again
-				if (this->getSectorAmount() != 1 || this->getFirstSector() != num) {
-					return false;
-				}
-			}
+
 		}
 		else {
-			if (this->getSectorAmount() != 1 || this->getFirstSector() != num) {
-				return false;
-			}
+
 		}
+
 	}
+	else {
+
+	}
+
+
+
 	return true;
 }
 
@@ -137,6 +125,22 @@ inline bool AEBigint::operator==(const T flt) const requires(std::is_floating_po
 		? false
 		: this->operator==(AEBigint(flt));
 }
+
+
+template<bool setToZero>
+// @fixme: look at all references to this function and fix them
+inline void AEBigint::clear(const std::size_t offset){
+	this->m_vecSectors.clear();
+	this->m_vecSectors.reserve(AEBI_RESERVE_SIZE + offset);
+
+	if constexpr (setToZero) {
+		this->m_vecSectors.push_back(0);
+		this->m_ullSize = 1;
+		this->m_bNegative = false;
+	}
+
+}
+
 
 template<typename T, const bool greaterThan>
 inline bool AEBigint::compareInt(const T num) const noexcept requires(std::is_integral<T>::value) {

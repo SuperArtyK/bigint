@@ -105,14 +105,3 @@ void AEBigint::toCString(char* dataptr) const noexcept {
 /////////////////
 // miscellania
 /////////////////
-void AEBigint::clear(const bool setToZero) {
-	this->m_vecSectors.clear();
-	this->m_vecSectors.reserve(AEBI_RESERVE_SIZE);
-
-	if (setToZero) {
-		this->m_vecSectors.push_back(0);
-		this->m_ullSize = 1;
-		this->m_bNegative = false;
-	}
-
-}

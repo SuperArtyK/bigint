@@ -58,6 +58,7 @@ constexpr AEBigintSector _AEBI_MAX_SECTOR_STORE_VALUE = (_AEBI_MAX_SECTOR_STORE_
 /// @todo Add the const char* function overloads (inline), that would call the std::string_view overloads under the hood.
 /// @todo Create a flag to preallocate the sectors on default constructor; This will allow to mark default constructor as noexcept if set to false.
 /// @todo Add functionality to reserve more cells in vector after modifying operations.
+/// @todo Make more constructors inline, remove inline from other functions
 /// </summary>
 class AEBigint {
 
@@ -691,7 +692,12 @@ public:
 	}
 
 	[[nodiscard]] inline AEBigintSector getSector(const std::size_t sector) const {
-		return (this->getSectorAmount()) ? this->m_vecSectors[sector] : 0ull;
+// fix the case for empty vector
+#if AEBI_DEFAULT_CSTOR_PREALLOCATE == 1
+		return this->m_vecSectors[sector];
+#else
+		return (this->getSectorAmount()) ? this->m_vecSectors[sector] : 0;
+#endif
 	}
 
 	[[nodiscard]] inline std::size_t getMemoryUsage() const noexcept {
@@ -703,7 +709,13 @@ public:
 	}
 
 	[[nodiscard]] inline AEBigintSector getFirstSector(void) const noexcept {
-		return (this->getSectorAmount()) ? this->m_vecSectors[0] : 0ull; // sure, a repeat; but this can actually be noexcept
+#if AEBI_DEFAULT_CSTOR_PREALLOCATE == 1
+		
+		return this->m_vecSectors[0];
+		
+#else
+		return (this->getSectorAmount()) ? this->m_vecSectors[0] : 0;
+#endif
 	}
 
 /////////////////
@@ -725,7 +737,6 @@ public:
 
 //////////////////////////////////
 // miscellanea
-// AEBigint_miscellanea.cpp
 //////////////////////////////////
 	[[nodiscard]] inline AEBigint operator-(void) const {
 		AEBigint tmp = *this;
@@ -738,7 +749,8 @@ public:
 		return bint;
 	}
 
-	void clear(const bool setToZero = true);
+	template<bool setToZero = true>
+	inline void clear(const std::size_t offset);
 
 
 //////////////////////////////////

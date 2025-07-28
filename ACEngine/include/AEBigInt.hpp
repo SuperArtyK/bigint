@@ -17,6 +17,7 @@ constexpr std::size_t AEBI_RESERVE_SIZE = 32;
 /// If enabled, the default constructor will preallocate the container of sectors with AEBI_RESERVE_SIZE.
 /// Otherwise, preallocation will be done.
 /// 
+/// @attention If enabled, the default constructor could throw an exception if the memory allocation fails.
 /// @note Set to 1 to enable, and 0 to disable this feature.
 /// @see AEBigint::AEBigint(void)
 #define AEBI_DEFAULT_CSTOR_PREALLOCATE 0
