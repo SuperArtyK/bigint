@@ -11,9 +11,8 @@
  *  Should not cause everything to break :)
  */
 
-#include "AEBigint.hpp"
-#include "include/AETimer.hpp"
-#include "jeaiii_to_text.h"
+#include "engine/AEBigint.hpp"
+#include "engine/AETimer.hpp"
 #include <thread>
 using namespace std;
 

@@ -32,9 +32,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\AEFileWriter.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\resources\resource1.h">
       <Filter>Resource Files\Logo resources</Filter>
     </ClInclude>
@@ -49,6 +46,9 @@
     </ClInclude>
     <ClInclude Include="..\AEMisc\include\AEUtils.hpp">
       <Filter>Header Files\engine modules</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\AEFileWriter.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

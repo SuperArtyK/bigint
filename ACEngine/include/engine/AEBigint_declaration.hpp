@@ -3,9 +3,9 @@
 #ifndef ENGINE_BIGINT_DECLARATION_HPP
 #define ENGINE_BIGINT_DECLARATION_HPP
 
-#include "include/AEMath.hpp"
-#include "include/AEUtils.hpp"
-#include "include/AEUtilsMacros.hpp"
+#include "engine/AEMath.hpp"
+#include "engine/AEUtils.hpp"
+#include "engine/AEUtilsMacros.hpp"
 #include "jeaiii_to_text.h"
 #include <charconv>
 #include <array>
@@ -750,7 +750,7 @@ public:
 	}
 
 	template<bool setToZero = true>
-	inline void clear(const std::size_t offset);
+	inline void clear(const std::size_t offset = 0);
 
 
 //////////////////////////////////

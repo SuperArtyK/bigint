@@ -27,9 +27,30 @@ inline void AEBigint::copyFromInt(const T num) requires(std::is_integral<T>::val
 
 	// small performance optimization :P
 	if (num == 0) {
-		this->clear(true);
+		this->clear<true>();
 		return;
 	}
+	
+
+	if constexpr (std::is_signed<T>::value) {
+
+
+
+	}
+	else {
+		
+
+
+	}
+
+
+
+
+
+
+
+
+
 
 	this->clear(false);
 
@@ -63,7 +84,7 @@ inline void AEBigint::copyFromInt(const T num) requires(std::is_integral<T>::val
 template<typename T>
 inline void AEBigint::copyFromFloat(const T flt) requires(std::is_floating_point<T>::value) {
 	if (ace::math::absval(flt) < T(1.0)) {
-		this->clear(true); // welp, I guess you're still 0
+		this->clear<true>(); // welp, I guess you're still 0
 		return;
 	}
 

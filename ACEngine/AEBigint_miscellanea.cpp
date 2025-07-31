@@ -1,5 +1,5 @@
-#include "../include/AEBigint.hpp"
-#include "../include/jeaiii_to_text.h"
+#include "engine/AEBigint.hpp"
+#include "engine/jeaiii_to_text.h"
 
 /////////////////
 // setters

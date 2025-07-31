@@ -1,8 +1,8 @@
 
 #include <iostream>
-#include "AETimer.hpp"
-#include "include/AEUtils.hpp"
-#include "include/AEMath.hpp"
+#include "engine/AETimer.hpp"
+#include "engine/AEUtils.hpp"
+#include "engine/AEMath.hpp"
 
 int main() {
 #if ENGINE_ENABLE_GLOBAL_MODULES

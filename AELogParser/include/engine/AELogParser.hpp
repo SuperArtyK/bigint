@@ -11,10 +11,10 @@
 #ifndef ENGINE_LOG_PARSER_HPP
 #define ENGINE_LOG_PARSER_HPP
 
-#include "include/AEFileReader.hpp"
-#include "include/AELogEntry.hpp"
-#include "include/AELogEntryInfo.hpp"
-#include "include/AEMath.hpp"
+#include "engine/AEFileReader.hpp"
+#include "engine/AELogEntry.hpp"
+#include "engine/AELogEntryInfo.hpp"
+#include "engine/AEMath.hpp"
 #include <array>
 #include <string_view>
 #include <unordered_map>

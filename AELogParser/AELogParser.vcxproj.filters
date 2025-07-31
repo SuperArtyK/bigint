@@ -41,9 +41,6 @@
     <ClInclude Include="..\resources\resource1.h">
       <Filter>Resource Files\Logo resources</Filter>
     </ClInclude>
-    <ClInclude Include="include\AELogParser.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\AEFileReader\include\AEFileReader.hpp">
       <Filter>Header Files\engine modules</Filter>
     </ClInclude>
@@ -67,6 +64,9 @@
     </ClInclude>
     <ClInclude Include="..\AECustomTypes\include\AELogTypes.hpp">
       <Filter>Header Files\engine modules</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\AELogParser.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -12,8 +12,8 @@
 #ifndef ENGINE_VECTOR_HPP
 #define ENGINE_VECTOR_HPP
 
-#include "include/AEFlags.hpp"
-#include "include/AEMath.hpp"
+#include "engine/AEFlags.hpp"
+#include "engine/AEMath.hpp"
 #include <string>
 #include <type_traits>
 

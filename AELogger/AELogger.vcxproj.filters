@@ -38,9 +38,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\AELogger.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\resources\resource1.h">
       <Filter>Resource Files\Logo resources</Filter>
     </ClInclude>
@@ -63,6 +60,9 @@
       <Filter>Header Files\engine modules</Filter>
     </ClInclude>
     <ClInclude Include="..\AECustomTypes\include\AELogTypes.hpp">
+      <Filter>Header Files\engine modules</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\AELogger.hpp">
       <Filter>Header Files\engine modules</Filter>
     </ClInclude>
   </ItemGroup>

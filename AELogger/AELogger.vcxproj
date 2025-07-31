@@ -94,7 +94,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(SolutionDir)AEMisc\;$(SolutionDir)AEModuleBase\;$(ProjectDir)include\;$(SolutionDir)AEFileWriter\;$(SolutionDir)AEFrame\;$(SolutionDir)AECustomTypes\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)AEMisc\include\;$(SolutionDir)AEModuleBase\include\;$(ProjectDir)include\;$(SolutionDir)AEFileWriter\include\;$(SolutionDir)AEFrame\include\;$(SolutionDir)AECustomTypes\include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -115,7 +115,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <StringPooling>true</StringPooling>
-      <AdditionalIncludeDirectories>$(SolutionDir)AEMisc\;$(SolutionDir)AEModuleBase\;$(ProjectDir)include\;$(SolutionDir)AEFileWriter\;$(SolutionDir)AEFrame\;$(SolutionDir)AECustomTypes\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)AEMisc\include\;$(SolutionDir)AEModuleBase\include\;$(ProjectDir)include\;$(SolutionDir)AEFileWriter\include\;$(SolutionDir)AEFrame\include\;$(SolutionDir)AECustomTypes\include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -132,7 +132,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(SolutionDir)AEMisc\;$(SolutionDir)AEModuleBase\;$(ProjectDir)include\;$(SolutionDir)AEFileWriter\;$(SolutionDir)AEFrame\;$(SolutionDir)AECustomTypes\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)AEMisc\include\;$(SolutionDir)AEModuleBase\include\;$(ProjectDir)include\;$(SolutionDir)AEFileWriter\include\;$(SolutionDir)AEFrame\include\;$(SolutionDir)AECustomTypes\include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -154,7 +154,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>false</OmitFramePointers>
       <StringPooling>true</StringPooling>
-      <AdditionalIncludeDirectories>$(SolutionDir)AEMisc\;$(SolutionDir)AEModuleBase\;$(ProjectDir)include\;$(SolutionDir)AEFileWriter\;$(SolutionDir)AEFrame\;$(SolutionDir)AECustomTypes\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)AEMisc\include\;$(SolutionDir)AEModuleBase\include\;$(ProjectDir)include\;$(SolutionDir)AEFileWriter\include\;$(SolutionDir)AEFrame\include\;$(SolutionDir)AECustomTypes\include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -177,7 +177,7 @@
     <ClInclude Include="..\AEMisc\include\AEUtils.hpp" />
     <ClInclude Include="..\AEModuleBase\include\AEModuleBase.hpp" />
     <ClInclude Include="..\resources\resource1.h" />
-    <ClInclude Include="include\AELogger.hpp" />
+    <ClInclude Include="include\engine\AELogger.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\resources\consoleprog1.rc" />

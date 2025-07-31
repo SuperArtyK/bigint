@@ -1,7 +1,7 @@
 
 #include <iostream>
-#include "AEFrame.hpp"
-#include "include/AETypedefs.hpp"
+#include "engine/AEFrame.hpp"
+#include "engine/AETypedefs.hpp"
 #include <thread>
 using std::cout;
 using std::endl;

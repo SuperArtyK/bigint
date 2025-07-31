@@ -7,7 +7,7 @@
  *  Should not cause everything to break :)
  */
 
-#include "../include/AELogger.hpp"
+#include "engine/AELogger.hpp"
 
 //constructor
 AELogger::AELogger(const std::string logpath, const std::string fname, const bool clearLog, const ullint queuesize) :

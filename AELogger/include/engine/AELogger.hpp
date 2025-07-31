@@ -10,8 +10,8 @@
 #ifndef ENGINE_AELOGGER_HPP
 #define ENGINE_AELOGGER_HPP
 
-#include "include/AEFileWriter.hpp"
-#include "include/AELogEntry.hpp"
+#include "engine/AEFileWriter.hpp"
+#include "engine/AELogEntry.hpp"
 #include <atomic>
 #include <mutex>
 #include <string_view>

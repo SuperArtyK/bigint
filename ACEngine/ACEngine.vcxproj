@@ -115,7 +115,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <EnablePREfast>true</EnablePREfast>
       <DisableSpecificWarnings>26481;4514;5266;5045</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>$(SolutionDir)AEMisc\;$(SolutionDir)AEModuleBase\;$(SolutionDir)AEFileWriter\;$(ProjectDir)include\;$(SolutionDir)AELogger\;$(SolutionDir)AEFrame\;$(SolutionDir)AETimer\;$(SolutionDir)AEVector\;$(SolutionDir)AEFileReader\;$(SolutionDir)AELogParser\;$(SolutionDir)AECustomTypes\;$(SolutionDir)AELogEntry\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)AEMisc\include\;$(SolutionDir)AEModuleBase\include;$(SolutionDir)AEFileWriter\include;$(ProjectDir)include\;$(SolutionDir)AELogger\include;$(SolutionDir)AEFrame\include;$(SolutionDir)AETimer\include;$(SolutionDir)AEVector\include;$(SolutionDir)AEFileReader\include;$(SolutionDir)AELogParser\include;$(SolutionDir)AECustomTypes\include;$(SolutionDir)AELogEntry\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,7 +138,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <EnablePREfast>true</EnablePREfast>
       <DisableSpecificWarnings>26481;4514;5266;5045</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>$(SolutionDir)AEMisc\;$(SolutionDir)AEModuleBase\;$(SolutionDir)AEFileWriter\;$(ProjectDir)include\;$(SolutionDir)AELogger\;$(SolutionDir)AEFrame\;$(SolutionDir)AETimer\;$(SolutionDir)AEVector\;$(SolutionDir)AEFileReader\;$(SolutionDir)AELogParser\;$(SolutionDir)AECustomTypes\;$(SolutionDir)AELogEntry\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)AEMisc\include\;$(SolutionDir)AEModuleBase\include;$(SolutionDir)AEFileWriter\include;$(ProjectDir)include\;$(SolutionDir)AELogger\include;$(SolutionDir)AEFrame\include;$(SolutionDir)AETimer\include;$(SolutionDir)AEVector\include;$(SolutionDir)AEFileReader\include;$(SolutionDir)AELogParser\include;$(SolutionDir)AECustomTypes\include;$(SolutionDir)AELogEntry\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -158,7 +158,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <EnablePREfast>true</EnablePREfast>
       <DisableSpecificWarnings>26481;4514;5266;5045</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>$(SolutionDir)AEMisc\;$(SolutionDir)AEModuleBase\;$(SolutionDir)AEFileWriter\;$(ProjectDir)include\;$(SolutionDir)AELogger\;$(SolutionDir)AEFrame\;$(SolutionDir)AETimer\;$(SolutionDir)AEVector\;$(SolutionDir)AEFileReader\;$(SolutionDir)AELogParser\;$(SolutionDir)AECustomTypes\;$(SolutionDir)AELogEntry\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)AEMisc\include\;$(SolutionDir)AEModuleBase\include;$(SolutionDir)AEFileWriter\include;$(ProjectDir)include\;$(SolutionDir)AELogger\include;$(SolutionDir)AEFrame\include;$(SolutionDir)AETimer\include;$(SolutionDir)AEVector\include;$(SolutionDir)AEFileReader\include;$(SolutionDir)AELogParser\include;$(SolutionDir)AECustomTypes\include;$(SolutionDir)AELogEntry\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -182,7 +182,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <EnablePREfast>true</EnablePREfast>
       <DisableSpecificWarnings>26481;4514;5266;5045</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>$(SolutionDir)AEMisc\;$(SolutionDir)AEModuleBase\;$(SolutionDir)AEFileWriter\;$(ProjectDir)include\;$(SolutionDir)AELogger\;$(SolutionDir)AEFrame\;$(SolutionDir)AETimer\;$(SolutionDir)AEVector\;$(SolutionDir)AEFileReader\;$(SolutionDir)AELogParser\;$(SolutionDir)AECustomTypes\;$(SolutionDir)AELogEntry\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)AEMisc\include\;$(SolutionDir)AEModuleBase\include;$(SolutionDir)AEFileWriter\include;$(ProjectDir)include\;$(SolutionDir)AELogger\include;$(SolutionDir)AEFrame\include;$(SolutionDir)AETimer\include;$(SolutionDir)AEVector\include;$(SolutionDir)AEFileReader\include;$(SolutionDir)AELogParser\include;$(SolutionDir)AECustomTypes\include;$(SolutionDir)AELogEntry\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -211,10 +211,10 @@
     <ClInclude Include="..\AETimer\include\AETimer.hpp" />
     <ClInclude Include="..\AEVector\include\AEVector.hpp" />
     <ClInclude Include="..\resources\resource1.h" />
-    <ClInclude Include="include\AEBigint.hpp" />
-    <ClInclude Include="include\AEBigint_declaration.hpp" />
-    <ClInclude Include="include\AEBigint_definition.hpp" />
-    <ClInclude Include="include\jeaiii_to_text.h" />
+    <ClInclude Include="include\engine\AEBigInt.hpp" />
+    <ClInclude Include="include\engine\AEBigint_declaration.hpp" />
+    <ClInclude Include="include\engine\AEBigint_definition.hpp" />
+    <ClInclude Include="include\engine\jeaiii_to_text.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />

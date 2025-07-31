@@ -1,6 +1,6 @@
 #include <iostream>
-#include "AEVector.hpp"
-#include "include/AEUtils.hpp"
+#include "engine/AEVector.hpp"
+#include "engine/AEUtils.hpp"
 using std::cout;
 
 template <typename T1, typename T2, std::size_t dimAmount>

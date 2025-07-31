@@ -5,7 +5,7 @@
  *  Should not cause everything to break :)
  */
 
-#include "../include/AELogParser.hpp"
+#include "engine/AELogParser.hpp"
 #include <functional>
 
 cint AELogParser::openLog(const std::string_view fname) {

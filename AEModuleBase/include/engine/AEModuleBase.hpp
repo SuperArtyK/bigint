@@ -28,9 +28,9 @@
 #ifndef ENGINE_AEMODULEBASE_HPP
 #define ENGINE_AEMODULEBASE_HPP
 
-#include "include/AETypedefs.hpp"
-#include "include/AEFlags.hpp"
-#include "include/AEUtilsMacros.hpp"
+#include "engine/AETypedefs.hpp"
+#include "engine/AEFlags.hpp"
+#include "engine/AEUtilsMacros.hpp"
 #include <atomic>
 #include <string>
 #include <string_view>

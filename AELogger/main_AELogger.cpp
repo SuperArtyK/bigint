@@ -1,7 +1,7 @@
 
-#include "AELogger.hpp"
-#include "include/AEFrame.hpp"
-#include "include/AEUtils.hpp"
+#include "engine/AELogger.hpp"
+#include "engine/AEFrame.hpp"
+#include "engine/AEUtils.hpp"
 #include <iostream>
 using std::cout;
 

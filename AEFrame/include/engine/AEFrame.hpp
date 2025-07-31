@@ -25,8 +25,8 @@
 #ifndef ENGINE_FRAME_HPP
 #define ENGINE_FRAME_HPP
 
-#include "include/AEFlags.hpp"
-#include "include/AEModuleBase.hpp"
+#include "engine/AEFlags.hpp"
+#include "engine/AEModuleBase.hpp"
 
 // in case you, the programmer undefined it
 #ifndef ENGINE_FPS

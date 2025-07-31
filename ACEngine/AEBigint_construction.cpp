@@ -1,4 +1,4 @@
-#include "../include/AEBigint.hpp"
+#include "engine/AEBigint.hpp"
 
 /////////////////
 // constructors
@@ -11,7 +11,7 @@ AEBigint::AEBigint(const AEBigint& bint) : m_vecSectors(bint.m_vecSectors), m_ul
 AEBigint::AEBigint(const std::string_view str) {
 	dprintf("Constructing AEBigint with a std::string_view (characters: %llu)", ullint(str.size()) );
 	if (!this->copyFromString(str)) {
-		this->clear(true);
+		this->clear<true>();
 	}
 }
 
@@ -32,7 +32,7 @@ AEBigint& AEBigint::operator=(const AEBigint& bint) {
 AEBigint& AEBigint::operator=(const std::string_view str) {
 	dprintf("Assigning from a std::string_view (characters: %llu)", ullint(str.size()));
 	if (this->copyFromString(str)) {
-		this->clear(true);
+		this->clear<true>();
 	}
 	return *this;
 }
@@ -66,7 +66,7 @@ bool AEBigint::copyFromString(const std::string_view str, const bool check) {
 
 	const char* start = str.data();
 	if (start[0] == '0' && str.size() == 1) {
-		this->clear<true>(0);
+		this->clear<true>();
 		return true;
 	}
 	

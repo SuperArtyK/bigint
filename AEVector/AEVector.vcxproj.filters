@@ -26,9 +26,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\AEVector.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\resources\resource1.h">
       <Filter>Resource Files\Logo resources</Filter>
     </ClInclude>
@@ -40,6 +37,9 @@
     </ClInclude>
     <ClInclude Include="..\AEMisc\include\AETypedefs.hpp">
       <Filter>Header Files\engine modules</Filter>
+    </ClInclude>
+    <ClInclude Include="include\engine\AEVector.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

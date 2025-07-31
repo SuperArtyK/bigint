@@ -26,8 +26,8 @@
 #ifndef ENGINE_TIMER_HPP
 #define ENGINE_TIMER_HPP
 
-#include "include/AEFrame.hpp"
-#include "include/AEMath.hpp"
+#include "engine/AEFrame.hpp"
+#include "engine/AEMath.hpp"
 #include <atomic>
 #include <mutex>
 #include <thread>

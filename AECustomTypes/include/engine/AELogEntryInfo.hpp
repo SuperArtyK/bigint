@@ -11,7 +11,7 @@
 #ifndef ENGINE_AELOGENTRYINFO_HPP
 #define ENGINE_AELOGENTRYINFO_HPP
 
-#include "include/AETypedefs.hpp"
+#include "engine/AETypedefs.hpp"
 
 /// Macro for the AELogEntryInfo's value for the invalid cursor index
 #define AELEI_INVALID_CURSOR -1

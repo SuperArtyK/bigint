@@ -38,7 +38,7 @@
     <ClInclude Include="..\AEModuleBase\include\AEModuleBase.hpp">
       <Filter>Header Files\engine modules</Filter>
     </ClInclude>
-    <ClInclude Include="include\AEFrame.hpp">
+    <ClInclude Include="include\engine\AEFrame.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
