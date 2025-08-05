@@ -18,11 +18,12 @@ template<typename T>
 inline AEBigint& AEBigint::operator=(const T num) requires(std::is_integral<T>::value) {
 	dprintf("Assigning from integral value (digits: %u)", ace::math::lengthOfInt<T>(num));
 	this->copyFromInt(num);
+	
 	return *this;
 }
 
 template<typename T>
-inline void AEBigint::copyFromInt(const T num) requires(std::is_integral<T>::value) {
+inline void AEBigint::copyFromInt(T num) requires(std::is_integral<T>::value) {
 	// @fixme Rewrite to support the new type-(and length)-abstracted system
 
 	// small performance optimization :P
@@ -31,6 +32,60 @@ inline void AEBigint::copyFromInt(const T num) requires(std::is_integral<T>::val
 		return;
 	}
 	
+	// too many constexpr if -- sorry, it's for optimisations
+	// what if the type has a minus?
+	if constexpr (std::is_signed<T>::value) {
+		this->m_bNegative = (num < 0);
+	}
+	else {
+		this->m_bNegative = false;
+	}
+
+
+
+	// is large and fits in 2+ sectors
+	if constexpr (std::numeric_limits<T>::digits10 >= _AEBI_MAX_SECTOR_STORE_DIGITS){
+
+		if (num > _AEBI_MAX_SECTOR_STORE_VALUE) {
+			this->clear<false>(std::numeric_limits<T>::digits10 / _AEBI_MAX_SECTOR_STORE_DIGITS + 1);
+
+			//get whatever fits on the first sector first)
+			this->m_vecSectors.emplace_back(num % _AEBI_MAX_SECTOR_STORE_P10);
+
+			for (AEBigintDigitIndex i = 0; num > 0; i++) {
+				this->m_vecSectors.emplace_back((num /= _AEBI_MAX_SECTOR_STORE_P10) % _AEBI_MAX_SECTOR_STORE_P10);
+			}
+			this->recalcDigits();
+		}
+	}
+	// small enough to fit on the sector
+	this->clear<false>(1);
+	if constexpr (std::is_signed<T>::value) {
+
+		//compile-time check if the edgecase of doing abs of min of the largest type possible (min == max+1 by absolute value, so it doesn't fit)
+		//might never ever be resolved to true here but...just in case
+		if constexpr (std::numeric_limits<T>::min() == std::numeric_limits<std::intmax_t>::min()) {
+			if (num == std::numeric_limits<T>::min()) {
+				this->m_vecSectors.emplace_back(AEBigintSector(ace::math::absval<std::intmax_t>(num / 10)) * 10 + ace::math::absval<std::intmax_t>(num % 10));
+			}
+			else {
+				this->m_vecSectors.emplace_back(ace::math::absval<std::intmax_t>(num));
+			}
+		}
+		else
+		{
+			this->m_vecSectors.emplace_back(ace::math::absval<std::intmax_t>(num));
+		}
+
+	}
+	else {
+		this->m_vecSectors.emplace_back(num);
+	}
+	this->m_vecSectors.emplace_back(num);
+	this->m_ullSize = ace::math::lengthOfInt(num);
+
+
+
 
 	if constexpr (std::is_signed<T>::value) {
 
@@ -38,11 +93,11 @@ inline void AEBigint::copyFromInt(const T num) requires(std::is_integral<T>::val
 
 	}
 	else {
+
 		
 
 
 	}
-
 
 
 

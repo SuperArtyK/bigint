@@ -32,5 +32,4 @@ typedef ullint AEBigintDigitIndex;
 #include "AEBigint_declaration.hpp"
 #include "AEBigint_definition.hpp"
 
-
 #endif // !ENGINE_BIGINT_HPP

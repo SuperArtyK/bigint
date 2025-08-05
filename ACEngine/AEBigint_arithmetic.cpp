@@ -66,5 +66,5 @@ void AEBigint::rawSelfAdd(const AEBigint& bint) {
 	}
 
 	//update the size
-	this->m_ullSize = (this->getSectorAmount() - 1) * _AEBI_MAX_SECTOR_STORE_DIGITS + ace::math::lengthOfInt(this->getLastSector());
+	this->recalcDigits();
 }

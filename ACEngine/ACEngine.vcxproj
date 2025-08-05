@@ -199,17 +199,24 @@
     <ClCompile Include="main_ACEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\AEFileWriter\include\AEFileWriter.hpp" />
-    <ClInclude Include="..\AEFrame\include\AEFrame.hpp" />
-    <ClInclude Include="..\AELogger\include\AELogger.hpp" />
-    <ClInclude Include="..\AEMisc\include\AEFlags.hpp" />
-    <ClInclude Include="..\AEMisc\include\AEMath.hpp" />
-    <ClInclude Include="..\AEMisc\include\AEMathTrigLookup.hpp" />
-    <ClInclude Include="..\AEMisc\include\AETypedefs.hpp" />
-    <ClInclude Include="..\AEMisc\include\AEUtils.hpp" />
-    <ClInclude Include="..\AEModuleBase\include\AEModuleBase.hpp" />
-    <ClInclude Include="..\AETimer\include\AETimer.hpp" />
-    <ClInclude Include="..\AEVector\include\AEVector.hpp" />
+    <ClInclude Include="..\AECustomTypes\include\engine\AELogEntry.hpp" />
+    <ClInclude Include="..\AECustomTypes\include\engine\AELogEntryInfo.hpp" />
+    <ClInclude Include="..\AECustomTypes\include\engine\AELogTypes.hpp" />
+    <ClInclude Include="..\AEFileReader\include\engine\AEFileReader.hpp" />
+    <ClInclude Include="..\AEFileWriter\include\engine\AEFileWriter.hpp" />
+    <ClInclude Include="..\AEFrame\include\engine\AEFrame.hpp" />
+    <ClInclude Include="..\AELogger\include\engine\AELogger.hpp" />
+    <ClInclude Include="..\AELogParser\include\engine\AELogParser.hpp" />
+    <ClInclude Include="..\AEMisc\include\engine\AEFlags.hpp" />
+    <ClInclude Include="..\AEMisc\include\engine\AEMath.hpp" />
+    <ClInclude Include="..\AEMisc\include\engine\AEMathConst.hpp" />
+    <ClInclude Include="..\AEMisc\include\engine\AEMathTrigLookup.hpp" />
+    <ClInclude Include="..\AEMisc\include\engine\AETypedefs.hpp" />
+    <ClInclude Include="..\AEMisc\include\engine\AEUtils.hpp" />
+    <ClInclude Include="..\AEMisc\include\engine\AEUtilsMacros.hpp" />
+    <ClInclude Include="..\AEModuleBase\include\engine\AEModuleBase.hpp" />
+    <ClInclude Include="..\AETimer\include\engine\AETimer.hpp" />
+    <ClInclude Include="..\AEVector\include\engine\AEVector.hpp" />
     <ClInclude Include="..\resources\resource1.h" />
     <ClInclude Include="include\engine\AEBigInt.hpp" />
     <ClInclude Include="include\engine\AEBigint_declaration.hpp" />

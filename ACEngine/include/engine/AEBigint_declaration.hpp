@@ -752,6 +752,13 @@ public:
 	template<bool setToZero = true>
 	inline void clear(const std::size_t offset = 0);
 
+	/// <summary>
+	/// Re-calculates the digits count in the bigint (the m_ullSize variable)
+	/// </summary>
+	inline void recalcDigits(void) {
+		this->m_ullSize = (this->getSectorAmount() - 1) * _AEBI_MAX_SECTOR_STORE_DIGITS + ace::math::lengthOfInt(this->getLastSector());
+	}
+
 
 //////////////////////////////////
 // conversions
@@ -802,7 +809,7 @@ private:
 	void copyFromBigint(const AEBigint& bint);
 
 	template<typename T>
-	inline void copyFromInt(const T num) requires(std::is_integral<T>::value); // defined below class
+	inline void copyFromInt(T num) requires(std::is_integral<T>::value); // defined below class
 
 	bool copyFromString(const std::string_view str, const bool check = true);
 
