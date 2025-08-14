@@ -223,8 +223,11 @@ int main() {
 	
 	//compareMethods();
 
-	benchmark();
+	//benchmark();
 
+	AEBigint a = std::numeric_limits<std::intmax_t>::min();
+
+	cout << "a = " << a << NLC;
 	cout << "Press enter to continue..." << NLC;
 
 	cin.ignore(std::numeric_limits<streamsize>::max(), '\n');

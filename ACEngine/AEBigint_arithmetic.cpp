@@ -66,5 +66,5 @@ void AEBigint::rawSelfAdd(const AEBigint& bint) {
 	}
 
 	//update the size
-	this->recalcDigits();
+	this->updateDigitCount();
 }

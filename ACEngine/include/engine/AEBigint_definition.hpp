@@ -24,117 +24,95 @@ inline AEBigint& AEBigint::operator=(const T num) requires(std::is_integral<T>::
 
 template<typename T>
 inline void AEBigint::copyFromInt(T num) requires(std::is_integral<T>::value) {
-	// @fixme Rewrite to support the new type-(and length)-abstracted system
-
 	// small performance optimization :P
 	if (num == 0) {
+		dprintf("The number is 0, clearing the bigint and setting to 0...");
 		this->clear<true>();
 		return;
 	}
 	
-	// too many constexpr if -- sorry, it's for optimisations
-	// what if the type has a minus?
+	/*
+		 * logic, unsigned:
+		 * 0) clear the bigint, not set it to 0, and allocate additional space if it's larger than 1 sector (digit10+1)/_AEBI_MAX_SECTOR_STORE_DIGITS
+		 * 1) set negativity to false
+		 * 2) assign the value depending on size, do a constexpr check (numeric_limits<T>::max() > _AEBI_MAX_SECTOR_STORE_VALUE)
+		 * 2.1) if constexpr numeric limits max is less than or equal to _AEBI_MAX_SECTOR_STORE_VALUE, then we can store it in one sector
+		 * 2.2) if constexpr numeric limits max is greater than _AEBI_MAX_SECTOR_STORE_VALUE, then if run-time value (num > _AEBI_MAX_SECTOR_STORE_VALUE)
+		 * 2.2.1) if value is less than or equal to _AEBI_MAX_SECTOR_STORE_VALUE, then we can store it in one sector (2.1)
+		 * 2.2.2) if value is greater than _AEBI_MAX_SECTOR_STORE_VALUE, while loop for num > 0, then emplace_back the num % _AEBI_MAX_SECTOR_STORE_P10, then num /= _AEBI_MAX_SECTOR_STORE_P10;
+		 * 3) update the digit count
+		 * 
+		 * changes if signed, ASSUMING it's not intmax_t (because if it's negative -- it can't just be upcasted and abs'd):
+		 * 1) do a constexpr check if type is signed, then set negativity to negativty of num
+		 * 2) make a unsigned max variable and assign it to abs(num)
+		 * 
+		 * if intmax_t -- then check if it's equal to std::numeric_limits<std::intmax_t>::min()
+		 * if so, set negativity to true, and absnum to std::numeric_limits<std::intmax_t>::max() + 1
+		 **/
+	
+	// a crutch so that we can use the same code for signed and unsigned types
+	std::uintmax_t absnum;
+
+	// small difference for signed and unsigned types
 	if constexpr (std::is_signed<T>::value) {
+		// check for special case of intmax_t min
+
 		this->m_bNegative = (num < 0);
-	}
-	else {
-		this->m_bNegative = false;
-	}
 
-
-
-	// is large and fits in 2+ sectors
-	if constexpr (std::numeric_limits<T>::digits10 >= _AEBI_MAX_SECTOR_STORE_DIGITS){
-
-		if (num > _AEBI_MAX_SECTOR_STORE_VALUE) {
-			this->clear<false>(std::numeric_limits<T>::digits10 / _AEBI_MAX_SECTOR_STORE_DIGITS + 1);
-
-			//get whatever fits on the first sector first)
-			this->m_vecSectors.emplace_back(num % _AEBI_MAX_SECTOR_STORE_P10);
-
-			for (AEBigintDigitIndex i = 0; num > 0; i++) {
-				this->m_vecSectors.emplace_back((num /= _AEBI_MAX_SECTOR_STORE_P10) % _AEBI_MAX_SECTOR_STORE_P10);
-			}
-			this->recalcDigits();
-		}
-	}
-	// small enough to fit on the sector
-	this->clear<false>(1);
-	if constexpr (std::is_signed<T>::value) {
-
-		//compile-time check if the edgecase of doing abs of min of the largest type possible (min == max+1 by absolute value, so it doesn't fit)
-		//might never ever be resolved to true here but...just in case
 		if constexpr (std::numeric_limits<T>::min() == std::numeric_limits<std::intmax_t>::min()) {
-			if (num == std::numeric_limits<T>::min()) {
-				this->m_vecSectors.emplace_back(AEBigintSector(ace::math::absval<std::intmax_t>(num / 10)) * 10 + ace::math::absval<std::intmax_t>(num % 10));
+			// special case for intmax_t min, which is the largest negative number,
+			// it's abs is larger than its largest positive number, being max+1
+			if (num == std::numeric_limits<std::intmax_t>::min()) {
+				absnum = std::numeric_limits<std::intmax_t>::max() + 1;
+				dprintf("Special case for intmax_t min, setting absnum to intmax_t maximum+1");
 			}
 			else {
-				this->m_vecSectors.emplace_back(ace::math::absval<std::intmax_t>(num));
+				absnum = ace::math::absval(num); // abs the number
 			}
 		}
-		else
-		{
-			this->m_vecSectors.emplace_back(ace::math::absval<std::intmax_t>(num));
+		else {
+			absnum = ace::math::absval(num); // abs the number
 		}
-
-	}
-	else {
-		this->m_vecSectors.emplace_back(num);
-	}
-	this->m_vecSectors.emplace_back(num);
-	this->m_ullSize = ace::math::lengthOfInt(num);
-
-
-
-
-	if constexpr (std::is_signed<T>::value) {
-
-
-
-	}
-	else {
-
 		
-
-
-	}
-
-
-
-
-
-
-
-
-
-	this->clear(false);
-
-	this->m_ullSize = ace::math::lengthOfInt<T>(num);
-
-
-	if constexpr (std::is_signed<T>::value) { // its signed and may be negative
-		if constexpr (std::numeric_limits<T>::max() > _AEBI_MAX_SECTOR_STORE_VALUE) {
-			this->m_vecSectors.emplace_back(ace::math::absval(num % intmax_t(_AEBI_MAX_SECTOR_STORE_P10)));
-			this->m_vecSectors.emplace_back(ace::math::absval(num / intmax_t(_AEBI_MAX_SECTOR_STORE_P10)));
-		}
-		else {
-			this->m_vecSectors.emplace_back(ace::math::absval(num));
-		}
-		this->m_bNegative = (num < 0);
 	}
 	else {
-		if constexpr (std::numeric_limits<T>::max() > _AEBI_MAX_SECTOR_STORE_VALUE) {
-			this->m_vecSectors.emplace_back(num % intmax_t(_AEBI_MAX_SECTOR_STORE_P10));
-			this->m_vecSectors.emplace_back(num / intmax_t(_AEBI_MAX_SECTOR_STORE_P10));
-		}
-		else {
-			this->m_vecSectors.emplace_back(num);
-		}
+		absnum = num;
 		this->m_bNegative = false;
 	}
 
+	if constexpr (std::numeric_limits<T>::max() > _AEBI_MAX_SECTOR_STORE_VALUE) {
+		// possibly 2+ sectors long
+		
+		if(absnum > _AEBI_MAX_SECTOR_STORE_VALUE) {
+			// we need to store it in multiple sectors
+			dprintf("The number is larger than a sector, splitting...");
+			
 
+			this->clear<false>(absnum / _AEBI_MAX_SECTOR_STORE_P10 + 1);
+			
+			while (absnum > 0) {
+				this->m_vecSectors.emplace_back(absnum % _AEBI_MAX_SECTOR_STORE_P10);
+				absnum /= _AEBI_MAX_SECTOR_STORE_P10;
+			}
+		}
+		else {
+			// we can store it in one sector
+			this->clear<false>();
+			this->m_vecSectors.push_back(absnum);
+		}
+	}	
+	else {
+		// we can definitely store it in one sector
+		this->clear<false>();
+		this->m_vecSectors.push_back(absnum);
+	}
+
+	
+	this->updateDigitCount();
+	dprintf("Digit count updated, now: %llu", this->m_ullSize);
 }
+
+
 
 template<typename T>
 inline void AEBigint::copyFromFloat(const T flt) requires(std::is_floating_point<T>::value) {

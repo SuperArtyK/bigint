@@ -755,7 +755,11 @@ public:
 	/// <summary>
 	/// Re-calculates the digits count in the bigint (the m_ullSize variable)
 	/// </summary>
-	inline void recalcDigits(void) {
+	inline void updateDigitCount(void) {
+		if (this->getSectorAmount() == 1) { // only 1 sector is populated; so get only its digits
+			this->m_ullSize = ace::math::lengthOfInt(this->getFirstSector());
+			return;
+		}
 		this->m_ullSize = (this->getSectorAmount() - 1) * _AEBI_MAX_SECTOR_STORE_DIGITS + ace::math::lengthOfInt(this->getLastSector());
 	}
 
